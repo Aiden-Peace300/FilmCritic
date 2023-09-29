@@ -3,9 +3,7 @@
 
 -- EXAMPLE:
 
---  insert into "todos"
---    ("task", "isCompleted")
---    values
---      ('Learn to code', false),
---      ('Build projects', false),
---      ('Get a job', false);
+ insert into "Users"
+   ("username", "hashedPassword")
+   values
+     ('usernameTest', 'uoghiaerioj0809bti58y')
