@@ -4,6 +4,10 @@ import viteLogo from '/vite.svg';
 import './App.css';
 
 export default function App() {
+  const testing = { message: 'Hello World' };
+
+  console.log(testing);
+
   const [serverData, setServerData] = useState('');
 
   useEffect(() => {

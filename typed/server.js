@@ -2,7 +2,7 @@
 import 'dotenv/config';
 import express from 'express';
 import pg from 'pg';
-import { ClientError, errorMiddleware } from './lib/index.js';
+import { ClientError, errorMiddleware } from '../server/lib/index.js';
 
 const connectionString =
   process.env.DATABASE_URL ||
