@@ -14,9 +14,8 @@ export type PageTypeInsideApp =
   | 'icon-clicked';
 
 export function InsideWebsiteNavBar() {
-  const [isListVisible, setListVisible] = useState(false); // State to manage visibility
+  const [isListVisible, setListVisible] = useState(false);
 
-  // Function to toggle the list visibility
   const toggleListVisibility = () => {
     setListVisible(!isListVisible);
   };
