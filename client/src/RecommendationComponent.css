@@ -1,0 +1,33 @@
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  flex-basis: 1;
+}
+
+.searchBar {
+  padding: 0.6em 1.2em;
+  margin-left: 2rem;
+  margin-right: 2rem;
+}
+
+.searchSuggestions {
+  margin-top: 0;
+  margin-left: -8.2px;
+  margin-right: 2rem;
+  width: calc(100% - 4rem); /* Set the width to match the input with margins */
+}
+
+li {
+  list-style-type: none;
+  background-color: white;
+  text-align: center;
+  border: 0.004rem solid rgb(162, 150, 150);
+}

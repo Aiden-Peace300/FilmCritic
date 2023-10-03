@@ -5,7 +5,7 @@ import { IconClicked } from './IconClicked';
 import RegistrationForm from './RegistrationForm';
 import SignInForm from './SignInForm';
 import FeedComponent from './FeedComponent';
-import RecommendationComponent from './RecommendationComponent';
+import { RecommendationComponent } from './RecommendationComponent';
 import RatingComponent from './RatingComponent';
 import Profile from './Profile';
 
