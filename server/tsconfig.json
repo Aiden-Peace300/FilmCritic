@@ -18,5 +18,10 @@
     "resolveJsonModule": true,
     "noEmit": true
   },
-  "include": [".", "../typed/server.js"]
+  "include": [
+    ".",
+    "../typed/verify-token.js",
+    "../typed/server.js",
+    "../client/tsconfig.node.json"
+  ]
 }
