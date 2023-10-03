@@ -19,6 +19,10 @@ const db = new pg.Pool({
 const app = express();
 app.use(express.json());
 
+app.get('/', function (req, res) {
+  res.render('App.tsx');
+});
+
 app.post('/api/auth/sign-up', async (req, res, next) => {
   try {
     const { username, password } = req.body;
