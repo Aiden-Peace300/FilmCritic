@@ -26,12 +26,6 @@ app.use(express.static(reactStaticDir));
 app.use(express.static(uploadsStaticDir));
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.send(
-    'Welcome to your API. Use the /api/auth/sign-up and /api/auth/sign-in endpoints.'
-  );
-});
-
 app.post('/api/auth/sign-up', async (req, res, next) => {
   try {
     const { username, password } = req.body;
