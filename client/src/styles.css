@@ -1,0 +1,94 @@
+/* Your existing styles */
+.header {
+  background-color: #666b7d;
+}
+
+.gray-background {
+  background-color: #666b7d;
+}
+
+/* Add new styles for NavBar component */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Add this line to distribute the content evenly */
+}
+
+.logo {
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+/* Add styles for the navigation links */
+.nav-links {
+  display: flex;
+  align-items: center;
+}
+
+.entries-link {
+  text-decoration: none;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  color: #fff;
+}
+
+.entries-link:hover {
+  text-decoration: underline;
+}
+
+.entries-link:focus {
+  text-decoration: underline;
+}
+
+.input-b-radius {
+  border-radius: 5px;
+  padding: 0.6em 1.2em;
+}
+
+.bars-icon {
+  display: none; /* Initially hide the bars icon */
+  padding-left: 1.8rem;
+  font-size: 1.5rem;
+  color: white;
+}
+
+.icon-padding {
+  padding-right: 1.8rem;
+}
+
+/* Define a media query to show/hide elements based on screen width */
+@media only screen and (width < 735px) {
+  .nav-links {
+    display: none; /* Hide navigation links when screen width is <= 400px */
+  }
+
+  .bars-icon {
+    display: block; /* Show bars icon when screen width is <= 400px */
+  }
+}
+
+.flex-container {
+  display: flex;
+  flex-wrap: wrap; /* This property makes items wrap to new lines */
+  background-color: rgb(255, 255, 255);
+}
+
+.icon-text {
+  margin: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: red;
+  flex-basis: 100%;
+  text-decoration: none;
+}
+
+.icon-text:hover {
+  color: red;
+  text-decoration: underline;
+}
+
+.icon-text:focus {
+  color: red;
+  text-decoration: underline;
+}
