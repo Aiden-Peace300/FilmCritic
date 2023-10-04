@@ -5,11 +5,20 @@
   width: 100%;
 }
 
+h1 {
+  text-align: center;
+}
+
 .column {
   display: flex;
   flex-direction: column;
   flex-basis: 100%;
   flex-basis: 1;
+}
+
+.columnSug {
+  flex-direction: row;
+  flex-basis: 20%;
 }
 
 .searchBar {
@@ -30,4 +39,17 @@ li {
   background-color: white;
   text-align: center;
   border: 0.004rem solid rgb(162, 150, 150);
+  cursor: pointer;
+}
+
+.image {
+  display: block;
+  margin: 0 auto;
+  width: 210px;
+  height: 300px;
+  cursor: pointer;
+}
+
+.margin-top {
+  margin-top: 10rem;
 }

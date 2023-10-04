@@ -5,8 +5,10 @@ import './RecommendationComponent.css';
 export function RecommendationComponent() {
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState<
-    { id: string; title: string }[]
+    { id: string; title: string; clicked: boolean }[]
   >([]);
+  const [showSuggestions, setShowSuggestions] = useState<boolean>(true);
+  const [showImages, setShowImages] = useState<string[]>([]); // State to store show images
   const apiKey = '1d8984c313msh20ce3032c3ab337p129762jsnad07952e57f1';
 
   const handleSearchChange = (e: any) => {
@@ -22,11 +24,170 @@ export function RecommendationComponent() {
     console.log('Start searching:', searchTerm);
   };
 
-  const handleSuggestionClick = (suggestion: string) => {
+  const handleSuggestionClick = async (suggestion: {
+    id: string;
+    title: string;
+  }) => {
     // Handle when a suggestion is clicked, e.g., populate the input field with the suggestion
-    setSearchTerm(suggestion);
-    setSuggestions([]); // Clear suggestions
+    setSearchTerm(suggestion.title);
+    // Disable the clicked suggestion
+    setSuggestions((prevSuggestions) =>
+      prevSuggestions.map((prevSuggestion) =>
+        prevSuggestion.id === suggestion.id
+          ? { ...prevSuggestion, clicked: true }
+          : prevSuggestion
+      )
+    );
+    setShowSuggestions(false);
+    console.log('Clicked suggestion:', suggestion.title);
+    getRecommendations(suggestion.title);
   };
+
+  async function suggestionFromAI(name) {
+    try {
+      const requestData = {
+        model: 'gpt-3.5-turbo',
+        messages: [
+          {
+            role: 'user',
+            content: name,
+          },
+          {
+            role: 'system',
+            content: 'You are a helpful assistant.',
+          },
+        ],
+      };
+      const apiKey = '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';
+      const post = {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      };
+      const response = await fetch(
+        'https://api.openai.com/v1/chat/completions',
+        post
+      );
+      if (!response.ok) throw new Error(`fetch Error ${response.status}`);
+      const responseData = await response.json();
+      return responseData.choices[0].message.content;
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function getRecommendations(filmFromUser) {
+    const suggestion = await suggestionFromAI(
+      `GIVE ME A LIST OF 5 SHOWS THAT WOULD CLOSELY RESEMBLE THIS SHOW (ONLY THE NAMES OF THE SHOWS, NO OTHER PROMPTS WITH NO NUMBERING): ${filmFromUser}?`
+    );
+
+    // Break the suggestion into individual show names
+    const showStrings = breakShowsIntoStrings(suggestion);
+
+    console.log(showStrings);
+
+    // Process each show name one by one
+    const showImagesArray: string[] = []; // Array to store show images
+
+    for (const showName of showStrings) {
+      // Remove digits and hyphens from the show name using regular expressions
+      const cleanShowName = showName
+        .trim()
+        .replace(/\d+/g, '')
+        .replace(/-/g, '');
+
+      if (cleanShowName.length !== 0) {
+        console.log('Suggestion From AI:', cleanShowName);
+        const imageUrl = await findShowInIMDB(cleanShowName);
+        console.log(imageUrl);
+        if (imageUrl !== undefined) {
+          showImagesArray.push(imageUrl);
+        }
+        console.log('Show Images:', showImagesArray);
+      }
+    }
+
+    // Set the show images in the state
+    setShowImages(showImagesArray);
+  }
+
+  function breakShowsIntoStrings(showsList) {
+    // Split the shows list into individual strings using a delimiter (e.g., '. ')
+    const showStrings = showsList.split('. ');
+
+    // Filter out any empty strings
+    const filteredShowStrings = showStrings.filter((str) => str.trim() !== '');
+
+    return filteredShowStrings;
+  }
+
+  async function findShowInIMDB(nameOfFilm) {
+    const key = 'k_8d6605rp';
+
+    try {
+      const response = await fetch(
+        `https://imdb-api.com/en/API/SearchSeries/${key}/${nameOfFilm}`
+      );
+
+      if (response.status === 404) {
+        console.error('Resource not found (404)');
+        return;
+      }
+
+      if (!response.ok) {
+        console.error('Failed to fetch data from IMDb API');
+        return;
+      }
+
+      const responseData = await response.json();
+
+      if (responseData.results && responseData.results.length > 0) {
+        // Assuming you want to extract data from the first result
+        const firstResult = responseData.results[0];
+        console.log('Found show:', firstResult.title, 'imdbId', firstResult.id);
+        return getImageOfRecommendation(firstResult.id);
+      } else {
+        console.log('No results found for:', nameOfFilm);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
+  async function getImageOfRecommendation(idImdb) {
+    const key = 'k_8d6605rp';
+    try {
+      const response = await fetch(
+        `https://imdb-api.com/en/API/Title/${key}/${idImdb}/Images,Trailer,`
+      );
+
+      if (response.status === 404) {
+        console.error('Resource not found (404)');
+        return;
+      }
+
+      if (!response.ok) {
+        console.error('Failed to fetch data from IMDb API');
+        return;
+      }
+
+      const responseData = await response.json();
+
+      if (responseData.image && responseData.image.length > 0) {
+        const imageUrl = responseData.image;
+        console.log('Image URL:', imageUrl);
+        return imageUrl;
+      } else {
+        console.log('No images found for:', idImdb);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
 
   const fetchSuggestions = async (input) => {
     try {
@@ -47,12 +208,28 @@ export function RecommendationComponent() {
       const responseData = await response.json();
       const suggestionData = responseData.results || [];
 
+      // Limit the number of suggestions to 7
+      const limitedSuggestions = suggestionData.slice(0, 7);
+
+      // Initialize suggestions with the "clicked" property as false
+      const suggestionsWithClickStatus = limitedSuggestions.map(
+        (suggestion) => ({
+          ...suggestion,
+          clicked: false,
+        })
+      );
+
       // Update the suggestions state with the retrieved data
-      setSuggestions(suggestionData);
+      setSuggestions(suggestionsWithClickStatus);
+      setShowSuggestions(true);
     } catch (err) {
       console.error(err);
     }
   };
+
+  function handleImgDetails() {
+    console.log('image hit');
+  }
 
   return (
     <div>
@@ -61,8 +238,8 @@ export function RecommendationComponent() {
         <div className="row">
           <div className="column">
             <DebounceInput
-              minLength={1}
-              debounceTimeout={20}
+              minLength={5}
+              debounceTimeout={15}
               className="searchBar"
               type="text"
               placeholder="Search..."
@@ -73,21 +250,41 @@ export function RecommendationComponent() {
         </div>
       </form>
 
-      {suggestions.length > 0 && (
+      {showSuggestions && suggestions.length > 0 && (
         <div className="row">
           <div className="column">
             <ul className="searchSuggestions">
               {suggestions.map((suggestion) => (
                 <li
                   key={suggestion.id}
-                  onClick={() => handleSuggestionClick(suggestion.title)}>
-                  {suggestion.title}
+                  className={suggestion.clicked ? 'disabled' : ''}>
+                  <button
+                    onClick={() => handleSuggestionClick(suggestion)}
+                    disabled={suggestion.clicked}>
+                    {suggestion.title}
+                  </button>
                 </li>
               ))}
             </ul>
           </div>
         </div>
       )}
+      <div className="row">
+        {showImages.map((imageSrc, index) => (
+          <div className="columnSug margin-top">
+            <div key={index}>
+              <img
+                className="image"
+                width="210"
+                height="300"
+                src={imageSrc}
+                alt="IMDb Show"
+                onClick={handleImgDetails}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
