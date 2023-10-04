@@ -1,14 +1,17 @@
 import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { DebounceInput } from 'react-debounce-input';
 import './RecommendationComponent.css';
 
 export function RecommendationComponent() {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState<
     { id: string; title: string; clicked: boolean }[]
   >([]);
   const [showSuggestions, setShowSuggestions] = useState<boolean>(true);
   const [showImages, setShowImages] = useState<string[]>([]); // State to store show images
+  const [showTitle, setShowTitle] = useState<string[]>([]); // State to store show titles of the images in showImage
   const apiKey = '1d8984c313msh20ce3032c3ab337p129762jsnad07952e57f1';
 
   const handleSearchChange = (e: any) => {
@@ -58,7 +61,7 @@ export function RecommendationComponent() {
           },
         ],
       };
-      const apiKey = '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';
+      const apiKey = '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';
       const post = {
         method: 'POST',
         headers: {
@@ -92,6 +95,8 @@ export function RecommendationComponent() {
 
     // Process each show name one by one
     const showImagesArray: string[] = []; // Array to store show images
+    const showTitleArray: string[] = []; // Array to store title images
+    const showImdbIdArray: any[] = []; // Array to store imdbId images
 
     for (const showName of showStrings) {
       // Remove digits and hyphens from the show name using regular expressions
@@ -103,16 +108,24 @@ export function RecommendationComponent() {
       if (cleanShowName.length !== 0) {
         console.log('Suggestion From AI:', cleanShowName);
         const imageUrl = await findShowInIMDB(cleanShowName);
+        const title = await findShowTitleInIMDB(cleanShowName);
+        const details = await handleFilmDetails(cleanShowName);
         console.log(imageUrl);
+        console.log(title);
         if (imageUrl !== undefined) {
           showImagesArray.push(imageUrl);
         }
+        showTitleArray.push(title);
+        showImdbIdArray.push(details);
+
         console.log('Show Images:', showImagesArray);
+        console.log('');
       }
     }
 
     // Set the show images in the state
     setShowImages(showImagesArray);
+    setShowTitle(showTitleArray);
   }
 
   function breakShowsIntoStrings(showsList) {
@@ -123,6 +136,39 @@ export function RecommendationComponent() {
     const filteredShowStrings = showStrings.filter((str) => str.trim() !== '');
 
     return filteredShowStrings;
+  }
+
+  async function findShowTitleInIMDB(nameOfFilm) {
+    const key = 'k_8d6605rp';
+
+    try {
+      const response = await fetch(
+        `https://imdb-api.com/en/API/SearchSeries/${key}/${nameOfFilm}`
+      );
+
+      if (response.status === 404) {
+        console.error('Resource not found (404)');
+        return;
+      }
+
+      if (!response.ok) {
+        console.error('Failed to fetch data from IMDb API');
+        return;
+      }
+
+      const responseData = await response.json();
+
+      if (responseData.results && responseData.results.length > 0) {
+        // Assuming you want to extract data from the first result
+        const titleofFilm = responseData.results[0].title;
+        console.log('Found show:', titleofFilm);
+        return titleofFilm;
+      } else {
+        console.log('No results found for:', nameOfFilm);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   }
 
   async function findShowInIMDB(nameOfFilm) {
@@ -227,8 +273,47 @@ export function RecommendationComponent() {
     }
   };
 
-  function handleImgDetails() {
-    console.log('image hit');
+  async function handleFilmDetails(title) {
+    const key = 'k_8d6605rp';
+
+    try {
+      const response = await fetch(
+        `https://imdb-api.com/en/API/SearchSeries/${key}/${title}`
+      );
+
+      if (response.status === 404) {
+        console.error('Resource not found (404)');
+        return;
+      }
+
+      if (!response.ok) {
+        console.error('Failed to fetch data from IMDb API');
+        return;
+      }
+
+      const responseData = await response.json();
+
+      if (responseData.results && responseData.results.length > 0) {
+        // Assuming you want to extract data from the first result
+        const firstResult = responseData.results[0];
+        console.log(
+          'Found show:',
+          firstResult.title,
+          'Found id',
+          firstResult.id
+        );
+        const response2 = await fetch(
+          `https://imdb-api.com/en/API/Title/${key}/${firstResult.id}/Images,Trailer,`
+        );
+        console.log(response2);
+        navigate('recommendation/film-details');
+        return response2;
+      } else {
+        console.log('No results found for:', title);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   }
 
   return (
@@ -238,8 +323,8 @@ export function RecommendationComponent() {
         <div className="row">
           <div className="column">
             <DebounceInput
-              minLength={5}
-              debounceTimeout={15}
+              minLength={3}
+              debounceTimeout={1000}
               className="searchBar"
               type="text"
               placeholder="Search..."
@@ -271,16 +356,11 @@ export function RecommendationComponent() {
       )}
       <div className="row">
         {showImages.map((imageSrc, index) => (
-          <div className="columnSug margin-top">
-            <div key={index}>
-              <img
-                className="image"
-                width="210"
-                height="300"
-                src={imageSrc}
-                alt="IMDb Show"
-                onClick={handleImgDetails}
-              />
+          <div className="columnSug margin-top" key={index}>
+            <div>
+              <Link to={'recommendation/film-details'}>
+                <img className="image" src={imageSrc} alt={showTitle[index]} />
+              </Link>
             </div>
           </div>
         ))}

@@ -53,3 +53,15 @@ li {
 .margin-top {
   margin-top: 10rem;
 }
+
+@media only screen and (width < 735px) {
+  .image {
+    margin: 0 2.8rem;
+    width: 280px;
+    height: 400px;
+  }
+
+  .margin-top {
+    margin: 2rem 0;
+  }
+}
