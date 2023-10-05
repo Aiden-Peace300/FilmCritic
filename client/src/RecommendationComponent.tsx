@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { DebounceInput } from 'react-debounce-input';
 import './RecommendationComponent.css';
 
 export function RecommendationComponent() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState<
     { id: string; title: string; clicked: boolean }[]
@@ -12,7 +12,7 @@ export function RecommendationComponent() {
   const [showSuggestions, setShowSuggestions] = useState<boolean>(true);
   const [showImages, setShowImages] = useState<string[]>([]); // State to store show images
   const [showTitle, setShowTitle] = useState<string[]>([]); // State to store show titles of the images in showImage
-  const apiKey = '1d8984c313msh20ce3032c3ab337p129762jsnad07952e57f1';
+  const [showId, setShowId] = useState<string[]>([]); // State to store show titles of the images in showImage
 
   const handleSearchChange = (e: any) => {
     const input = e.target.value;
@@ -61,7 +61,7 @@ export function RecommendationComponent() {
           },
         ],
       };
-      const apiKey = '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';
+      const apiKey = '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';
       const post = {
         method: 'POST',
         headers: {
@@ -119,13 +119,14 @@ export function RecommendationComponent() {
         showImdbIdArray.push(details);
 
         console.log('Show Images:', showImagesArray);
-        console.log('');
+        console.log("Show Id's", showImdbIdArray);
       }
     }
 
     // Set the show images in the state
     setShowImages(showImagesArray);
     setShowTitle(showTitleArray);
+    setShowId(showImdbIdArray);
   }
 
   function breakShowsIntoStrings(showsList) {
@@ -244,7 +245,8 @@ export function RecommendationComponent() {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
-          'X-RapidAPI-Key': apiKey,
+          'X-RapidAPI-Key':
+            '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',
           'X-RapidAPI-Host': 'streaming-availability.p.rapidapi.com',
         },
       });
@@ -302,12 +304,7 @@ export function RecommendationComponent() {
           'Found id',
           firstResult.id
         );
-        const response2 = await fetch(
-          `https://imdb-api.com/en/API/Title/${key}/${firstResult.id}/Images,Trailer,`
-        );
-        console.log(response2);
-        navigate('recommendation/film-details');
-        return response2;
+        return firstResult.id;
       } else {
         console.log('No results found for:', title);
       }
@@ -358,7 +355,7 @@ export function RecommendationComponent() {
         {showImages.map((imageSrc, index) => (
           <div className="columnSug margin-top" key={index}>
             <div>
-              <Link to={'recommendation/film-details'}>
+              <Link to="film-details" state={{ imdbId: showId[index] }}>
                 <img className="image" src={imageSrc} alt={showTitle[index]} />
               </Link>
             </div>
