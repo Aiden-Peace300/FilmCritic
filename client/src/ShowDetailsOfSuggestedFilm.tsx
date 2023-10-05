@@ -96,13 +96,13 @@ export default function ShowDetailsOfSuggestedFilm() {
             allowFullScreen></iframe>
           <p className="red-text pad">ADD TO WATCHLIST:</p>
           <div className="center">
-            <button>ADD TO WATCHLIST</button>
+            <button className="button">ADD TO WATCHLIST</button>
           </div>
           <p className="red-text pad">REFERRAL LINKS: </p>
           <p className="white-text pad">
             Help us grow and support our website by using our referral link.
             It's like giving our website a high-five and saying, 'Keep up the
-            good work!'{' '}
+            good work!'
           </p>
         </div>
       ) : (
