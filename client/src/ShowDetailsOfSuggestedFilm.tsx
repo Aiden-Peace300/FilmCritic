@@ -1,5 +1,4 @@
 import './ShowDetailsOfSuggestedFilm.css';
-import './ShowDetailsOfSuggestedFilm.css';
 import { useState, useEffect } from 'react';
 
 type FilmDetails = {
@@ -71,21 +70,40 @@ export default function ShowDetailsOfSuggestedFilm() {
     <div>
       {detailsObj ? (
         <div className="body">
-          <h1>{detailsObj.film}</h1>
           <img
+            className="image"
             src={detailsObj.poster}
-            alt={`${detailsObj.film} />                                                            `}
+            alt={`${detailsObj.film}`}
           />
-          <p>Release Year: {detailsObj.releaseYear}</p>
-          <p>Creator: {detailsObj.creator}</p>
-          <p>Description: {detailsObj.description}</p>
+          <div className="center">
+            <p className="red-text center inline">FILM: </p>
+            <p className="white-text center inline">{detailsObj.film}</p>
+            <br />
+            <p className="red-text center inline">RELEASE YEAR: </p>
+            <p className="white-text center inline">{detailsObj.releaseYear}</p>
+            <br />
+            <p className="red-text center inline">CREATOR: </p>
+            <p className="white-text center inline">{detailsObj.creator}</p>
+          </div>
+          <br />
+          <p className="red-text pad">DESCRIPTION: </p>
+          <p className="white-text pad">{detailsObj.description}</p>
           <iframe
+            className="trailer"
             title="Trailer"
-            width="560"
-            height="315"
             src={detailsObj.trailer}
             frameBorder="0"
             allowFullScreen></iframe>
+          <p className="red-text pad">ADD TO WATCHLIST:</p>
+          <div className="center">
+            <button>ADD TO WATCHLIST</button>
+          </div>
+          <p className="red-text pad">REFERRAL LINKS: </p>
+          <p className="white-text pad">
+            Help us grow and support our website by using our referral link.
+            It's like giving our website a high-five and saying, 'Keep up the
+            good work!'{' '}
+          </p>
         </div>
       ) : (
         <p>Loading...</p>
