@@ -11,11 +11,17 @@ export function RecommendationComponent() {
     { id: string; title: string; clicked: boolean }[]
   >([]);
   const [showSuggestions, setShowSuggestions] = useState<boolean>(true);
-  const [showTitle, setShowTitle] = useState<string[]>([]); // State to store show titles of the images in showImage
-  const [showId, setShowId] = useState<string[]>([]); // State to store show titles of the images in showImage
 
-  const { searchTerm, setSearchTerm, showImages, setShowImages } =
-    useRecommendations();
+  const {
+    searchTerm,
+    setSearchTerm,
+    showImages,
+    setShowImages,
+    showId,
+    setShowId,
+    showTitle,
+    setShowTitle,
+  } = useRecommendations();
 
   const handleSearchChange = (e: any) => {
     const input = e.target.value;
@@ -123,9 +129,9 @@ export function RecommendationComponent() {
 
         console.log('Show Images:', showImagesArray);
         console.log("Show Id's", showImdbIdArray);
-        if (showImagesArray.length > 0) {
-          break; // for development
-        }
+        // if (showImagesArray.length > 0) {
+        //   break; // for development
+        // }
       }
     }
 
