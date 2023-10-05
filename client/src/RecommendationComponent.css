@@ -45,6 +45,12 @@ li {
 
 button {
   color: black;
+  background-color: white;
+  border: none;
+  margin-left: -9rem;
+  margin-right: -5rem;
+  width: calc(100% - 4rem);
+  cursor: pointer;
 }
 
 .image {
