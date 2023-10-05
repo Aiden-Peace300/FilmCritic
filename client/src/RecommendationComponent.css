@@ -1,0 +1,72 @@
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+h1 {
+  text-align: center;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  flex-basis: 1;
+}
+
+.columnSug {
+  flex-direction: row;
+  flex-basis: 20%;
+}
+
+.searchBar {
+  padding: 0.6em 1.2em;
+  margin-left: 2rem;
+  margin-right: 2rem;
+}
+
+.searchSuggestions {
+  margin-top: 0;
+  margin-left: -8.2px;
+  margin-right: 2rem;
+  width: calc(100% - 4rem); /* Set the width to match the input with margins */
+}
+
+li {
+  list-style-type: none;
+  background-color: white;
+  color: black;
+  text-align: center;
+  border: 0.004rem solid rgb(162, 150, 150);
+  cursor: pointer;
+}
+
+button {
+  color: black;
+}
+
+.image {
+  display: block;
+  margin: 0 auto;
+  width: 210px;
+  height: 300px;
+  cursor: pointer;
+}
+
+.margin-top {
+  margin-top: 10rem;
+}
+
+@media only screen and (width < 735px) {
+  .image {
+    margin: 0 2.8rem;
+    width: 280px;
+    height: 400px;
+  }
+
+  .margin-top {
+    margin: 2rem 0;
+  }
+}
