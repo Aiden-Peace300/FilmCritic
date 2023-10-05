@@ -43,8 +43,8 @@ li {
   cursor: pointer;
 }
 
-button {
-  color: black;
+.button {
+  color: black !important;
   background-color: white;
   border: none;
   margin-left: -9rem;
