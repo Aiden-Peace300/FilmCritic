@@ -2,6 +2,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import { NavBar, PageType } from './NavBar';
 import { InsideWebsiteNavBar, PageTypeInsideApp } from './InsideWebsiteNavBar';
 import { IconClicked } from './IconClicked';
+import { RecProvider } from './RecContext';
 import ShowDetailsOfSuggestedFilm from './ShowDetailsOfSuggestedFilm';
 import RegistrationForm from './RegistrationForm';
 import SignInForm from './SignInForm';
@@ -30,8 +31,6 @@ export default function App() {
     }
   }
 
-  const response2 = {};
-
   return (
     <div>
       {isAuthenticated ? <InsideWebsiteNavBar /> : <NavBar />}
@@ -45,11 +44,18 @@ export default function App() {
 
         <Route path="/movieApp">
           <Route index element={<FeedComponent />} />
-          <Route path="recommendation" element={<RecommendationComponent />} />
-          <Route
-            path="recommendation/film-details"
-            element={<ShowDetailsOfSuggestedFilm response2={response2} />}
-          />
+
+          <Route element={<RecProvider />}>
+            <Route
+              path="recommendation"
+              element={<RecommendationComponent />}
+            />
+            <Route
+              path="recommendation/:filmTitle"
+              element={<ShowDetailsOfSuggestedFilm />}
+            />
+          </Route>
+
           <Route path="rating" element={<RatingComponent />} />
           <Route
             path="profile"

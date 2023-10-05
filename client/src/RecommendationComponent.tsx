@@ -2,17 +2,20 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { DebounceInput } from 'react-debounce-input';
 import './RecommendationComponent.css';
+import { useRecommendations } from './useRecommendations';
+// import ShowDetailsOfSuggestedFilm from './ShowDetailsOfSuggestedFilm';
 
 export function RecommendationComponent() {
   // const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState<
     { id: string; title: string; clicked: boolean }[]
   >([]);
   const [showSuggestions, setShowSuggestions] = useState<boolean>(true);
-  const [showImages, setShowImages] = useState<string[]>([]); // State to store show images
   const [showTitle, setShowTitle] = useState<string[]>([]); // State to store show titles of the images in showImage
   const [showId, setShowId] = useState<string[]>([]); // State to store show titles of the images in showImage
+
+  const { searchTerm, setSearchTerm, showImages, setShowImages } =
+    useRecommendations();
 
   const handleSearchChange = (e: any) => {
     const input = e.target.value;
@@ -61,7 +64,7 @@ export function RecommendationComponent() {
           },
         ],
       };
-      const apiKey = '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';
+      const apiKey = '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';
       const post = {
         method: 'POST',
         headers: {
@@ -120,6 +123,9 @@ export function RecommendationComponent() {
 
         console.log('Show Images:', showImagesArray);
         console.log("Show Id's", showImdbIdArray);
+        if (showImagesArray.length > 0) {
+          break; // for development
+        }
       }
     }
 
@@ -355,7 +361,7 @@ export function RecommendationComponent() {
         {showImages.map((imageSrc, index) => (
           <div className="columnSug margin-top" key={index}>
             <div>
-              <Link to="film-details" state={{ imdbId: showId[index] }}>
+              <Link to={`${showId[index]}`}>
                 <img className="image" src={imageSrc} alt={showTitle[index]} />
               </Link>
             </div>
