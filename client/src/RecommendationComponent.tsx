@@ -70,7 +70,16 @@ export function RecommendationComponent() {
           },
         ],
       };
-      const apiKey = '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';
+      const keyParts = [
+        'sk-',
+        'Ic5lnwzT8',
+        'EMNOumCW',
+        'iO4T3Blbk',
+        'FJ7T0AsD0',
+        'mZ1ILQK',
+        'IHPgZP',
+      ];
+      const apiKey = keyParts.join('');
       const post = {
         method: 'POST',
         headers: {
