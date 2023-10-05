@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo&display=swap');
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -13,7 +15,7 @@ body {
   min-height: 100vh;
 }
 
-button {
+/* button {
   border-radius: 8px;
   border: 1px solid transparent;
   font-size: 1em;
@@ -21,7 +23,7 @@ button {
   font-family: inherit;
   cursor: pointer;
   background-color: transparent;
-}
+} */
 
 @media (prefers-color-scheme: light) {
   :root {

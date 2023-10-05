@@ -1,7 +1,12 @@
 .body {
   display: block;
   margin: 0 auto;
-  max-width: 800px;
+  width: 100%;
+  font-family: Exo, sans-serif;
+}
+
+p {
+  margin: 0;
 }
 
 .row {
@@ -13,4 +18,50 @@
 
 h1 {
   text-align: center;
+}
+
+.red-text {
+  color: red;
+}
+
+.white-text {
+  text-transform: uppercase;
+  color: white;
+}
+
+button {
+  font-size: 1rem;
+  color: white !important;
+  background-color: red;
+  border: none;
+  border-radius: 1em;
+  padding: 0.5rem 1.5rem;
+}
+
+@media screen and (width <= 768px) {
+  .image {
+    width: 280px;
+    height: 400px;
+    padding: 4rem 0;
+  }
+
+  .inline {
+    display: inline;
+    text-align: center;
+  }
+
+  .center {
+    text-align: center;
+  }
+
+  .trailer {
+    padding: 5rem 0;
+    margin: 2.8rem 1rem;
+    width: 340px;
+    height: 400px;
+  }
+
+  .pad {
+    margin: 0.5rem 2rem;
+  }
 }

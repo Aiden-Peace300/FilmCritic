@@ -37,9 +37,14 @@ h1 {
 li {
   list-style-type: none;
   background-color: white;
+  color: black;
   text-align: center;
   border: 0.004rem solid rgb(162, 150, 150);
   cursor: pointer;
+}
+
+button {
+  color: black;
 }
 
 .image {
