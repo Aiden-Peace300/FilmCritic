@@ -362,6 +362,7 @@ export function RecommendationComponent() {
                   key={suggestion.id}
                   className={suggestion.clicked ? 'disabled' : ''}>
                   <button
+                    className="button"
                     onClick={() => handleSuggestionClick(suggestion)}
                     disabled={suggestion.clicked}>
                     {suggestion.title}
