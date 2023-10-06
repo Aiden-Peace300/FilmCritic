@@ -24,6 +24,8 @@ type FilmDetails = {
 
 export default function ShowDetailsOfSuggestedFilm() {
   const [detailsObj, setDetailsObj] = useState<FilmDetails | null>(null);
+  const [platforms, setPlatforms] = useState<string[]>([]); // State to store platform names
+
   function extractParameterFromCurrentUrl() {
     const currentUrl = window.location.href;
     const regexPattern = /\/tt([0-9]+)/;
@@ -34,6 +36,38 @@ export default function ShowDetailsOfSuggestedFilm() {
       return match[0].substring(1);
     }
     return null;
+  }
+
+  // Function to fetch streaming platforms
+  async function getStreamingPlatforms(nameOfFilm: string | null) {
+    try {
+      nameOfFilm = extractParameterFromCurrentUrl();
+      const apiKey = '1d8984c313msh20ce3032c3ab337p129762jsnad07952e57f1';
+      const url = `https://streaming-availability.p.rapidapi.com/get?imdb_id=${nameOfFilm}&show_type=all&output_language=en`;
+
+      const get = {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-RapidAPI-Key': apiKey,
+          'X-RapidAPI-Host': 'streaming-availability.p.rapidapi.com',
+        },
+      };
+
+      const response = await fetch(url, get);
+      if (!response.ok) throw new Error(`fetch Error ${response.status}`);
+      const responseData = await response.json();
+      console.log(responseData.result.streamingInfo.us);
+
+      // Extract platform names and set them in state
+      const platformArray = responseData.result.streamingInfo.us.map(
+        (streamingPlatform: any) => streamingPlatform.service
+      );
+      setPlatforms(platformArray);
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   useEffect(() => {
@@ -70,6 +104,7 @@ export default function ShowDetailsOfSuggestedFilm() {
         };
 
         setDetailsObj(newDetailsObj);
+        getStreamingPlatforms(idImdb);
       } catch (error) {
         console.error('Error:', error);
       }
@@ -144,16 +179,36 @@ export default function ShowDetailsOfSuggestedFilm() {
               </button>
             </div>
             <p className="red-text pad">STREAMING: </p>
-            <img className="netflix-size" src={netflixLogo} />
-            <img className="prime-size" src={primeLogo} />
-            <img className="disney-size" src={disneyLogo} />
-            <img className="peacock-size" src={peacockLogo} />
-            <img className="apple-size" src={appleLogo} />
-            <img className="hbo-size" src={hboLogo} />
-            <img className="hulu-size" src={huluLogo} />
-            <img className="paramount-size" src={paramountLogo} />
-            <img className="starz-size" src={starzLogo} />
-            <img className="showtime-size" src={showtimeLogo} />
+            {platforms.includes('netflix') && (
+              <img className="netflix-size" src={netflixLogo} />
+            )}
+            {platforms.includes('prime') && (
+              <img className="prime-size" src={primeLogo} />
+            )}
+            {platforms.includes('disney') && (
+              <img className="disney-size" src={disneyLogo} />
+            )}
+            {platforms.includes('peacock') && (
+              <img className="peacock-size" src={peacockLogo} />
+            )}
+            {platforms.includes('apple') && (
+              <img className="apple-size" src={appleLogo} />
+            )}
+            {platforms.includes('hbo') && (
+              <img className="hbo-size" src={hboLogo} />
+            )}
+            {platforms.includes('hulu') && (
+              <img className="hulu-size" src={huluLogo} />
+            )}
+            {platforms.includes('paramount') && (
+              <img className="paramount-size" src={paramountLogo} />
+            )}
+            {platforms.includes('starz') && (
+              <img className="starz-size" src={starzLogo} />
+            )}
+            {platforms.includes('showtime') && (
+              <img className="showtime-size" src={showtimeLogo} />
+            )}
             <p className="red-text pad">REFERRAL LINKS: </p>
             <p className="white-text pad space-below">
               Help us grow and support our website by using our referral link.
