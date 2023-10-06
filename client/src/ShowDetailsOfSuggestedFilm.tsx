@@ -8,6 +8,8 @@ type FilmDetails = {
   creator: string;
   description: string;
   trailer: string;
+  type: string;
+  rating: string;
 };
 
 export default function ShowDetailsOfSuggestedFilm() {
@@ -53,6 +55,8 @@ export default function ShowDetailsOfSuggestedFilm() {
             (responseData.tvSeriesInfo?.creators || responseData.writers) ?? '',
           description: responseData.plot ?? '',
           trailer: responseData.trailer?.linkEmbed ?? '',
+          type: responseData.ratings.type ?? '',
+          rating: responseData.ratings.metacritic ?? '',
         };
 
         setDetailsObj(newDetailsObj); // Update the state with film details
@@ -71,24 +75,45 @@ export default function ShowDetailsOfSuggestedFilm() {
     <div>
       {detailsObj ? (
         <div className="body">
-          <img
-            className="image"
-            src={detailsObj.poster}
-            alt={`${detailsObj.film}`}
-          />
-          <div className="center">
-            <p className="red-text center inline">FILM: </p>
-            <p className="white-text center inline">{detailsObj.film}</p>
-            <br />
-            <p className="red-text center inline">RELEASE YEAR: </p>
-            <p className="white-text center inline">{detailsObj.releaseYear}</p>
-            <br />
-            <p className="red-text center inline">CREATOR: </p>
-            <p className="white-text center inline">{detailsObj.creator}</p>
+          <div className="containerDetails">
+            <div className="rowDetails">
+              <div className="col-half">
+                <img
+                  className="imageDetails"
+                  src={detailsObj.poster}
+                  alt={`${detailsObj.film}`}
+                />
+              </div>
+              <div className="col-half">
+                <div className="center space">
+                  <p className="red-text center inline">FILM: </p>
+                  <p className="white-text center inline">{detailsObj.film}</p>
+                  <br />
+                  <p className="red-text center inline">RELEASE YEAR: </p>
+                  <p className="white-text center inline">
+                    {detailsObj.releaseYear}
+                  </p>
+                  <br />
+                  <p className="red-text center inline">TYPE: </p>
+                  <p className="white-text center inline">{detailsObj.type}</p>
+                  <br />
+                  <p className="red-text center inline">GENERAL RATING: </p>
+                  <p className="white-text center inline">{` ${detailsObj.rating} / 100`}</p>
+                  <br />
+                  <p className="red-text center inline">CREATOR: </p>
+                  <p className="white-text center inline">
+                    {detailsObj.creator}
+                  </p>
+                </div>
+                <br />
+                <p className="red-text pad space-top">DESCRIPTION: </p>
+                <p className="white-text pad space-top">
+                  {detailsObj.description}
+                </p>
+              </div>
+            </div>
           </div>
-          <br />
-          <p className="red-text pad">DESCRIPTION: </p>
-          <p className="white-text pad">{detailsObj.description}</p>
+          <p className="red-text pad">TRAILER: </p>
           <iframe
             className="trailer"
             title="Trailer"
