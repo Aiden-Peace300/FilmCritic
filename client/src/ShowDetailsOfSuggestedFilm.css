@@ -23,8 +23,8 @@ p {
 
 .imageDetails {
   padding: 2rem 0;
-  width: 26rem;
-  height: 40rem;
+  width: 32.5rem;
+  height: 50rem;
 }
 
 .space {
@@ -40,7 +40,7 @@ h1 {
 }
 
 .red-text {
-  font-size: 1rem;
+  font-size: 2rem;
   color: red;
 }
 
@@ -73,6 +73,10 @@ h1 {
   margin-right: auto;
 }
 
+.center {
+  text-align: center;
+}
+
 @media screen and (width <= 768px) {
   .imageDetails {
     width: 280px;
@@ -85,7 +89,7 @@ h1 {
     text-align: center;
   }
 
-  .center {
+  .center-mobile {
     text-align: center;
   }
 

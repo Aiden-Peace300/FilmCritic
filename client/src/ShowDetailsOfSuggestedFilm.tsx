@@ -85,23 +85,31 @@ export default function ShowDetailsOfSuggestedFilm() {
                 />
               </div>
               <div className="col-half">
-                <div className="center space">
-                  <p className="red-text center inline">FILM: </p>
-                  <p className="white-text center inline">{detailsObj.film}</p>
+                <div className="center-mobile space">
+                  <p className="red-text center-mobile inline">FILM: </p>
+                  <p className="white-text center-mobile inline">
+                    {detailsObj.film}
+                  </p>
                   <br />
-                  <p className="red-text center inline">RELEASE YEAR: </p>
-                  <p className="white-text center inline">
+                  <p className="red-text center-mobile inline">
+                    RELEASE YEAR:{' '}
+                  </p>
+                  <p className="white-text center-mobile inline">
                     {detailsObj.releaseYear}
                   </p>
                   <br />
-                  <p className="red-text center inline">TYPE: </p>
-                  <p className="white-text center inline">{detailsObj.type}</p>
+                  <p className="red-text center-mobile inline">TYPE: </p>
+                  <p className="white-text center-mobile inline">
+                    {detailsObj.type}
+                  </p>
                   <br />
-                  <p className="red-text center inline">GENERAL RATING: </p>
-                  <p className="white-text center inline">{` ${detailsObj.rating} / 100`}</p>
+                  <p className="red-text center-mobile inline">
+                    GENERAL RATING:{' '}
+                  </p>
+                  <p className="white-text center-mobile inline">{` ${detailsObj.rating} / 100`}</p>
                   <br />
-                  <p className="red-text center inline">CREATOR: </p>
-                  <p className="white-text center inline">
+                  <p className="red-text center-mobile inline">CREATOR: </p>
+                  <p className="white-text center-mobile inline">
                     {detailsObj.creator}
                   </p>
                 </div>
@@ -120,16 +128,20 @@ export default function ShowDetailsOfSuggestedFilm() {
             src={detailsObj.trailer}
             frameBorder="0"
             allowFullScreen></iframe>
-          <p className="red-text pad">ADD TO WATCHLIST:</p>
-          <div className="center">
-            <button className="add-watchlist-button">ADD TO WATCHLIST</button>
+          <div className="containerDetails">
+            <p className="red-text center-mobile center">ADD TO WATCHLIST:</p>
+            <div className="center-mobile center">
+              <button className="add-watchlist-button center">
+                ADD TO WATCHLIST
+              </button>
+            </div>
+            <p className="red-text pad">REFERRAL LINKS: </p>
+            <p className="white-text pad space-below">
+              Help us grow and support our website by using our referral link.
+              It's like giving our website a high-five and saying, 'Keep up the
+              good work!'
+            </p>
           </div>
-          <p className="red-text pad">REFERRAL LINKS: </p>
-          <p className="white-text pad space-below">
-            Help us grow and support our website by using our referral link.
-            It's like giving our website a high-five and saying, 'Keep up the
-            good work!'
-          </p>
         </div>
       ) : (
         <p>Loading...</p>
