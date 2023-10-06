@@ -25,6 +25,7 @@ p {
   padding: 2rem 0;
   width: 32.5rem;
   height: 50rem;
+  padding-bottom: 2rem;
 }
 
 .space {
@@ -71,6 +72,7 @@ h1 {
   display: block;
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 6rem;
 }
 
 .center {
