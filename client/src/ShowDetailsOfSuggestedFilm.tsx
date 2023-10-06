@@ -56,7 +56,7 @@ export default function ShowDetailsOfSuggestedFilm() {
           description: responseData.plot ?? '',
           trailer: responseData.trailer?.linkEmbed ?? '',
           type: responseData.ratings.type ?? '',
-          rating: responseData.ratings.metacritic ?? '',
+          rating: responseData.ratings.imDb ?? '',
         };
 
         setDetailsObj(newDetailsObj);
@@ -104,7 +104,7 @@ export default function ShowDetailsOfSuggestedFilm() {
                   <p className="red-text center-mobile inline">
                     GENERAL RATING:
                   </p>
-                  <p className="white-text center-mobile inline">{` ${detailsObj.rating} / 100`}</p>
+                  <p className="white-text center-mobile inline">{` ${detailsObj.rating} / 10`}</p>
                   <br />
                   <p className="red-text center-mobile inline">CREATOR: </p>
                   <p className="white-text center-mobile inline">
