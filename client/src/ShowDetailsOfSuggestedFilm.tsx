@@ -91,9 +91,7 @@ export default function ShowDetailsOfSuggestedFilm() {
                     {detailsObj.film}
                   </p>
                   <br />
-                  <p className="red-text center-mobile inline">
-                    RELEASE YEAR:{' '}
-                  </p>
+                  <p className="red-text center-mobile inline">RELEASE YEAR:</p>
                   <p className="white-text center-mobile inline">
                     {detailsObj.releaseYear}
                   </p>
@@ -104,7 +102,7 @@ export default function ShowDetailsOfSuggestedFilm() {
                   </p>
                   <br />
                   <p className="red-text center-mobile inline">
-                    GENERAL RATING:{' '}
+                    GENERAL RATING:
                   </p>
                   <p className="white-text center-mobile inline">{` ${detailsObj.rating} / 100`}</p>
                   <br />
@@ -123,7 +121,7 @@ export default function ShowDetailsOfSuggestedFilm() {
           </div>
           <p className="red-text pad">TRAILER: </p>
           <iframe
-            className="trailer"
+            className="trailer "
             title="Trailer"
             src={detailsObj.trailer}
             frameBorder="0"
