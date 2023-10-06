@@ -72,11 +72,41 @@ h1 {
   display: block;
   margin-left: auto;
   margin-right: auto;
-  margin-bottom: 6rem;
+  margin-bottom: 3rem;
 }
 
 .center {
   text-align: center;
+}
+
+.netflix-size,
+.hulu-size,
+.apple-size,
+.paramount-size {
+  width: 5rem;
+  height: 5rem;
+}
+
+.prime-size {
+  width: 9rem;
+  height: 5rem;
+}
+
+.disney-size {
+  width: 8rem;
+  height: 5rem;
+}
+
+.peacock-size,
+.hbo-size {
+  width: 11rem;
+  height: 4rem;
+}
+
+.showtime-size,
+.starz-size {
+  width: 9rem;
+  height: 5rem;
 }
 
 @media screen and (width <= 768px) {

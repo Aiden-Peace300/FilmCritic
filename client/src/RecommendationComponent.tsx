@@ -334,7 +334,7 @@ export function RecommendationComponent() {
           <div className="column">
             <DebounceInput
               minLength={3}
-              debounceTimeout={1000}
+              debounceTimeout={600}
               className="searchBar"
               type="text"
               placeholder="Search..."
