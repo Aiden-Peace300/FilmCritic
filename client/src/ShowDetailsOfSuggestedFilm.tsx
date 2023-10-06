@@ -15,15 +15,15 @@ type FilmDetails = {
 export default function ShowDetailsOfSuggestedFilm() {
   const [detailsObj, setDetailsObj] = useState<FilmDetails | null>(null);
   function extractParameterFromCurrentUrl() {
-    const currentUrl = window.location.href; // Get the current URL
-    const regexPattern = /\/tt([0-9]+)/; // Regular expression to match "/tt" followed by numbers
+    const currentUrl = window.location.href;
+    const regexPattern = /\/tt([0-9]+)/;
 
     const match = currentUrl.match(regexPattern);
 
     if (match && match.length > 1) {
       return match[0].substring(1);
     }
-    return null; // Parameter not found
+    return null;
   }
 
   useEffect(() => {
@@ -59,7 +59,7 @@ export default function ShowDetailsOfSuggestedFilm() {
           rating: responseData.ratings.metacritic ?? '',
         };
 
-        setDetailsObj(newDetailsObj); // Update the state with film details
+        setDetailsObj(newDetailsObj);
       } catch (error) {
         console.error('Error:', error);
       }
@@ -69,7 +69,7 @@ export default function ShowDetailsOfSuggestedFilm() {
     if (idImdb) {
       fetchFilmDetails(idImdb);
     }
-  }, []); // Empty dependency array means this effect runs once on component mount
+  }, []);
 
   return (
     <div>
