@@ -111,9 +111,10 @@ export function RecommendationComponent() {
     console.log(showStrings);
 
     // Process each show name one by one using Promise.all
-    const showImagesPromises: Promise<string | undefined>[] = [];
-    const showTitlePromises: Promise<string | undefined>[] = [];
-    const showIdPromises: Promise<any>[] = [];
+    // const showImagesPromises: Promise<string | undefined>[] = [];
+    // const showTitlePromises: Promise<string | undefined>[] = [];
+    // const showIdPromises: Promise<any>[] = [];
+    const fetchAllPromises: Promise<any>[] = [];
 
     for (const showName of showStrings) {
       // Remove digits and hyphens from the show name using regular expressions
@@ -124,20 +125,36 @@ export function RecommendationComponent() {
 
       if (cleanShowName.length !== 0) {
         console.log('Suggestion From AI:', cleanShowName);
-        showImagesPromises.push(findShowInIMDB(cleanShowName));
-        showTitlePromises.push(findShowTitleInIMDB(cleanShowName));
-        showIdPromises.push(handleFilmDetails(cleanShowName));
+        // showImagesPromises.push(findShowInIMDB(cleanShowName));
+        // showTitlePromises.push(findShowTitleInIMDB(cleanShowName));
+        // showIdPromises.push(handleFilmDetails(cleanShowName));
+
+        fetchAllPromises.push(findShowInIMDB(cleanShowName));
+        fetchAllPromises.push(findShowTitleInIMDB(cleanShowName));
+        fetchAllPromises.push(handleFilmDetails(cleanShowName));
       }
     }
 
     try {
       // Use Promise.all to await all promises concurrently
-      const showImagesArray = await Promise.all(showImagesPromises);
-      const showTitleArray = await Promise.all(showTitlePromises);
-      const showImdbIdArray = await Promise.all(showIdPromises);
+      // const showImagesArray = await Promise.all(showImagesPromises);
+      // const showTitleArray = await Promise.all(showTitlePromises);
+      // const showImdbIdArray = await Promise.all(showIdPromises);
 
+      const fetchAllPromiseResults = await Promise.all(fetchAllPromises);
+      const showImagesArray: (string | undefined)[] = [];
+      const showTitleArray: (string | undefined)[] = [];
+      const showImdbIdArray: any[] = [];
+
+      for (let i = 0; i < fetchAllPromiseResults.length; i += 3) {
+        showImagesArray.push(fetchAllPromiseResults[i]);
+        showTitleArray.push(fetchAllPromiseResults[i + 1]);
+        showImdbIdArray.push(fetchAllPromiseResults[i + 2]);
+      }
+      console.log(fetchAllPromiseResults);
       console.log('Show Images:', showImagesArray);
-      console.log("Show Id's", showImdbIdArray);
+      console.log('Show titles', showTitleArray);
+      console.log("show id's", showImdbIdArray);
 
       // Set the show images in the state
       setShowImages(showImagesArray.filter(Boolean) as string[]); // Filter out undefined values
