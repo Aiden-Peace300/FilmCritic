@@ -29,13 +29,17 @@ h1 {
   color: white;
 }
 
-.button {
+.add-watchlist-button {
   font-size: 1rem;
   color: white !important;
   background-color: red;
   border: none;
   border-radius: 1em;
   padding: 0.5rem 1.5rem;
+}
+
+.space-below {
+  padding-bottom: 3rem;
 }
 
 @media screen and (width <= 768px) {

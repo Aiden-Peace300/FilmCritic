@@ -46,12 +46,13 @@ export default function ShowDetailsOfSuggestedFilm() {
         const responseData = await response.json();
 
         const newDetailsObj = {
-          poster: responseData.image,
-          film: responseData.title,
-          releaseYear: responseData.year,
-          creator: responseData.tvSeriesInfo.creators,
-          description: responseData.plot,
-          trailer: responseData.trailer.linkEmbed,
+          poster: responseData.image ?? '',
+          film: responseData.title ?? '',
+          releaseYear: responseData.year ?? '',
+          creator:
+            (responseData.tvSeriesInfo?.creators || responseData.writers) ?? '',
+          description: responseData.plot ?? '',
+          trailer: responseData.trailer?.linkEmbed ?? '',
         };
 
         setDetailsObj(newDetailsObj); // Update the state with film details
@@ -96,10 +97,10 @@ export default function ShowDetailsOfSuggestedFilm() {
             allowFullScreen></iframe>
           <p className="red-text pad">ADD TO WATCHLIST:</p>
           <div className="center">
-            <button className="button">ADD TO WATCHLIST</button>
+            <button className="add-watchlist-button">ADD TO WATCHLIST</button>
           </div>
           <p className="red-text pad">REFERRAL LINKS: </p>
-          <p className="white-text pad">
+          <p className="white-text pad space-below">
             Help us grow and support our website by using our referral link.
             It's like giving our website a high-five and saying, 'Keep up the
             good work!'

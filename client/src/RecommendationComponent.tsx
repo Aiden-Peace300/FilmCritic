@@ -3,10 +3,8 @@ import { Link } from 'react-router-dom';
 import { DebounceInput } from 'react-debounce-input';
 import './RecommendationComponent.css';
 import { useRecommendations } from './useRecommendations';
-// import ShowDetailsOfSuggestedFilm from './ShowDetailsOfSuggestedFilm';
 
 export function RecommendationComponent() {
-  // const navigate = useNavigate();
   const [suggestions, setSuggestions] = useState<
     { id: string; title: string; clicked: boolean }[]
   >([]);
@@ -22,6 +20,65 @@ export function RecommendationComponent() {
     showTitle,
     setShowTitle,
   } = useRecommendations();
+
+  const apiCache = new Map();
+
+  async function fetchDataWithCache(url, key) {
+    if (apiCache.has(key)) {
+      return apiCache.get(key);
+    }
+
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Fetch Error ${response.status}`);
+      }
+      const responseData = await response.json();
+
+      apiCache.set(key, responseData);
+
+      return responseData;
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function findShowInIMDB(nameOfFilm) {
+    const key = 'k_8d6605rp';
+
+    try {
+      const url = `https://imdb-api.com/en/API/SearchSeries/${key}/${nameOfFilm}`;
+      const responseData = await fetchDataWithCache(url, nameOfFilm);
+
+      if (responseData) {
+        const firstResult = responseData.results[0];
+        console.log('Found show:', firstResult.title, 'imdbId', firstResult.id);
+        return getImageOfRecommendation(firstResult.id);
+      } else {
+        console.log('No results found for:', nameOfFilm);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
+  async function getImageOfRecommendation(idImdb) {
+    const key = 'k_8d6605rp';
+    try {
+      const url = `https://imdb-api.com/en/API/Title/${key}/${idImdb}/Images,Trailer,`;
+      const responseData = await fetchDataWithCache(url, idImdb);
+
+      if (responseData && responseData.image && responseData.image.length > 0) {
+        const imageUrl = responseData.image;
+        console.log('Image URL:', imageUrl);
+        return imageUrl;
+      } else {
+        console.log('No images found for:', idImdb);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
 
   const handleSearchChange = (e: any) => {
     const input = e.target.value;
@@ -40,9 +97,7 @@ export function RecommendationComponent() {
     id: string;
     title: string;
   }) => {
-    // Handle when a suggestion is clicked, e.g., populate the input field with the suggestion
     setSearchTerm(suggestion.title);
-    // Disable the clicked suggestion
     setSuggestions((prevSuggestions) =>
       prevSuggestions.map((prevSuggestion) =>
         prevSuggestion.id === suggestion.id
@@ -103,21 +158,18 @@ export function RecommendationComponent() {
 
   async function getRecommendations(filmFromUser) {
     const suggestion = await suggestionFromAI(
-      `GIVE ME A LIST OF 5 SHOWS THAT WOULD CLOSELY RESEMBLE THIS SHOW (ONLY THE NAMES OF THE SHOWS, NO OTHER PROMPTS WITH NO NUMBERING): ${filmFromUser}?`
+      `GIVE ME A LIST OF 5 FILMS THAT WOULD CLOSELY RESEMBLE THIS FILM (ONLY THE NAMES OF THE FILMS, NO OTHER PROMPTS WITH NO NUMBERING): ${filmFromUser}?`
     );
 
-    // Break the suggestion into individual show names
     const showStrings = breakShowsIntoStrings(suggestion);
 
     console.log(showStrings);
 
-    // Process each show name one by one
-    const showImagesArray: string[] = []; // Array to store show images
-    const showTitleArray: string[] = []; // Array to store title images
-    const showImdbIdArray: any[] = []; // Array to store imdbId images
+    const showImagesArray: string[] = [];
+    const showTitleArray: string[] = [];
+    const showImdbIdArray: any[] = [];
 
     for (const showName of showStrings) {
-      // Remove digits and hyphens from the show name using regular expressions
       const cleanShowName = showName
         .trim()
         .replace(/\d+/g, '')
@@ -138,23 +190,16 @@ export function RecommendationComponent() {
 
         console.log('Show Images:', showImagesArray);
         console.log("Show Id's", showImdbIdArray);
-        // if (showImagesArray.length > 0) {
-        //   break; // for development
-        // }
       }
     }
 
-    // Set the show images in the state
     setShowImages(showImagesArray);
     setShowTitle(showTitleArray);
     setShowId(showImdbIdArray);
   }
 
   function breakShowsIntoStrings(showsList) {
-    // Split the shows list into individual strings using a delimiter (e.g., '. ')
     const showStrings = showsList.split('. ');
-
-    // Filter out any empty strings
     const filteredShowStrings = showStrings.filter((str) => str.trim() !== '');
 
     return filteredShowStrings;
@@ -164,9 +209,8 @@ export function RecommendationComponent() {
     const key = 'k_8d6605rp';
 
     try {
-      const response = await fetch(
-        `https://imdb-api.com/en/API/SearchSeries/${key}/${nameOfFilm}`
-      );
+      const url = `https://imdb-api.com/en/API/SearchSeries/${key}/${nameOfFilm}`;
+      const response = await fetch(url);
 
       if (response.status === 404) {
         console.error('Resource not found (404)');
@@ -181,7 +225,6 @@ export function RecommendationComponent() {
       const responseData = await response.json();
 
       if (responseData.results && responseData.results.length > 0) {
-        // Assuming you want to extract data from the first result
         const titleofFilm = responseData.results[0].title;
         console.log('Found show:', titleofFilm);
         return titleofFilm;
@@ -193,13 +236,12 @@ export function RecommendationComponent() {
     }
   }
 
-  async function findShowInIMDB(nameOfFilm) {
+  async function handleFilmDetails(title) {
     const key = 'k_8d6605rp';
 
     try {
-      const response = await fetch(
-        `https://imdb-api.com/en/API/SearchSeries/${key}/${nameOfFilm}`
-      );
+      const url = `https://imdb-api.com/en/API/SearchSeries/${key}/${title}`;
+      const response = await fetch(url);
 
       if (response.status === 404) {
         console.error('Resource not found (404)');
@@ -214,43 +256,16 @@ export function RecommendationComponent() {
       const responseData = await response.json();
 
       if (responseData.results && responseData.results.length > 0) {
-        // Assuming you want to extract data from the first result
         const firstResult = responseData.results[0];
-        console.log('Found show:', firstResult.title, 'imdbId', firstResult.id);
-        return getImageOfRecommendation(firstResult.id);
+        console.log(
+          'Found show:',
+          firstResult.title,
+          'Found id',
+          firstResult.id
+        );
+        return firstResult.id;
       } else {
-        console.log('No results found for:', nameOfFilm);
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  }
-
-  async function getImageOfRecommendation(idImdb) {
-    const key = 'k_8d6605rp';
-    try {
-      const response = await fetch(
-        `https://imdb-api.com/en/API/Title/${key}/${idImdb}/Images,Trailer,`
-      );
-
-      if (response.status === 404) {
-        console.error('Resource not found (404)');
-        return;
-      }
-
-      if (!response.ok) {
-        console.error('Failed to fetch data from IMDb API');
-        return;
-      }
-
-      const responseData = await response.json();
-
-      if (responseData.image && responseData.image.length > 0) {
-        const imageUrl = responseData.image;
-        console.log('Image URL:', imageUrl);
-        return imageUrl;
-      } else {
-        console.log('No images found for:', idImdb);
+        console.log('No results found for:', title);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -277,10 +292,8 @@ export function RecommendationComponent() {
       const responseData = await response.json();
       const suggestionData = responseData.results || [];
 
-      // Limit the number of suggestions to 7
       const limitedSuggestions = suggestionData.slice(0, 7);
 
-      // Initialize suggestions with the "clicked" property as false
       const suggestionsWithClickStatus = limitedSuggestions.map(
         (suggestion) => ({
           ...suggestion,
@@ -288,51 +301,12 @@ export function RecommendationComponent() {
         })
       );
 
-      // Update the suggestions state with the retrieved data
       setSuggestions(suggestionsWithClickStatus);
       setShowSuggestions(true);
     } catch (err) {
       console.error(err);
     }
   };
-
-  async function handleFilmDetails(title) {
-    const key = 'k_8d6605rp';
-
-    try {
-      const response = await fetch(
-        `https://imdb-api.com/en/API/SearchSeries/${key}/${title}`
-      );
-
-      if (response.status === 404) {
-        console.error('Resource not found (404)');
-        return;
-      }
-
-      if (!response.ok) {
-        console.error('Failed to fetch data from IMDb API');
-        return;
-      }
-
-      const responseData = await response.json();
-
-      if (responseData.results && responseData.results.length > 0) {
-        // Assuming you want to extract data from the first result
-        const firstResult = responseData.results[0];
-        console.log(
-          'Found show:',
-          firstResult.title,
-          'Found id',
-          firstResult.id
-        );
-        return firstResult.id;
-      } else {
-        console.log('No results found for:', title);
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  }
 
   return (
     <div>
