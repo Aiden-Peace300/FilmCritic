@@ -1,5 +1,15 @@
 import './ShowDetailsOfSuggestedFilm.css';
 import { useState, useEffect } from 'react';
+import netflixLogo from './images/nexflix-logo.png';
+import primeLogo from './images/Amazon-Prime-Video-Icon.png';
+import disneyLogo from './images/Disney-Plus-Logo.png';
+import peacockLogo from './images/peacock-logo.png';
+import appleLogo from './images/AppleTv.png';
+import hboLogo from './images/hbo-logo.png';
+import huluLogo from './images/hulu-logo.png';
+import paramountLogo from './images/paramount-logo.png';
+import starzLogo from './images/Starz-logo.png';
+import showtimeLogo from './images/showtime-logo.png';
 
 type FilmDetails = {
   poster: string;
@@ -133,6 +143,17 @@ export default function ShowDetailsOfSuggestedFilm() {
                 ADD TO WATCHLIST
               </button>
             </div>
+            <p className="red-text pad">STREAMING: </p>
+            <img className="netflix-size" src={netflixLogo} />
+            <img className="prime-size" src={primeLogo} />
+            <img className="disney-size" src={disneyLogo} />
+            <img className="peacock-size" src={peacockLogo} />
+            <img className="apple-size" src={appleLogo} />
+            <img className="hbo-size" src={hboLogo} />
+            <img className="hulu-size" src={huluLogo} />
+            <img className="paramount-size" src={paramountLogo} />
+            <img className="starz-size" src={starzLogo} />
+            <img className="showtime-size" src={showtimeLogo} />
             <p className="red-text pad">REFERRAL LINKS: </p>
             <p className="white-text pad space-below">
               Help us grow and support our website by using our referral link.
