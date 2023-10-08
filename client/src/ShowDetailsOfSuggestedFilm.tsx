@@ -1,4 +1,3 @@
-import './ShowDetailsOfSuggestedFilm.css';
 import { useState, useEffect } from 'react';
 import netflixLogo from './images/nexflix-logo.png';
 import primeLogo from './images/Amazon-Prime-Video-Icon.png';
