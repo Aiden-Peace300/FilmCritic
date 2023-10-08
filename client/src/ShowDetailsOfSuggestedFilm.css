@@ -1,19 +1,39 @@
 .body {
-  display: block;
-  margin: 0 auto;
-  width: 100%;
   font-family: Exo, sans-serif;
+}
+
+.containerDetails {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.rowDetails {
+  display: flex;
+  flex-direction: row;
+}
+
+.col-full,
+.col-half {
+  width: 100%;
 }
 
 p {
   margin: 0;
 }
 
-.row {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  width: 100%;
+.imageDetails {
+  padding: 2rem 0;
+  width: 32.5rem;
+  height: 50rem;
+  padding-bottom: 2rem;
+}
+
+.space {
+  margin: 2rem;
+}
+
+.space-top {
+  margin: 0 2rem;
 }
 
 h1 {
@@ -21,28 +41,79 @@ h1 {
 }
 
 .red-text {
+  font-size: 2rem;
   color: red;
 }
 
 .white-text {
   text-transform: uppercase;
   color: white;
+  font-size: 1rem;
 }
 
-.button {
+.add-watchlist-button {
   font-size: 1rem;
   color: white !important;
   background-color: red;
   border: none;
   border-radius: 1em;
   padding: 0.5rem 1.5rem;
+  cursor: pointer;
+  margin-bottom: 3rem;
+}
+
+.space-below {
+  padding-bottom: 3rem;
+}
+
+.trailer {
+  width: 100rem;
+  height: 52rem;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 3rem;
+}
+
+.center {
+  text-align: center;
+}
+
+.netflix-size,
+.hulu-size,
+.apple-size,
+.paramount-size {
+  width: 5rem;
+  height: 5rem;
+}
+
+.prime-size {
+  width: 9rem;
+  height: 5rem;
+}
+
+.disney-size {
+  width: 8rem;
+  height: 5rem;
+}
+
+.peacock-size,
+.hbo-size {
+  width: 11rem;
+  height: 4rem;
+}
+
+.showtime-size,
+.starz-size {
+  width: 9rem;
+  height: 5rem;
 }
 
 @media screen and (width <= 768px) {
-  .image {
+  .imageDetails {
     width: 280px;
     height: 400px;
-    padding: 4rem 0;
+    padding: 4rem 3rem;
   }
 
   .inline {
@@ -50,18 +121,25 @@ h1 {
     text-align: center;
   }
 
-  .center {
+  .center-mobile {
     text-align: center;
   }
 
   .trailer {
-    padding: 5rem 0;
-    margin: 2.8rem 1rem;
-    width: 340px;
+    width: 370px;
     height: 400px;
   }
 
   .pad {
     margin: 0.5rem 2rem;
+  }
+
+  .red-text {
+    font-size: 1rem;
+    color: red;
+  }
+
+  .rowDetails {
+    flex-wrap: wrap;
   }
 }
