@@ -3,10 +3,8 @@ import { Link } from 'react-router-dom';
 import { DebounceInput } from 'react-debounce-input';
 import './RecommendationComponent.css';
 import { useRecommendations } from './useRecommendations';
-// import ShowDetailsOfSuggestedFilm from './ShowDetailsOfSuggestedFilm';
 
 export function RecommendationComponent() {
-  // const navigate = useNavigate();
   const [suggestions, setSuggestions] = useState<
     { id: string; title: string; clicked: boolean }[]
   >([]);
@@ -42,6 +40,7 @@ export function RecommendationComponent() {
   }) => {
     // Handle when a suggestion is clicked, e.g., populate the input field with the suggestion
     setSearchTerm(suggestion.title);
+
     // Disable the clicked suggestion
     setSuggestions((prevSuggestions) =>
       prevSuggestions.map((prevSuggestion) =>
@@ -111,10 +110,11 @@ export function RecommendationComponent() {
 
     console.log(showStrings);
 
-    // Process each show name one by one
-    const showImagesArray: string[] = []; // Array to store show images
-    const showTitleArray: string[] = []; // Array to store title images
-    const showImdbIdArray: any[] = []; // Array to store imdbId images
+    // Process each show name one by one using Promise.all
+    // const showImagesPromises: Promise<string | undefined>[] = [];
+    // const showTitlePromises: Promise<string | undefined>[] = [];
+    // const showIdPromises: Promise<any>[] = [];
+    const fetchAllPromises: Promise<any>[] = [];
 
     for (const showName of showStrings) {
       // Remove digits and hyphens from the show name using regular expressions
@@ -125,29 +125,44 @@ export function RecommendationComponent() {
 
       if (cleanShowName.length !== 0) {
         console.log('Suggestion From AI:', cleanShowName);
-        const imageUrl = await findShowInIMDB(cleanShowName);
-        const title = await findShowTitleInIMDB(cleanShowName);
-        const details = await handleFilmDetails(cleanShowName);
-        console.log(imageUrl);
-        console.log(title);
-        if (imageUrl !== undefined) {
-          showImagesArray.push(imageUrl);
-        }
-        showTitleArray.push(title);
-        showImdbIdArray.push(details);
+        // showImagesPromises.push(findShowInIMDB(cleanShowName));
+        // showTitlePromises.push(findShowTitleInIMDB(cleanShowName));
+        // showIdPromises.push(handleFilmDetails(cleanShowName));
 
-        console.log('Show Images:', showImagesArray);
-        console.log("Show Id's", showImdbIdArray);
-        // if (showImagesArray.length > 0) {
-        //   break; // for development
-        // }
+        fetchAllPromises.push(findShowInIMDB(cleanShowName));
+        fetchAllPromises.push(findShowTitleInIMDB(cleanShowName));
+        fetchAllPromises.push(handleFilmDetails(cleanShowName));
       }
     }
 
-    // Set the show images in the state
-    setShowImages(showImagesArray);
-    setShowTitle(showTitleArray);
-    setShowId(showImdbIdArray);
+    try {
+      // Use Promise.all to await all promises concurrently
+      // const showImagesArray = await Promise.all(showImagesPromises);
+      // const showTitleArray = await Promise.all(showTitlePromises);
+      // const showImdbIdArray = await Promise.all(showIdPromises);
+
+      const fetchAllPromiseResults = await Promise.all(fetchAllPromises);
+      const showImagesArray: (string | undefined)[] = [];
+      const showTitleArray: (string | undefined)[] = [];
+      const showImdbIdArray: any[] = [];
+
+      for (let i = 0; i < fetchAllPromiseResults.length; i += 3) {
+        showImagesArray.push(fetchAllPromiseResults[i]);
+        showTitleArray.push(fetchAllPromiseResults[i + 1]);
+        showImdbIdArray.push(fetchAllPromiseResults[i + 2]);
+      }
+      console.log(fetchAllPromiseResults);
+      console.log('Show Images:', showImagesArray);
+      console.log('Show titles', showTitleArray);
+      console.log("show id's", showImdbIdArray);
+
+      // Set the show images in the state
+      setShowImages(showImagesArray.filter(Boolean) as string[]); // Filter out undefined values
+      setShowTitle(showTitleArray.filter(Boolean) as string[]); // Filter out undefined values
+      setShowId(showImdbIdArray);
+    } catch (error) {
+      console.error('Error:', error);
+    }
   }
 
   function breakShowsIntoStrings(showsList) {
@@ -214,7 +229,6 @@ export function RecommendationComponent() {
       const responseData = await response.json();
 
       if (responseData.results && responseData.results.length > 0) {
-        // Assuming you want to extract data from the first result
         const firstResult = responseData.results[0];
         console.log('Found show:', firstResult.title, 'imdbId', firstResult.id);
         return getImageOfRecommendation(firstResult.id);
@@ -276,11 +290,8 @@ export function RecommendationComponent() {
 
       const responseData = await response.json();
       const suggestionData = responseData.results || [];
-
-      // Limit the number of suggestions to 7
       const limitedSuggestions = suggestionData.slice(0, 7);
 
-      // Initialize suggestions with the "clicked" property as false
       const suggestionsWithClickStatus = limitedSuggestions.map(
         (suggestion) => ({
           ...suggestion,
@@ -288,7 +299,6 @@ export function RecommendationComponent() {
         })
       );
 
-      // Update the suggestions state with the retrieved data
       setSuggestions(suggestionsWithClickStatus);
       setShowSuggestions(true);
     } catch (err) {
@@ -317,7 +327,6 @@ export function RecommendationComponent() {
       const responseData = await response.json();
 
       if (responseData.results && responseData.results.length > 0) {
-        // Assuming you want to extract data from the first result
         const firstResult = responseData.results[0];
         console.log(
           'Found show:',
@@ -342,7 +351,7 @@ export function RecommendationComponent() {
           <div className="column">
             <DebounceInput
               minLength={3}
-              debounceTimeout={1000}
+              debounceTimeout={800}
               className="searchBar"
               type="text"
               placeholder="Search..."
