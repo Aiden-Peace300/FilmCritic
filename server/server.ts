@@ -174,6 +174,50 @@ app.post('/api/watchlist', authMiddleware, async (req, res, next) => {
   }
 });
 
+app.post('/api/rating', authMiddleware, async (req, res, next) => {
+  try {
+    const { idImdb, rating, userNote } = req.body;
+
+    if (req.user === undefined) {
+      throw new ClientError(401, 'userId is undefined');
+    }
+    const { userId } = req.user;
+
+    if (!idImdb) {
+      throw new ClientError(400, 'idImdb is a required field');
+    }
+
+    // Check if the movie is already in the ratedFilms for the user
+    const checkWatchlistSql = `
+      SELECT * FROM "RatedFilms"
+      WHERE "userId" = $1 AND "idImdb" = $2
+    `;
+    const checkWatchlistParams = [userId, idImdb];
+    const watchlistResult = await db.query(
+      checkWatchlistSql,
+      checkWatchlistParams
+    );
+
+    if (watchlistResult.rows.length > 0) {
+      // Movie is already in the ratedList, no need to add again
+      return res.status(200).json({ message: 'Movie already in watchlist' });
+    }
+
+    // Add the movie to the watchlist with the associated userId
+    const addToWatchlistSql = `
+      INSERT INTO "RatedFilms" ("userId", "idImdb", "rating", "userNote")
+      VALUES ($1, $2, $3, $4)
+      RETURNING *
+    `;
+    const addToWatchlistParams = [userId, idImdb, rating, userNote];
+    const result = await db.query(addToWatchlistSql, addToWatchlistParams);
+    const [ratedItem] = result.rows;
+    res.status(201).json(ratedItem);
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.delete('/api/watchlist/:idImdb', async (req, res, next) => {
   try {
     const { idImdb } = req.params;
