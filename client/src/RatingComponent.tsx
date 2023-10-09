@@ -1,7 +1,8 @@
 import { DebounceInput } from 'react-debounce-input';
 import './ShowDetailsOfSuggestedFilm.css';
-// import './RatingComponent.css';
+import './RatingComponent.css';
 import { useState } from 'react';
+import StarRating from './StarRating';
 
 type FilmDetails = {
   poster: string;
@@ -185,39 +186,46 @@ export default function RatingComponent() {
       ) : (
         detailsObj && (
           <div className="body">
-            <div className="containerDetails">
-              <div className="rowDetails">
-                <div className="column-half">
-                  <img
-                    className="imageDetails"
-                    src={detailsObj.poster}
-                    alt={`${detailsObj.film}`}
-                  />
-                </div>
-                <div className="column-half">
-                  <div className="center-mobile space">
-                    <p className="red-text center-mobile inline">FILM: </p>
-                    <p className="white-text center-mobile inline">
-                      {detailsObj.film}
-                    </p>
-                    <br />
-                    <p className="red-text center-mobile inline">
-                      RELEASE YEAR:
-                    </p>
-                    <p className="white-text center-mobile inline">
-                      {detailsObj.releaseYear}
-                    </p>
-                    <br />
-                    <p className="red-text center-mobile inline">TYPE: </p>
-                    <p className="white-text center-mobile inline">
-                      {detailsObj.type}
-                    </p>
-                    <br />
-                    <p className="red-text center-mobile inline">CREATOR: </p>
-                    <p className="white-text center-mobile inline">
-                      {detailsObj.creator}
-                    </p>
-                    <textarea className="note"></textarea>
+            <div className="rowDetails">
+              <div className="column-half center">
+                <img
+                  className="rateImageDetails"
+                  src={detailsObj.poster}
+                  alt={`${detailsObj.film}`}
+                />
+              </div>
+              <div className="column-half">
+                <div className="center-mobile space">
+                  <p className="red-text center-mobile inline">FILM: </p>
+                  <p className="white-text center-mobile inline">
+                    {detailsObj.film}
+                  </p>
+                  <br />
+                  <p className="red-text center-mobile inline">RELEASE YEAR:</p>
+                  <p className="white-text center-mobile inline">
+                    {detailsObj.releaseYear}
+                  </p>
+                  <br />
+                  <p className="red-text center-mobile inline">TYPE: </p>
+                  <p className="white-text center-mobile inline">
+                    {detailsObj.type}
+                  </p>
+                  <br />
+                  <p className="red-text center-mobile inline">CREATOR: </p>
+                  <p className="white-text center-mobile inline">
+                    {detailsObj.creator}
+                  </p>
+                  <br />
+                  <div className="grid-container">
+                    <textarea
+                      placeholder="TYPE NOTE HERE"
+                      className="note inline"></textarea>
+                    <div className="star">
+                      <StarRating />
+                    </div>
+                  </div>
+                  <div>
+                    <button className="ratedFilm">POST</button>
                   </div>
                 </div>
               </div>
