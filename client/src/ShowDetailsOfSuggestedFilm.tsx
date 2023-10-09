@@ -25,6 +25,34 @@ export default function ShowDetailsOfSuggestedFilm() {
   const [detailsObj, setDetailsObj] = useState<FilmDetails | null>(null);
   const [platforms, setPlatforms] = useState<string[]>([]); // State to store platform names
 
+  // Inside your React component
+  async function addToWatchlist() {
+    try {
+      const idImdb = 'tt1234567'; // Example IMDb ID
+
+      const response = await fetch('/api/watchlist', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ idImdb }),
+      });
+
+      if (response.status === 201) {
+        // Movie added to watchlist successfully
+        console.log('Movie added to watchlist');
+      } else if (response.status === 200) {
+        // Movie is already in the watchlist
+        console.log('Movie already in watchlist');
+      } else {
+        // Handle other response statuses (e.g., error)
+        console.error('Failed to add movie to watchlist');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
   function extractParameterFromCurrentUrl() {
     const currentUrl = window.location.href;
     const regexPattern = /\/tt([0-9]+)/;
@@ -175,7 +203,9 @@ export default function ShowDetailsOfSuggestedFilm() {
           <div className="containerDetails">
             <p className="red-text center-mobile center">ADD TO WATCHLIST:</p>
             <div className="center-mobile center">
-              <button className="add-watchlist-button center">
+              <button
+                className="add-watchlist-button center"
+                onClick={addToWatchlist}>
                 ADD TO WATCHLIST
               </button>
             </div>

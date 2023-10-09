@@ -130,6 +130,69 @@ app.delete('/api/users/:userId', async (req, res, next) => {
   }
 });
 
+app.post('/api/watchlist', async (req, res, next) => {
+  try {
+    const { userId, idImdb } = req.body;
+    if (!userId || !idImdb) {
+      throw new ClientError(400, 'userId and idImdb are required fields');
+    }
+
+    // Check if the movie is already in the watchlist for the user
+    const checkWatchlistSql = `
+      SELECT * FROM "WatchList"
+      WHERE "userId" = $1 AND "idImdb" = $2
+    `;
+    const checkWatchlistParams = [userId, idImdb];
+    const watchlistResult = await db.query(
+      checkWatchlistSql,
+      checkWatchlistParams
+    );
+
+    if (watchlistResult.rows.length > 0) {
+      // Movie is already in the watchlist, no need to add again
+      return res.status(200).json({ message: 'Movie already in watchlist' });
+    }
+
+    // Add the movie to the watchlist
+    const addToWatchlistSql = `
+      INSERT INTO "WatchList" ("userId", "idImdb")
+      VALUES ($1, $2)
+      RETURNING *
+    `;
+    const addToWatchlistParams = [userId, idImdb];
+    const result = await db.query(addToWatchlistSql, addToWatchlistParams);
+    const [watchlistItem] = result.rows;
+    res.status(201).json(watchlistItem);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Add this route after your existing routes in server.tsx
+
+app.get('/api/films/by-id/:idImdb', async (req, res, next) => {
+  try {
+    const { idImdb } = req.params;
+
+    // Query the Films table to fetch film details by idImdb
+    const sql = `
+      SELECT * FROM "Films"
+      WHERE "idImdb" = $1
+    `;
+    const result = await db.query(sql, [idImdb]);
+
+    if (result.rows.length === 0) {
+      // Film with the given idImdb not found
+      throw new ClientError(404, 'Film not found');
+    }
+
+    const filmDetails = result.rows[0];
+    res.status(200).json(filmDetails);
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.get('*', (req, res) => res.sendFile(`${reactStaticDir}/index.html`));
 
 app.use(errorMiddleware);
