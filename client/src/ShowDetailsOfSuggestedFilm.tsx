@@ -9,6 +9,7 @@ import huluLogo from './images/hulu-logo.png';
 import paramountLogo from './images/paramount-logo.png';
 import starzLogo from './images/Starz-logo.png';
 import showtimeLogo from './images/showtime-logo.png';
+import { useNavigate } from 'react-router-dom';
 
 type FilmDetails = {
   poster: string;
@@ -23,82 +24,88 @@ type FilmDetails = {
 };
 
 export default function ShowDetailsOfSuggestedFilm() {
+  const navigate = useNavigate();
   const [detailsObj, setDetailsObj] = useState<FilmDetails | null>(null);
   const [platforms, setPlatforms] = useState<string[]>([]); // State to store platform names
 
-  const addToFilmsTableAndWatchlist = useCallback(async (detailsObj) => {
-    try {
-      if (!detailsObj) {
-        console.error('detailsObj is null');
-        return;
-      }
+  const addToFilmsTableAndWatchlist = useCallback(
+    async (detailsObj) => {
+      try {
+        if (!detailsObj) {
+          console.error('detailsObj is null');
+          return;
+        }
 
-      // Extract idImdb from the URL
-      const idImdb = extractParameterFromCurrentUrl();
+        // Extract idImdb from the URL
+        const idImdb = extractParameterFromCurrentUrl();
 
-      if (!idImdb) {
-        console.error('idImdb is missing');
-        return;
-      }
+        if (!idImdb) {
+          console.error('idImdb is missing');
+          return;
+        }
 
-      console.log(
-        'Adding movie to films table and watchlist:',
-        idImdb,
-        detailsObj
-      );
-      const releaseYearNumber = parseInt(detailsObj.releaseYear, 10);
-
-      const responseFilms = await fetch('/api/films', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+        console.log(
+          'Adding movie to films table and watchlist:',
           idImdb,
-          filmTitle: detailsObj.film,
-          genre: detailsObj.genre,
-          type: detailsObj.type,
-          releaseYear: releaseYearNumber,
-          creator: detailsObj.creator,
-          description: detailsObj.description,
-          trailer: detailsObj.trailer,
-        }),
-      });
+          detailsObj
+        );
+        const releaseYearNumber = parseInt(detailsObj.releaseYear, 10);
 
-      const responseWatchlist = await fetch('/api/watchlist', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-        },
-        body: JSON.stringify({ idImdb }),
-      });
+        const responseFilms = await fetch('/api/films', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            idImdb,
+            filmTitle: detailsObj.film,
+            genre: detailsObj.genre,
+            type: detailsObj.type,
+            releaseYear: releaseYearNumber,
+            creator: detailsObj.creator,
+            description: detailsObj.description,
+            trailer: detailsObj.trailer,
+          }),
+        });
 
-      if (responseFilms.status === 201) {
-        // Movie added to films table successfully
-        console.log('Movie added to films table');
-      } else if (responseFilms.status === 200) {
-        // Movie is already in the films table
-        console.log('Movie already in films table');
-      } else {
-        // Handle other response statuses (e.g., error)
-        console.error('Failed to add movie to films table');
+        const responseWatchlist = await fetch('/api/watchlist', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+          },
+          body: JSON.stringify({ idImdb }),
+        });
+
+        if (responseFilms.status === 201) {
+          // Movie added to films table successfully
+          console.log('Movie added to films table');
+        } else if (responseFilms.status === 200) {
+          // Movie is already in the films table
+          console.log('Movie already in films table');
+        } else {
+          // Handle other response statuses (e.g., error)
+          console.error('Failed to add movie to films table');
+        }
+
+        if (responseWatchlist.status === 201) {
+          // Movie added to watchlist successfully
+          console.log('Movie added to watchlist');
+          navigate(-1);
+        } else if (responseWatchlist.status === 200) {
+          // Movie is already in the watchlist
+          console.log('Movie already in watchlist');
+          navigate(-1);
+        } else {
+          // Handle other response statuses (e.g., error)
+          console.error('Failed to add movie to watchlist');
+        }
+      } catch (error) {
+        console.error('Error:', error);
       }
-
-      if (responseWatchlist.status === 201) {
-        // Movie added to watchlist successfully
-        console.log('Movie added to watchlist');
-      } else if (responseWatchlist.status === 200) {
-        // Movie is already in the watchlist
-        console.log('Movie already in watchlist');
-      } else {
-        // Handle other response statuses (e.g., error)
-        console.error('Failed to add movie to watchlist');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  }, []);
+    },
+    [navigate]
+  );
 
   function extractParameterFromCurrentUrl() {
     const currentUrl = window.location.href;
@@ -182,7 +189,6 @@ export default function ShowDetailsOfSuggestedFilm() {
 
         setDetailsObj(newDetailsObj);
         getStreamingPlatforms(idImdb);
-        addToFilmsTableAndWatchlist(newDetailsObj);
       } catch (error) {
         console.error('Error:', error);
       }
