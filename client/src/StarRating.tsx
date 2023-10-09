@@ -1,9 +1,19 @@
 import { useState } from 'react';
 import { FaStar } from 'react-icons/fa';
 
-const StarRating = () => {
+type StarRatingProps = {
+  onRatingChange: (newRating: number) => void;
+};
+
+const StarRating: React.FC<StarRatingProps> = ({ onRatingChange }) => {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
+
+  const handleStarClick = (newRating: number) => {
+    setRating(newRating);
+    onRatingChange(newRating); // Call the callback function to update the parent component's rating state
+  };
+
   return (
     <div>
       {[...Array(5)].map((_, i) => {
@@ -15,7 +25,7 @@ const StarRating = () => {
               type="radio"
               name="rating"
               value={ratingValue}
-              onClick={() => setRating(ratingValue)}
+              onClick={() => handleStarClick(ratingValue)} // Call handleStarClick when a star is clicked
             />
             <FaStar
               style={{ cursor: 'pointer', transition: 'color 200ms' }}
