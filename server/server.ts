@@ -3,7 +3,7 @@ import pg from 'pg';
 import argon2 from 'argon2';
 import express from 'express';
 import jwt from 'jsonwebtoken';
-import { ClientError, errorMiddleware } from './lib/index.js';
+import { ClientError, errorMiddleware, authMiddleware } from './lib/index.js';
 
 const connectionString =
   process.env.DATABASE_URL ||
@@ -130,32 +130,14 @@ app.delete('/api/users/:userId', async (req, res, next) => {
   }
 });
 
-type JwtPayload = {
-  userId: number;
-  username: string;
-};
-
-app.post('/api/watchlist', async (req, res, next) => {
+app.post('/api/watchlist', authMiddleware, async (req, res, next) => {
   try {
     const { idImdb } = req.body;
 
-    // Check if the user is authenticated and get their userId from the token
-    const authorizationHeader = req.headers.authorization;
-    if (!authorizationHeader) {
-      throw new ClientError(401, 'Authorization header is missing');
+    if (req.user === undefined) {
+      throw new ClientError(401, 'userId is undefined');
     }
-
-    // Check if TOKEN_SECRET is defined and has a valid value
-    if (!process.env.TOKEN_SECRET) {
-      throw new Error('TOKEN_SECRET environment variable is not defined');
-    }
-
-    const token = authorizationHeader.split(' ')[1];
-    const decodedToken = jwt.verify(
-      token,
-      process.env.TOKEN_SECRET
-    ) as JwtPayload; // Explicitly cast to JwtPayload
-    const userId = decodedToken.userId;
+    const { userId } = req.user;
 
     if (!idImdb) {
       throw new ClientError(400, 'idImdb is a required field');
