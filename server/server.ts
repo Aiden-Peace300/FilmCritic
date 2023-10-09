@@ -130,11 +130,35 @@ app.delete('/api/users/:userId', async (req, res, next) => {
   }
 });
 
+type JwtPayload = {
+  userId: number;
+  username: string;
+};
+
 app.post('/api/watchlist', async (req, res, next) => {
   try {
-    const { userId, idImdb } = req.body;
-    if (!userId || !idImdb) {
-      throw new ClientError(400, 'userId and idImdb are required fields');
+    const { idImdb } = req.body;
+
+    // Check if the user is authenticated and get their userId from the token
+    const authorizationHeader = req.headers.authorization;
+    if (!authorizationHeader) {
+      throw new ClientError(401, 'Authorization header is missing');
+    }
+
+    // Check if TOKEN_SECRET is defined and has a valid value
+    if (!process.env.TOKEN_SECRET) {
+      throw new Error('TOKEN_SECRET environment variable is not defined');
+    }
+
+    const token = authorizationHeader.split(' ')[1];
+    const decodedToken = jwt.verify(
+      token,
+      process.env.TOKEN_SECRET
+    ) as JwtPayload; // Explicitly cast to JwtPayload
+    const userId = decodedToken.userId;
+
+    if (!idImdb) {
+      throw new ClientError(400, 'idImdb is a required field');
     }
 
     // Check if the movie is already in the watchlist for the user
@@ -153,7 +177,7 @@ app.post('/api/watchlist', async (req, res, next) => {
       return res.status(200).json({ message: 'Movie already in watchlist' });
     }
 
-    // Add the movie to the watchlist
+    // Add the movie to the watchlist with the associated userId
     const addToWatchlistSql = `
       INSERT INTO "WatchList" ("userId", "idImdb")
       VALUES ($1, $2)
@@ -167,8 +191,6 @@ app.post('/api/watchlist', async (req, res, next) => {
     next(err);
   }
 });
-
-// Add this route after your existing routes in server.tsx
 
 app.get('/api/films/by-id/:idImdb', async (req, res, next) => {
   try {
@@ -188,6 +210,46 @@ app.get('/api/films/by-id/:idImdb', async (req, res, next) => {
 
     const filmDetails = result.rows[0];
     res.status(200).json(filmDetails);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post('/api/films', async (req, res, next) => {
+  try {
+    const {
+      idImdb,
+      filmTitle,
+      genre,
+      type,
+      releaseYear,
+      creator,
+      description,
+      trailer,
+    } = req.body;
+
+    // Insert the new film details into the Films table
+    const sql = `
+      INSERT INTO "Films" ("idImdb", "filmTitle", "genre", "type", "releaseYear", "creator", "description", "trailer")
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      RETURNING *
+    `;
+    const values = [
+      idImdb,
+      filmTitle,
+      genre,
+      type,
+      releaseYear,
+      creator,
+      description,
+      trailer,
+    ];
+    const result = await db.query(sql, values);
+
+    // Newly added film details
+    const addedFilm = result.rows[0];
+
+    res.status(201).json(addedFilm);
   } catch (err) {
     next(err);
   }

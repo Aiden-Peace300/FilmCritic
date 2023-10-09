@@ -19,18 +19,53 @@ type FilmDetails = {
   trailer: string;
   type: string;
   rating: string;
+  genre: string;
 };
 
 export default function ShowDetailsOfSuggestedFilm() {
   const [detailsObj, setDetailsObj] = useState<FilmDetails | null>(null);
   const [platforms, setPlatforms] = useState<string[]>([]); // State to store platform names
 
-  // Inside your React component
-  async function addToWatchlist() {
+  const addToFilmsTableAndWatchlist = useCallback(async (detailsObj) => {
     try {
-      const idImdb = 'tt1234567'; // Example IMDb ID
+      if (!detailsObj) {
+        console.error('detailsObj is null');
+        return;
+      }
 
-      const response = await fetch('/api/watchlist', {
+      // Extract idImdb from the URL
+      const idImdb = extractParameterFromCurrentUrl();
+
+      if (!idImdb) {
+        console.error('idImdb is missing');
+        return;
+      }
+
+      console.log(
+        'Adding movie to films table and watchlist:',
+        idImdb,
+        detailsObj
+      );
+      const releaseYearNumber = parseInt(detailsObj.releaseYear, 10);
+
+      const responseFilms = await fetch('/api/films', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          idImdb,
+          filmTitle: detailsObj.film,
+          genre: detailsObj.genre,
+          type: detailsObj.type,
+          releaseYear: releaseYearNumber,
+          creator: detailsObj.creator,
+          description: detailsObj.description,
+          trailer: detailsObj.trailer,
+        }),
+      });
+
+      const responseWatchlist = await fetch('/api/watchlist', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -38,10 +73,21 @@ export default function ShowDetailsOfSuggestedFilm() {
         body: JSON.stringify({ idImdb }),
       });
 
-      if (response.status === 201) {
+      if (responseFilms.status === 201) {
+        // Movie added to films table successfully
+        console.log('Movie added to films table');
+      } else if (responseFilms.status === 200) {
+        // Movie is already in the films table
+        console.log('Movie already in films table');
+      } else {
+        // Handle other response statuses (e.g., error)
+        console.error('Failed to add movie to films table');
+      }
+
+      if (responseWatchlist.status === 201) {
         // Movie added to watchlist successfully
         console.log('Movie added to watchlist');
-      } else if (response.status === 200) {
+      } else if (responseWatchlist.status === 200) {
         // Movie is already in the watchlist
         console.log('Movie already in watchlist');
       } else {
@@ -51,7 +97,7 @@ export default function ShowDetailsOfSuggestedFilm() {
     } catch (error) {
       console.error('Error:', error);
     }
-  }
+  }, []);
 
   function extractParameterFromCurrentUrl() {
     const currentUrl = window.location.href;
@@ -130,10 +176,12 @@ export default function ShowDetailsOfSuggestedFilm() {
           trailer: responseData.trailer?.linkEmbed ?? '',
           type: responseData.ratings.type ?? '',
           rating: responseData.ratings.imDb ?? '',
+          genre: responseData.genres ?? '',
         };
 
         setDetailsObj(newDetailsObj);
         getStreamingPlatforms(idImdb);
+        addToFilmsTableAndWatchlist(newDetailsObj);
       } catch (error) {
         console.error('Error:', error);
       }
@@ -143,7 +191,7 @@ export default function ShowDetailsOfSuggestedFilm() {
     if (idImdb) {
       fetchFilmDetails(idImdb);
     }
-  }, [getStreamingPlatforms]);
+  }, [getStreamingPlatforms, addToFilmsTableAndWatchlist]);
 
   return (
     <div>
@@ -205,7 +253,7 @@ export default function ShowDetailsOfSuggestedFilm() {
             <div className="center-mobile center">
               <button
                 className="add-watchlist-button center"
-                onClick={addToWatchlist}>
+                onClick={() => addToFilmsTableAndWatchlist(detailsObj)}>
                 ADD TO WATCHLIST
               </button>
             </div>
