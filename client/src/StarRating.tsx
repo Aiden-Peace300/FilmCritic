@@ -1,4 +1,3 @@
-// import React from "react";
 import { useState } from 'react';
 import { FaStar } from 'react-icons/fa';
 
@@ -28,7 +27,7 @@ const StarRating = () => {
           </label>
         );
       })}
-      <p style={{ paddingLeft: '5rem' }}>the rating is {rating}.</p>
+      <p style={{ paddingLeft: '5rem' }}>{rating} STARS</p>
     </div>
   );
 };
