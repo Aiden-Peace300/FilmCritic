@@ -135,7 +135,7 @@ app.post('/api/watchlist', authMiddleware, async (req, res, next) => {
     const { idImdb } = req.body;
 
     if (req.user === undefined) {
-      throw new ClientError(401, 'userId is undefined');
+      throw new ClientError(401, 'userId is undefine d');
     }
     const { userId } = req.user;
 
@@ -169,6 +169,22 @@ app.post('/api/watchlist', authMiddleware, async (req, res, next) => {
     const result = await db.query(addToWatchlistSql, addToWatchlistParams);
     const [watchlistItem] = result.rows;
     res.status(201).json(watchlistItem);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.delete('/api/watchlist/:idImdb', async (req, res, next) => {
+  try {
+    const { idImdb } = req.params;
+
+    const sql = `
+      DELETE FROM "WatchList" WHERE "idImdb" = $1;
+    `;
+
+    await db.query(sql, [idImdb]);
+
+    res.status(204).end();
   } catch (err) {
     next(err);
   }
@@ -232,6 +248,22 @@ app.post('/api/films', async (req, res, next) => {
     const addedFilm = result.rows[0];
 
     res.status(201).json(addedFilm);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.delete('/api/films/:idImdb', async (req, res, next) => {
+  try {
+    const idImdb = req.params.idImdb; // Get the idImdb from the URL parameter
+
+    const sql = `
+      DELETE FROM "Films" WHERE "idImdb" = $1;
+    `;
+
+    await db.query(sql, [idImdb]);
+
+    res.status(204).end();
   } catch (err) {
     next(err);
   }
