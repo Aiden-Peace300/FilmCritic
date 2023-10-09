@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import netflixLogo from './images/nexflix-logo.png';
 import primeLogo from './images/Amazon-Prime-Video-Icon.png';
 import disneyLogo from './images/Disney-Plus-Logo.png';
@@ -37,37 +37,39 @@ export default function ShowDetailsOfSuggestedFilm() {
     return null;
   }
 
-  // Function to fetch streaming platforms
-  async function getStreamingPlatforms(nameOfFilm: string | null) {
-    try {
-      nameOfFilm = extractParameterFromCurrentUrl();
-      const apiKey = '1d8984c313msh20ce3032c3ab337p129762jsnad07952e57f1';
-      const url = `https://streaming-availability.p.rapidapi.com/get?imdb_id=${nameOfFilm}&show_type=all&output_language=en`;
+  const getStreamingPlatforms = useCallback(
+    async (nameOfFilm: string | null) => {
+      try {
+        nameOfFilm = extractParameterFromCurrentUrl();
+        const apiKey = '1d8984c313msh20ce3032c3ab337p129762jsnad07952e57f1';
+        const url = `https://streaming-availability.p.rapidapi.com/get?imdb_id=${nameOfFilm}&show_type=all&output_language=en`;
 
-      const get = {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-RapidAPI-Key': apiKey,
-          'X-RapidAPI-Host': 'streaming-availability.p.rapidapi.com',
-        },
-      };
+        const get = {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-RapidAPI-Key': apiKey,
+            'X-RapidAPI-Host': 'streaming-availability.p.rapidapi.com',
+          },
+        };
 
-      const response = await fetch(url, get);
-      if (!response.ok) throw new Error(`fetch Error ${response.status}`);
-      const responseData = await response.json();
-      console.log(responseData.result.streamingInfo.us);
+        const response = await fetch(url, get);
+        if (!response.ok) throw new Error(`fetch Error ${response.status}`);
+        const responseData = await response.json();
+        console.log(responseData.result.streamingInfo.us);
 
-      // Extract platform names and set them in state
-      const platformArray = responseData.result.streamingInfo.us.map(
-        (streamingPlatform: any) => streamingPlatform.service
-      );
-      setPlatforms(platformArray);
-    } catch (err) {
-      console.error(err);
-    }
-  }
+        // Extract platform names and set them in state
+        const platformArray = responseData.result.streamingInfo.us.map(
+          (streamingPlatform: any) => streamingPlatform.service
+        );
+        setPlatforms(platformArray);
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    []
+  );
 
   useEffect(() => {
     async function fetchFilmDetails(id: string) {
@@ -113,7 +115,7 @@ export default function ShowDetailsOfSuggestedFilm() {
     if (idImdb) {
       fetchFilmDetails(idImdb);
     }
-  }, []);
+  }, [getStreamingPlatforms]);
 
   return (
     <div>
