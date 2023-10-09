@@ -1,27 +1,40 @@
-/* .note {
+.note {
   width: 20rem;
   height: 20rem;
+  padding: 10px 15px;
+  border-radius: 1rem;
 }
 
-.body {
-  font-family: Exo, sans-serif;
+input[type='radio'] {
+  display: none;
 }
 
-.containerDetails {
-  max-width: 900px;
-  margin: 0 auto;
+.rateImageDetails {
+  width: 550px;
+  height: 52rem;
+  margin: 2rem;
 }
 
-.rowDetails {
-  display: flex;
-  flex-direction: row;
+.ratedFilm {
+  font-size: 1rem;
+  color: white !important;
+  background-color: red;
+  border: none;
+  border-radius: 0.5em;
+  padding: 0.5rem 1.5rem;
+  cursor: pointer;
+  margin-bottom: 3rem;
+  margin-top: 5rem;
+  margin-left: 21rem;
+  justify-content: center;
 }
 
-.col-full,
-.col-half {
-  width: 100%;
+.grid-container {
+  display: grid;
+  grid-template-columns: auto auto; /* Two columns for two elements */
+  align-items: center;
 }
 
-p {
-  margin: 0;
-} */
+.star {
+  align-items: center;
+}
