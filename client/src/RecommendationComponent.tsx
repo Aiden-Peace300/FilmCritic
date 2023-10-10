@@ -417,7 +417,7 @@ export function RecommendationComponent() {
                 {suggestions.map((suggestion) => (
                   <li
                     key={suggestion.id}
-                    className={suggestion.clicked ? 'disabled' : ''}>
+                    className={`li, ${suggestion.clicked ? 'disabled' : ''}`}>
                     <button
                       className="button"
                       onClick={() => handleSuggestionClick(suggestion)}
