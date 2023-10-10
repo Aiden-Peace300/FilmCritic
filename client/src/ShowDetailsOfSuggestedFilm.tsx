@@ -310,7 +310,7 @@ export default function ShowDetailsOfSuggestedFilm() {
                 )}
               </>
             )}
-            <p className="red-text pad">REFERRAL LINKS: </p>
+            <p className="red-text pad ref-links">REFERRAL LINKS: </p>
             <p className="white-text pad space-below">
               Help us grow and support our website by using our referral link.
               It's like giving our website a high-five and saying, 'Keep up the
