@@ -136,7 +136,7 @@ export function RecommendationComponent() {
     );
 
     // Break the suggestion into individual show names
-    const showStrings = breakShowsIntoStrings(suggestion);
+    const showStrings = breakShowsFilmsStrings(suggestion);
 
     console.log(showStrings);
 
@@ -151,8 +151,8 @@ export function RecommendationComponent() {
 
       if (cleanShowName.length !== 0) {
         console.log('Suggestion From AI:', cleanShowName);
-        fetchAllPromises.push(findShowInIMDB(cleanShowName));
-        fetchAllPromises.push(findShowTitleInIMDB(cleanShowName));
+        fetchAllPromises.push(findFilmInIMDB(cleanShowName));
+        fetchAllPromises.push(findTitleInFilmIMDB(cleanShowName));
         fetchAllPromises.push(handleFilmDetails(cleanShowName));
       }
     }
@@ -189,7 +189,7 @@ export function RecommendationComponent() {
    * @param {string} showsList The list of show names as a string.
    * @returns {string[]} An array of individual show names.
    */
-  function breakShowsIntoStrings(showsList) {
+  function breakShowsFilmsStrings(showsList) {
     // Split the shows list into individual strings using a delimiter (e.g., '. ')
     const showStrings = showsList.split('. ');
 
@@ -200,11 +200,11 @@ export function RecommendationComponent() {
   }
 
   /**
-   * Fetches the title of a show from IMDb API.
+   * Fetches the title of a film from IMDb API.
    * @param {string} nameOfFilm The name of the film.
-   * @returns {Promise} A Promise that resolves to the show's title.
+   * @returns {Promise} A Promise that resolves to the film's title.
    */
-  async function findShowTitleInIMDB(nameOfFilm) {
+  async function findTitleInFilmIMDB(nameOfFilm) {
     const key = 'k_8d6605rp';
 
     try {
@@ -238,11 +238,11 @@ export function RecommendationComponent() {
   }
 
   /**
-   * Fetches show details from IMDb API.
+   * Fetches film details from IMDb API.
    * @param {string} nameOfFilm The name of the film.
-   * @returns {Promise} A Promise that resolves to show details.
+   * @returns {Promise} A Promise that resolves to film details.
    */
-  async function findShowInIMDB(nameOfFilm) {
+  async function findFilmInIMDB(nameOfFilm) {
     const key = 'k_8d6605rp';
 
     try {
@@ -265,7 +265,7 @@ export function RecommendationComponent() {
       if (responseData.results && responseData.results.length > 0) {
         const firstResult = responseData.results[0];
         console.log('Found show:', firstResult.title, 'imdbId', firstResult.id);
-        return getImageOfRecommendation(firstResult.id);
+        return getPosterOfRecommendation(firstResult.id);
       } else {
         console.log('No results found for:', nameOfFilm);
       }
@@ -279,7 +279,7 @@ export function RecommendationComponent() {
    * @param {string} idImdb The IMDb ID of the show.
    * @returns {Promise} A Promise that resolves to the show's image URL.
    */
-  async function getImageOfRecommendation(idImdb) {
+  async function getPosterOfRecommendation(idImdb) {
     const key = 'k_8d6605rp';
     try {
       const response = await fetch(
