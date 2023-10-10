@@ -3,12 +3,14 @@ import { Link } from 'react-router-dom';
 import { DebounceInput } from 'react-debounce-input';
 import './RecommendationComponent.css';
 import { useRecommendations } from './useRecommendations';
+import LoadingScreen from './LoadingScreen';
 
 export function RecommendationComponent() {
   const [suggestions, setSuggestions] = useState<
     { id: string; title: string; clicked: boolean }[]
   >([]);
   const [showSuggestions, setShowSuggestions] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const {
     searchTerm,
@@ -101,6 +103,7 @@ export function RecommendationComponent() {
   }
 
   async function getRecommendations(filmFromUser) {
+    setIsLoading(true);
     const suggestion = await suggestionFromAI(
       `GIVE ME A LIST OF 5 SHOWS THAT WOULD CLOSELY RESEMBLE THIS SHOW (ONLY THE NAMES OF THE SHOWS, NO OTHER PROMPTS WITH NO NUMBERING): ${filmFromUser}?`
     );
@@ -155,6 +158,8 @@ export function RecommendationComponent() {
       console.log('Show Images:', showImagesArray);
       console.log('Show titles', showTitleArray);
       console.log("show id's", showImdbIdArray);
+
+      setIsLoading(false);
 
       // Set the show images in the state
       setShowImages(showImagesArray.filter(Boolean) as string[]); // Filter out undefined values
@@ -362,37 +367,47 @@ export function RecommendationComponent() {
         </div>
       </form>
 
-      {showSuggestions && suggestions.length > 0 && (
-        <div className="row">
-          <div className="column">
-            <ul className="searchSuggestions">
-              {suggestions.map((suggestion) => (
-                <li
-                  key={suggestion.id}
-                  className={suggestion.clicked ? 'disabled' : ''}>
-                  <button
-                    className="button"
-                    onClick={() => handleSuggestionClick(suggestion)}
-                    disabled={suggestion.clicked}>
-                    {suggestion.title}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      )}
-      <div className="row">
-        {showImages.map((imageSrc, index) => (
-          <div className="columnSug margin-top" key={index}>
-            <div>
-              <Link to={`${showId[index]}`}>
-                <img className="image" src={imageSrc} alt={showTitle[index]} />
-              </Link>
+      <>
+        {showSuggestions && suggestions.length > 0 && (
+          <div className="row">
+            <div className="column">
+              <ul className="searchSuggestions">
+                {suggestions.map((suggestion) => (
+                  <li
+                    key={suggestion.id}
+                    className={suggestion.clicked ? 'disabled' : ''}>
+                    <button
+                      className="button"
+                      onClick={() => handleSuggestionClick(suggestion)}
+                      disabled={suggestion.clicked}>
+                      {suggestion.title}
+                    </button>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
-        ))}
-      </div>
+        )}
+        {isLoading ? (
+          <LoadingScreen />
+        ) : (
+          <div className="row">
+            {showImages.map((imageSrc, index) => (
+              <div className="columnSug margin-top" key={index}>
+                <div>
+                  <Link to={`${showId[index]}`}>
+                    <img
+                      className="image"
+                      src={imageSrc}
+                      alt={showTitle[index]}
+                    />
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </>
     </div>
   );
 }
