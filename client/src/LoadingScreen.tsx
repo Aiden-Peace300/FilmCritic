@@ -1,17 +1,25 @@
 import Logo from './images/loading_screen.png';
 
+/**
+ * This component displays a loading screen while content is being fetched or loaded.
+ * @returns {JSX} JSX representing the loading screen.
+ */
 export default function LoadingScreen() {
+  // Define CSS styles for the container div
   const containerStyle: React.CSSProperties = {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '40rem', // Optionally, make it fill the entire viewport height
+    display: 'flex', // Center content horizontally
+    flexDirection: 'column', // Display content vertically
+    alignItems: 'center', // Center content vertically
+    justifyContent: 'center', // Center content horizontally
+    height: '40rem', // Optionally, make the container fill the entire viewport height
   };
 
+  // Render the loading screen JSX
   return (
     <div style={containerStyle}>
+      {/* Display an image (Logo) with alt text "Loading" */}
       <img src={Logo} alt="Loading" />
+      {/* Display a heading with the text "Loading..." */}
       <h1>Loading...</h1>
     </div>
   );
