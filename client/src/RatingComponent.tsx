@@ -1,9 +1,13 @@
 import { DebounceInput } from 'react-debounce-input';
+import { useNavigate } from 'react-router-dom';
 import './ShowDetailsOfSuggestedFilm.css';
-// import './RatingComponent.css';
-import { useState } from 'react';
+import './RatingComponent.css';
+import { useState, useCallback } from 'react';
+import StarRating from './StarRating';
+import LoadingScreen from './LoadingScreen';
 
 type FilmDetails = {
+  idImdb: string;
   poster: string;
   film: string;
   releaseYear: string;
@@ -12,9 +16,11 @@ type FilmDetails = {
   trailer: string;
   type: string;
   rating: string;
+  genre: string;
 };
 
 export default function RatingComponent() {
+  const navigate = useNavigate();
   const [detailsObj, setDetailsObj] = useState<FilmDetails | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState<
@@ -22,6 +28,91 @@ export default function RatingComponent() {
   >([]);
   const [showSuggestions, setShowSuggestions] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
+  const [rating, setRating] = useState(0); // Initialize with a default value
+  const [note, setNote] = useState('');
+
+  const handleRatingChange = (newRating: number) => {
+    setRating(newRating); // Update the 'rating' state when a star is clicked
+  };
+
+  const addToFilmsTableAndWatchlist = useCallback(
+    async (detailsObj) => {
+      try {
+        if (!detailsObj) {
+          console.error('detailsObj is null');
+          return;
+        }
+
+        const idImdb = detailsObj.idImdb;
+
+        // // Extract idImdb from the URL
+        // const { idImdb } = detailsObj;
+        console.log(idImdb);
+
+        if (!idImdb) {
+          console.error('idImdb is missing');
+          return;
+        }
+
+        console.log(
+          'Adding movie to films table and RatedFilms:',
+          idImdb,
+          detailsObj
+        );
+
+        const releaseYearNumber = parseInt(detailsObj.releaseYear, 10);
+
+        const responseFilms = await fetch('/api/films', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            idImdb,
+            filmTitle: detailsObj.film,
+            genre: detailsObj.genre,
+            type: detailsObj.type,
+            releaseYear: releaseYearNumber,
+            creator: detailsObj.creator,
+            description: detailsObj.description,
+            trailer: detailsObj.trailer,
+          }),
+        });
+
+        const responseRatedFilms = await fetch('/api/rating', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+          },
+          body: JSON.stringify({ idImdb, rating, userNote: note }),
+        });
+
+        if (responseFilms.status === 201) {
+          console.log('Movie added to films table');
+          window.location.reload();
+          navigate('/movieApp/rating');
+        } else if (responseFilms.status === 200) {
+          console.log('Movie already in films table');
+          window.location.reload();
+          navigate('/movieApp/rating');
+        } else {
+          console.error('Failed to add movie to films table');
+        }
+
+        if (responseRatedFilms.status === 201) {
+          console.log('Movie added to watchlist');
+        } else if (responseRatedFilms.status === 200) {
+          console.log('Movie already in watchlist');
+        } else {
+          console.error('Failed to add movie to watchlist');
+        }
+      } catch (error) {
+        console.error('Error submitting rating:', error);
+      }
+    },
+    [rating, note, navigate]
+  );
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value;
@@ -118,7 +209,8 @@ export default function RatingComponent() {
 
       const responseData = await response.json();
 
-      const newDetailsObj = {
+      const newDetailsObj: FilmDetails = {
+        idImdb: responseData.id ?? '',
         poster: responseData.image ?? '',
         film: responseData.title ?? '',
         releaseYear: responseData.year ?? '',
@@ -128,6 +220,7 @@ export default function RatingComponent() {
         trailer: responseData.trailer?.linkEmbed ?? '',
         type: responseData.ratings.type ?? '',
         rating: responseData.ratings.imDb ?? '',
+        genre: responseData.genres ?? '',
       };
 
       setDetailsObj(newDetailsObj);
@@ -139,7 +232,6 @@ export default function RatingComponent() {
     }
   }
 
-  // You should add 'getFilm' as a dependency if you want to call it within this useEffect.
   return (
     <>
       <h1>RATING</h1>
@@ -181,43 +273,56 @@ export default function RatingComponent() {
       )}
 
       {loading ? (
-        <p>Loading...</p>
+        <LoadingScreen />
       ) : (
         detailsObj && (
           <div className="body">
-            <div className="containerDetails">
-              <div className="rowDetails">
-                <div className="column-half">
-                  <img
-                    className="imageDetails"
-                    src={detailsObj.poster}
-                    alt={`${detailsObj.film}`}
-                  />
-                </div>
-                <div className="column-half">
-                  <div className="center-mobile space">
-                    <p className="red-text center-mobile inline">FILM: </p>
-                    <p className="white-text center-mobile inline">
-                      {detailsObj.film}
-                    </p>
-                    <br />
-                    <p className="red-text center-mobile inline">
-                      RELEASE YEAR:
-                    </p>
-                    <p className="white-text center-mobile inline">
-                      {detailsObj.releaseYear}
-                    </p>
-                    <br />
-                    <p className="red-text center-mobile inline">TYPE: </p>
-                    <p className="white-text center-mobile inline">
-                      {detailsObj.type}
-                    </p>
-                    <br />
-                    <p className="red-text center-mobile inline">CREATOR: </p>
-                    <p className="white-text center-mobile inline">
-                      {detailsObj.creator}
-                    </p>
-                    <textarea className="note"></textarea>
+            <div className="rowDetails">
+              <div className="column-half center">
+                <img
+                  className="rateImageDetails"
+                  src={detailsObj.poster}
+                  alt={`${detailsObj.film}`}
+                />
+              </div>
+              <div className="column-half">
+                <div className="center-mobile space">
+                  <p className="red-text center-mobile inline">FILM: </p>
+                  <p className="white-text center-mobile inline">
+                    {detailsObj.film}
+                  </p>
+                  <br />
+                  <p className="red-text center-mobile inline">RELEASE YEAR:</p>
+                  <p className="white-text center-mobile inline">
+                    {detailsObj.releaseYear}
+                  </p>
+                  <br />
+                  <p className="red-text center-mobile inline">TYPE: </p>
+                  <p className="white-text center-mobile inline">
+                    {detailsObj.type}
+                  </p>
+                  <br />
+                  <p className="red-text center-mobile inline">CREATOR: </p>
+                  <p className="white-text center-mobile inline">
+                    {detailsObj.creator}
+                  </p>
+                  <br />
+                  <div className="grid-container">
+                    <textarea
+                      placeholder="TYPE NOTE HERE"
+                      className="note inline"
+                      value={note}
+                      onChange={(e) => setNote(e.target.value)}></textarea>
+                    <div className="star">
+                      <StarRating onRatingChange={handleRatingChange} />
+                    </div>
+                  </div>
+                  <div>
+                    <button
+                      onClick={() => addToFilmsTableAndWatchlist(detailsObj)}
+                      className="ratedFilm">
+                      POST
+                    </button>
                   </div>
                 </div>
               </div>

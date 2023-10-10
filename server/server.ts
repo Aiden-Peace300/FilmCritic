@@ -3,7 +3,7 @@ import pg from 'pg';
 import argon2 from 'argon2';
 import express from 'express';
 import jwt from 'jsonwebtoken';
-import { ClientError, errorMiddleware } from './lib/index.js';
+import { ClientError, errorMiddleware, authMiddleware } from './lib/index.js';
 
 const connectionString =
   process.env.DATABASE_URL ||
@@ -125,6 +125,224 @@ app.delete('/api/users/:userId', async (req, res, next) => {
       throw new ClientError(404, `Entry with id ${userId} not found`);
     }
     res.sendStatus(204);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post('/api/watchlist', authMiddleware, async (req, res, next) => {
+  try {
+    const { idImdb } = req.body;
+
+    if (req.user === undefined) {
+      throw new ClientError(401, 'userId is undefined');
+    }
+    const { userId } = req.user;
+
+    if (!idImdb) {
+      throw new ClientError(400, 'idImdb is a required field');
+    }
+
+    // Check if the movie is already in the watchlist for the user
+    const checkWatchlistSql = `
+      SELECT * FROM "WatchList"
+      WHERE "userId" = $1 AND "idImdb" = $2
+    `;
+    const checkWatchlistParams = [userId, idImdb];
+    const watchlistResult = await db.query(
+      checkWatchlistSql,
+      checkWatchlistParams
+    );
+
+    if (watchlistResult.rows.length > 0) {
+      // Movie is already in the watchlist, no need to add again
+      return res.status(200).json({ message: 'Movie already in watchlist' });
+    }
+
+    // Add the movie to the watchlist with the associated userId
+    const addToWatchlistSql = `
+      INSERT INTO "WatchList" ("userId", "idImdb")
+      VALUES ($1, $2)
+      RETURNING *
+    `;
+    const addToWatchlistParams = [userId, idImdb];
+    const result = await db.query(addToWatchlistSql, addToWatchlistParams);
+    const [watchlistItem] = result.rows;
+    res.status(201).json(watchlistItem);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get('/api/watchlist', authMiddleware, async (req, res, next) => {
+  try {
+    if (req.user === undefined) {
+      throw new ClientError(401, 'userId is undefined');
+    }
+
+    const { userId } = req.user;
+
+    // Retrieve all idImdb values from WatchList for the specific user
+    const getWatchlistItemsSql = `
+      SELECT "idImdb" FROM "WatchList"
+      WHERE "userId" = $1
+    `;
+    const getWatchlistItemsParams = [userId];
+
+    const watchlistResult = await db.query(
+      getWatchlistItemsSql,
+      getWatchlistItemsParams
+    );
+
+    if (watchlistResult.rows.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "User doesn't have any films in watchlist" });
+    }
+
+    // Extract idImdb values from the result
+    const idImdbList = watchlistResult.rows.map((row) => row.idImdb);
+
+    res.status(200).json({ idImdbList });
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post('/api/rating', authMiddleware, async (req, res, next) => {
+  try {
+    const { idImdb, rating, userNote } = req.body;
+
+    if (req.user === undefined) {
+      throw new ClientError(401, 'userId is undefined');
+    }
+    const { userId } = req.user;
+
+    if (!idImdb) {
+      throw new ClientError(400, 'idImdb is a required field');
+    }
+
+    // Check if the movie is already in the ratedFilms for the user
+    const checkWatchlistSql = `
+      SELECT * FROM "RatedFilms"
+      WHERE "userId" = $1 AND "idImdb" = $2
+    `;
+    const checkWatchlistParams = [userId, idImdb];
+    const watchlistResult = await db.query(
+      checkWatchlistSql,
+      checkWatchlistParams
+    );
+
+    if (watchlistResult.rows.length > 0) {
+      // Movie is already in the ratedList, no need to add again
+      return res.status(200).json({ message: 'Movie already in watchlist' });
+    }
+
+    // Add the movie to the watchlist with the associated userId
+    const addToWatchlistSql = `
+      INSERT INTO "RatedFilms" ("userId", "idImdb", "rating", "userNote")
+      VALUES ($1, $2, $3, $4)
+      RETURNING *
+    `;
+    const addToWatchlistParams = [userId, idImdb, rating, userNote];
+    const result = await db.query(addToWatchlistSql, addToWatchlistParams);
+    const [ratedItem] = result.rows;
+    res.status(201).json(ratedItem);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.delete('/api/watchlist/:idImdb', async (req, res, next) => {
+  try {
+    const { idImdb } = req.params;
+
+    const sql = `
+      DELETE FROM "WatchList" WHERE "idImdb" = $1;
+    `;
+
+    await db.query(sql, [idImdb]);
+
+    res.status(204).end();
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get('/api/films/by-id/:idImdb', async (req, res, next) => {
+  try {
+    const { idImdb } = req.params;
+
+    // Query the Films table to fetch film details by idImdb
+    const sql = `
+      SELECT * FROM "Films"
+      WHERE "idImdb" = $1
+    `;
+    const result = await db.query(sql, [idImdb]);
+
+    if (result.rows.length === 0) {
+      // Film with the given idImdb not found
+      throw new ClientError(404, 'Film not found');
+    }
+
+    const filmDetails = result.rows[0];
+    res.status(200).json(filmDetails);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post('/api/films', async (req, res, next) => {
+  try {
+    const {
+      idImdb,
+      filmTitle,
+      genre,
+      type,
+      releaseYear,
+      creator,
+      description,
+      trailer,
+    } = req.body;
+
+    // Insert the new film details into the Films table
+    const sql = `
+      INSERT INTO "Films" ("idImdb", "filmTitle", "genre", "type", "releaseYear", "creator", "description", "trailer")
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      RETURNING *
+    `;
+    const values = [
+      idImdb,
+      filmTitle,
+      genre,
+      type,
+      releaseYear,
+      creator,
+      description,
+      trailer,
+    ];
+    const result = await db.query(sql, values);
+
+    // Newly added film details
+    const addedFilm = result.rows[0];
+
+    res.status(201).json(addedFilm);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.delete('/api/films/:idImdb', async (req, res, next) => {
+  try {
+    const idImdb = req.params.idImdb; // Get the idImdb from the URL parameter
+
+    const sql = `
+      DELETE FROM "Films" WHERE "idImdb" = $1;
+    `;
+
+    await db.query(sql, [idImdb]);
+
+    res.status(204).end();
   } catch (err) {
     next(err);
   }

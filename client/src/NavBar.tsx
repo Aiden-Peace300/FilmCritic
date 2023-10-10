@@ -5,11 +5,22 @@ import logo from './images/Logo.jpg';
 import { IconClickedNavBar } from './IconClickedNavBar';
 import { Link } from 'react-router-dom';
 
+/**
+ * Type for different page types in the NavBar.
+ */
 export type PageType = 'movieApp' | 'register' | 'sign-in' | 'sign-out';
 
+/**
+ * Functional component representing the website's navigation bar.
+ * @returns {JSX} JSX links for for Nav bar
+ */
 export function NavBar() {
+  // State variable to track whether the mobile icon is clicked
   const [isIconClicked, setIconClicked] = useState(false);
 
+  /**
+   * Function to toggle the mobile icon click state.
+   */
   const toggleIconClicked = () => {
     setIconClicked(!isIconClicked);
   };
