@@ -1,3 +1,9 @@
+/**
+ * StarRating component for displaying and allowing user rating selection.
+ * @param {object} props - The props for the StarRating component.
+ * @param {function} props.onRatingChange - Callback function to handle rating changes.
+ * @returns {JSX.Element} - JSX element containing star rating interface.
+ */
 import { useState } from 'react';
 import { FaStar } from 'react-icons/fa';
 
@@ -9,6 +15,10 @@ const StarRating: React.FC<StarRatingProps> = ({ onRatingChange }) => {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
 
+  /**
+   * Handles the click event when a star is clicked.
+   * @param {number} newRating - The new rating value.
+   */
   const handleStarClick = (newRating: number) => {
     setRating(newRating);
     onRatingChange(newRating); // Call the callback function to update the parent component's rating state

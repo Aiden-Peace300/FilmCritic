@@ -10,6 +10,7 @@ import paramountLogo from './images/paramount-logo.png';
 import starzLogo from './images/Starz-logo.png';
 import showtimeLogo from './images/showtime-logo.png';
 import { useNavigate } from 'react-router-dom';
+import LoadingScreen from './LoadingScreen';
 
 type FilmDetails = {
   poster: string;
@@ -28,6 +29,10 @@ export default function ShowDetailsOfSuggestedFilm() {
   const [detailsObj, setDetailsObj] = useState<FilmDetails | null>(null);
   const [platforms, setPlatforms] = useState<string[]>([]); // State to store platform names
 
+  /**
+   * Adds the film to the films table and watchlist.
+   * @param {FilmDetails} detailsObj - Film details to be added.
+   */
   const addToFilmsTableAndWatchlist = useCallback(
     async (detailsObj) => {
       try {
@@ -100,6 +105,10 @@ export default function ShowDetailsOfSuggestedFilm() {
     [navigate]
   );
 
+  /**
+   * Extracts the IMDB ID from the current URL.
+   * @returns {string | null} - The extracted IMDB ID or null if not found.
+   */
   function extractParameterFromCurrentUrl() {
     const currentUrl = window.location.href;
     const regexPattern = /\/tt([0-9]+)/;
@@ -112,6 +121,10 @@ export default function ShowDetailsOfSuggestedFilm() {
     return null;
   }
 
+  /**
+   * Retrieves streaming platforms for the film.
+   * @param {string | null} nameOfFilm - The name of the film.
+   */
   const getStreamingPlatforms = useCallback(
     async (nameOfFilm: string | null) => {
       try {
@@ -297,7 +310,7 @@ export default function ShowDetailsOfSuggestedFilm() {
           </div>
         </div>
       ) : (
-        <p>Loading...</p>
+        <LoadingScreen />
       )}
     </div>
   );
