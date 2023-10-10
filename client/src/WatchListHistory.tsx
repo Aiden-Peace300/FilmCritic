@@ -2,16 +2,29 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 export type PageTypeInsideApp = 'Logout';
 import { FaTrash } from 'react-icons/fa';
+import DeleteConfirmationPopup from './DeletePopup';
 import './WatchListHistory.css';
 
 interface FilmPoster {
   [idImdb: string]: string | null;
 }
 
-export default function ProfileComponent() {
+export default function WatchListHistoryComponent() {
   const navigate = useNavigate();
   const [watchlist, setWatchlist] = useState<string[]>([]);
   const [filmPosters, setFilmPosters] = useState<FilmPoster>({});
+  const [isPopupVisible, setPopupVisible] = useState(false);
+
+  // Function to show the popup
+  const showPopup = () => {
+    console.log('isPopupVisible: ', isPopupVisible);
+    setPopupVisible(true);
+  };
+
+  // Function to hide the popup
+  const hidePopup = () => {
+    setPopupVisible(false);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -102,7 +115,7 @@ export default function ProfileComponent() {
                         }>
                         Detail
                       </button>
-                      <FaTrash className="trash-icon" />
+                      <FaTrash className="trash-icon" onClick={showPopup} />
                     </div>
                   </div>
                 ) : (
@@ -113,6 +126,7 @@ export default function ProfileComponent() {
           </div>
         </ul>
       </div>
+      {isPopupVisible && <DeleteConfirmationPopup onClose={hidePopup} />}
     </>
   );
 }

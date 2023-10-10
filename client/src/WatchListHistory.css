@@ -35,6 +35,7 @@ ul {
 
 .trash-icon {
   font-size: 1.7rem; /* Adjust the size as needed */
+  cursor: pointer;
 }
 
 .column-profile {
