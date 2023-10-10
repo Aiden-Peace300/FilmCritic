@@ -114,6 +114,11 @@ h1 {
   padding: 0.5rem 1.5rem;
 }
 
+.paramount-size,
+.hulu-size {
+  padding: 0 1.5rem;
+}
+
 .ref-links {
   padding-top: 3rem;
 }
