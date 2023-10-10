@@ -5,13 +5,19 @@ import './RecommendationComponent.css';
 import { useRecommendations } from './useRecommendations';
 import LoadingScreen from './LoadingScreen';
 
+/**
+ * React component for managing and displaying recommendations.
+ * @returns {JSX.Element} JSX representing the recommendation component.
+ */
 export function RecommendationComponent() {
+  // State variables to manage user input, suggestions, and loading state
   const [suggestions, setSuggestions] = useState<
     { id: string; title: string; clicked: boolean }[]
   >([]);
   const [showSuggestions, setShowSuggestions] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  // Custom hook to manage recommendation-related state
   const {
     searchTerm,
     setSearchTerm,
@@ -23,6 +29,10 @@ export function RecommendationComponent() {
     setShowTitle,
   } = useRecommendations();
 
+  /**
+   * Handles changes in the search input field.
+   * @param {Object} e The event object.
+   */
   const handleSearchChange = (e: any) => {
     const input = e.target.value;
     setSearchTerm(input);
@@ -31,16 +41,24 @@ export function RecommendationComponent() {
     fetchSuggestions(input);
   };
 
+  /**
+   * Handles form submission (not implemented).
+   * @param {Object} e The event object.
+   */
   const handleSearchSubmit = (e: any) => {
     e.preventDefault();
     console.log('Start searching:', searchTerm);
   };
 
+  /**
+   * Handles when a suggestion is clicked.
+   * @param {Object} suggestion The clicked suggestion object.
+   */
   const handleSuggestionClick = async (suggestion: {
     id: string;
     title: string;
   }) => {
-    // Handle when a suggestion is clicked, e.g., populate the input field with the suggestion
+    // Handle when a suggestion is clicked then we will populate the input field with the suggestion
     setSearchTerm(suggestion.title);
 
     // Disable the clicked suggestion
@@ -56,6 +74,11 @@ export function RecommendationComponent() {
     getRecommendations(suggestion.title);
   };
 
+  /**
+   * Interacts with an AI model to generate show recommendations.
+   * @param {string} name The user's input.
+   * @returns {Promise} A Promise that resolves to show recommendations.
+   */
   async function suggestionFromAI(name) {
     try {
       const requestData = {
@@ -102,6 +125,10 @@ export function RecommendationComponent() {
     }
   }
 
+  /**
+   * Gets show recommendations based on user input.
+   * @param {string} filmFromUser The user's input.
+   */
   async function getRecommendations(filmFromUser) {
     setIsLoading(true);
     const suggestion = await suggestionFromAI(
@@ -113,10 +140,6 @@ export function RecommendationComponent() {
 
     console.log(showStrings);
 
-    // Process each show name one by one using Promise.all
-    // const showImagesPromises: Promise<string | undefined>[] = [];
-    // const showTitlePromises: Promise<string | undefined>[] = [];
-    // const showIdPromises: Promise<any>[] = [];
     const fetchAllPromises: Promise<any>[] = [];
 
     for (const showName of showStrings) {
@@ -128,10 +151,6 @@ export function RecommendationComponent() {
 
       if (cleanShowName.length !== 0) {
         console.log('Suggestion From AI:', cleanShowName);
-        // showImagesPromises.push(findShowInIMDB(cleanShowName));
-        // showTitlePromises.push(findShowTitleInIMDB(cleanShowName));
-        // showIdPromises.push(handleFilmDetails(cleanShowName));
-
         fetchAllPromises.push(findShowInIMDB(cleanShowName));
         fetchAllPromises.push(findShowTitleInIMDB(cleanShowName));
         fetchAllPromises.push(handleFilmDetails(cleanShowName));
@@ -139,11 +158,6 @@ export function RecommendationComponent() {
     }
 
     try {
-      // Use Promise.all to await all promises concurrently
-      // const showImagesArray = await Promise.all(showImagesPromises);
-      // const showTitleArray = await Promise.all(showTitlePromises);
-      // const showImdbIdArray = await Promise.all(showIdPromises);
-
       const fetchAllPromiseResults = await Promise.all(fetchAllPromises);
       const showImagesArray: (string | undefined)[] = [];
       const showTitleArray: (string | undefined)[] = [];
@@ -170,6 +184,11 @@ export function RecommendationComponent() {
     }
   }
 
+  /**
+   * Splits a string of show names into individual strings.
+   * @param {string} showsList The list of show names as a string.
+   * @returns {string[]} An array of individual show names.
+   */
   function breakShowsIntoStrings(showsList) {
     // Split the shows list into individual strings using a delimiter (e.g., '. ')
     const showStrings = showsList.split('. ');
@@ -180,6 +199,11 @@ export function RecommendationComponent() {
     return filteredShowStrings;
   }
 
+  /**
+   * Fetches the title of a show from IMDb API.
+   * @param {string} nameOfFilm The name of the film.
+   * @returns {Promise} A Promise that resolves to the show's title.
+   */
   async function findShowTitleInIMDB(nameOfFilm) {
     const key = 'k_8d6605rp';
 
@@ -213,6 +237,11 @@ export function RecommendationComponent() {
     }
   }
 
+  /**
+   * Fetches show details from IMDb API.
+   * @param {string} nameOfFilm The name of the film.
+   * @returns {Promise} A Promise that resolves to show details.
+   */
   async function findShowInIMDB(nameOfFilm) {
     const key = 'k_8d6605rp';
 
@@ -245,6 +274,11 @@ export function RecommendationComponent() {
     }
   }
 
+  /**
+   * Fetches an image of a show recommendation from IMDb API.
+   * @param {string} idImdb The IMDb ID of the show.
+   * @returns {Promise} A Promise that resolves to the show's image URL.
+   */
   async function getImageOfRecommendation(idImdb) {
     const key = 'k_8d6605rp';
     try {
@@ -276,6 +310,10 @@ export function RecommendationComponent() {
     }
   }
 
+  /**
+   * Fetches search suggestions from IMDb API.
+   * @param {string} input The user's input for search.
+   */
   const fetchSuggestions = async (input) => {
     try {
       const url = `https://imdb-api.com/en/API/SearchSeries/k_8d6605rp/${input}`;
@@ -311,6 +349,10 @@ export function RecommendationComponent() {
     }
   };
 
+  /**
+   * Handles fetching show details based on the title.
+   * @param {string} title The title of the show.
+   */
   async function handleFilmDetails(title) {
     const key = 'k_8d6605rp';
 
