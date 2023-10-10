@@ -1,4 +1,5 @@
 import { DebounceInput } from 'react-debounce-input';
+import { useNavigate } from 'react-router-dom';
 import './ShowDetailsOfSuggestedFilm.css';
 import './RatingComponent.css';
 import { useState, useCallback } from 'react';
@@ -19,6 +20,7 @@ type FilmDetails = {
 };
 
 export default function RatingComponent() {
+  const navigate = useNavigate();
   const [detailsObj, setDetailsObj] = useState<FilmDetails | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState<
@@ -89,9 +91,11 @@ export default function RatingComponent() {
         if (responseFilms.status === 201) {
           console.log('Movie added to films table');
           window.location.reload();
+          navigate('/movieApp/rating');
         } else if (responseFilms.status === 200) {
           console.log('Movie already in films table');
           window.location.reload();
+          navigate('/movieApp/rating');
         } else {
           console.error('Failed to add movie to films table');
         }
@@ -107,7 +111,7 @@ export default function RatingComponent() {
         console.error('Error submitting rating:', error);
       }
     },
-    [rating, note]
+    [rating, note, navigate]
   );
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
