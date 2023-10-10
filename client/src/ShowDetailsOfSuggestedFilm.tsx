@@ -78,26 +78,19 @@ export default function ShowDetailsOfSuggestedFilm() {
         });
 
         if (responseFilms.status === 201) {
-          // Movie added to films table successfully
           console.log('Movie added to films table');
         } else if (responseFilms.status === 200) {
-          // Movie is already in the films table
           console.log('Movie already in films table');
         } else {
-          // Handle other response statuses (e.g., error)
           console.error('Failed to add movie to films table');
         }
 
         if (responseWatchlist.status === 201) {
-          // Movie added to watchlist successfully
           console.log('Movie added to watchlist');
           navigate(-1);
-        } else if (responseWatchlist.status === 200) {
-          // Movie is already in the watchlist
           console.log('Movie already in watchlist');
           navigate(-1);
         } else {
-          // Handle other response statuses (e.g., error)
           console.error('Failed to add movie to watchlist');
         }
       } catch (error) {

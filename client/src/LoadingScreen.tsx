@@ -6,7 +6,7 @@ export default function LoadingScreen() {
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    height: '100vh', // Optionally, make it fill the entire viewport height
+    height: '40rem', // Optionally, make it fill the entire viewport height
   };
 
   return (
