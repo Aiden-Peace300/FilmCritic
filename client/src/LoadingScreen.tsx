@@ -7,7 +7,7 @@ import Logo from './images/loading_screen.png';
 export default function LoadingScreen() {
   // Define CSS styles for the container div
   const containerStyle: React.CSSProperties = {
-    display: 'flex', // Center content horizontally
+    display: 'flex', // enable flexbox
     flexDirection: 'column', // Display content vertically
     alignItems: 'center', // Center content vertically
     justifyContent: 'center', // Center content horizontally
@@ -17,7 +17,7 @@ export default function LoadingScreen() {
   // Render the loading screen JSX
   return (
     <div style={containerStyle}>
-      {/* Display an image (Logo) with alt text "Loading" */}
+      {/* Display img with Logo along with alt text "Loading" */}
       <img src={Logo} alt="Loading" />
       {/* Display a heading with the text "Loading..." */}
       <h1>Loading...</h1>
