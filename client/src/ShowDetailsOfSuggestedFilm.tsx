@@ -28,6 +28,7 @@ export default function ShowDetailsOfSuggestedFilm() {
   const navigate = useNavigate();
   const [detailsObj, setDetailsObj] = useState<FilmDetails | null>(null);
   const [platforms, setPlatforms] = useState<string[]>([]); // State to store platform names
+  const [isLoading, setIsLoading] = useState(true);
 
   /**
    * Adds the film to the films table and watchlist.
@@ -92,9 +93,9 @@ export default function ShowDetailsOfSuggestedFilm() {
 
         if (responseWatchlist.status === 201) {
           console.log('Movie added to watchlist');
-          navigate(-1);
+          navigate('/movieApp/recommendation');
           console.log('Movie already in watchlist');
-          navigate(-1);
+          navigate('/movieApp/recommendation');
         } else {
           console.error('Failed to add movie to watchlist');
         }
@@ -127,6 +128,7 @@ export default function ShowDetailsOfSuggestedFilm() {
    */
   const getStreamingPlatforms = useCallback(
     async (nameOfFilm: string | null) => {
+      setIsLoading(true);
       try {
         nameOfFilm = extractParameterFromCurrentUrl();
         const apiKey = '1d8984c313msh20ce3032c3ab337p129762jsnad07952e57f1';
@@ -152,6 +154,7 @@ export default function ShowDetailsOfSuggestedFilm() {
           (streamingPlatform: any) => streamingPlatform.service
         );
         setPlatforms(platformArray);
+        setIsLoading(false);
       } catch (err) {
         console.error(err);
       }
@@ -271,35 +274,41 @@ export default function ShowDetailsOfSuggestedFilm() {
               </button>
             </div>
             <p className="red-text pad">STREAMING: </p>
-            {platforms.includes('netflix') && (
-              <img className="netflix-size" src={netflixLogo} />
-            )}
-            {platforms.includes('prime') && (
-              <img className="prime-size" src={primeLogo} />
-            )}
-            {platforms.includes('disney') && (
-              <img className="disney-size" src={disneyLogo} />
-            )}
-            {platforms.includes('peacock') && (
-              <img className="peacock-size" src={peacockLogo} />
-            )}
-            {platforms.includes('apple') && (
-              <img className="apple-size" src={appleLogo} />
-            )}
-            {platforms.includes('hbo') && (
-              <img className="hbo-size" src={hboLogo} />
-            )}
-            {platforms.includes('hulu') && (
-              <img className="hulu-size" src={huluLogo} />
-            )}
-            {platforms.includes('paramount') && (
-              <img className="paramount-size" src={paramountLogo} />
-            )}
-            {platforms.includes('starz') && (
-              <img className="starz-size" src={starzLogo} />
-            )}
-            {platforms.includes('showtime') && (
-              <img className="showtime-size" src={showtimeLogo} />
+            {isLoading ? (
+              <h1>Loading Streaming Apps...</h1>
+            ) : (
+              <>
+                {platforms.includes('netflix') && (
+                  <img className="netflix-size" src={netflixLogo} />
+                )}
+                {platforms.includes('prime') && (
+                  <img className="prime-size" src={primeLogo} />
+                )}
+                {platforms.includes('disney') && (
+                  <img className="disney-size" src={disneyLogo} />
+                )}
+                {platforms.includes('peacock') && (
+                  <img className="peacock-size" src={peacockLogo} />
+                )}
+                {platforms.includes('apple') && (
+                  <img className="apple-size" src={appleLogo} />
+                )}
+                {platforms.includes('hbo') && (
+                  <img className="hbo-size" src={hboLogo} />
+                )}
+                {platforms.includes('hulu') && (
+                  <img className="hulu-size" src={huluLogo} />
+                )}
+                {platforms.includes('paramount') && (
+                  <img className="paramount-size" src={paramountLogo} />
+                )}
+                {platforms.includes('starz') && (
+                  <img className="starz-size" src={starzLogo} />
+                )}
+                {platforms.includes('showtime') && (
+                  <img className="showtime-size" src={showtimeLogo} />
+                )}
+              </>
             )}
             <p className="red-text pad">REFERRAL LINKS: </p>
             <p className="white-text pad space-below">
