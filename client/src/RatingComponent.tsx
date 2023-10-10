@@ -3,6 +3,7 @@ import './ShowDetailsOfSuggestedFilm.css';
 import './RatingComponent.css';
 import { useState, useCallback } from 'react';
 import StarRating from './StarRating';
+import LoadingScreen from './LoadingScreen';
 
 type FilmDetails = {
   idImdb: string;
@@ -88,9 +89,11 @@ export default function RatingComponent() {
         if (responseFilms.status === 201) {
           // Movie added to films table successfully
           console.log('Movie added to films table');
+          window.location.reload();
         } else if (responseFilms.status === 200) {
           // Movie is already in the films table
           console.log('Movie already in films table');
+          window.location.reload();
         } else {
           // Handle other response statuses (e.g., error)
           console.error('Failed to add movie to films table');
@@ -272,7 +275,7 @@ export default function RatingComponent() {
       )}
 
       {loading ? (
-        <p>Loading...</p>
+        <LoadingScreen />
       ) : (
         detailsObj && (
           <div className="body">
