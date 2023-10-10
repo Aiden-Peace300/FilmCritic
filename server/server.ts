@@ -135,7 +135,7 @@ app.post('/api/watchlist', authMiddleware, async (req, res, next) => {
     const { idImdb } = req.body;
 
     if (req.user === undefined) {
-      throw new ClientError(401, 'userId is undefine d');
+      throw new ClientError(401, 'userId is undefined');
     }
     const { userId } = req.user;
 
@@ -169,6 +169,41 @@ app.post('/api/watchlist', authMiddleware, async (req, res, next) => {
     const result = await db.query(addToWatchlistSql, addToWatchlistParams);
     const [watchlistItem] = result.rows;
     res.status(201).json(watchlistItem);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get('/api/watchlist', authMiddleware, async (req, res, next) => {
+  try {
+    if (req.user === undefined) {
+      throw new ClientError(401, 'userId is undefined');
+    }
+
+    const { userId } = req.user;
+
+    // Retrieve all idImdb values from WatchList for the specific user
+    const getWatchlistItemsSql = `
+      SELECT "idImdb" FROM "WatchList"
+      WHERE "userId" = $1
+    `;
+    const getWatchlistItemsParams = [userId];
+
+    const watchlistResult = await db.query(
+      getWatchlistItemsSql,
+      getWatchlistItemsParams
+    );
+
+    if (watchlistResult.rows.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "User doesn't have any films in watchlist" });
+    }
+
+    // Extract idImdb values from the result
+    const idImdbList = watchlistResult.rows.map((row) => row.idImdb);
+
+    res.status(200).json({ idImdbList });
   } catch (err) {
     next(err);
   }
