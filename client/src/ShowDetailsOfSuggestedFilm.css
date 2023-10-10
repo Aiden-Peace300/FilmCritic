@@ -93,8 +93,9 @@ h1 {
 }
 
 .disney-size {
-  width: 8rem;
-  height: 5rem;
+  width: 8.2rem;
+  height: 4.5rem;
+  padding: 0 1rem;
 }
 
 .peacock-size,
@@ -107,6 +108,14 @@ h1 {
 .starz-size {
   width: 9rem;
   height: 5rem;
+}
+
+.hbo-size {
+  padding: 0.5rem 1.5rem;
+}
+
+.ref-links {
+  padding-top: 3rem;
 }
 
 @media screen and (width <= 768px) {
