@@ -1,9 +1,3 @@
-/**
- * StarRating component for displaying and allowing user rating selection.
- * @param {object} props - The props for the StarRating component.
- * @param {function} props.onRatingChange - Callback function to handle rating changes.
- * @returns {JSX.Element} - JSX element containing star rating interface.
- */
 import { useState } from 'react';
 import { FaStar } from 'react-icons/fa';
 
@@ -11,6 +5,12 @@ type StarRatingProps = {
   onRatingChange: (newRating: number) => void;
 };
 
+/**
+ * StarRating component for displaying and allowing user rating selection.
+ * @param {object} props - The props for the StarRating component.
+ * @param {function} props.onRatingChange - Callback function to handle rating changes.
+ * @returns {JSX.Element} - JSX element containing star rating interface.
+ */
 const StarRating: React.FC<StarRatingProps> = ({ onRatingChange }) => {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
