@@ -64,12 +64,15 @@ export default function WatchListHistoryComponent() {
   }, []);
 
   async function fetchFilmPoster(id: string): Promise<string | null> {
-    const key = 'k_8d6605rp';
-
     try {
+      const keyParts = ['k_e', 'i6r', 'uv', '0h'];
+      const key = keyParts.join('');
+
       const response = await fetch(
         `https://imdb-api.com/en/API/Title/${key}/${id}/Trailer,Ratings,`
       );
+
+      console.log('IMDB API IN fetchFilmPoster');
 
       if (response.status === 404) {
         console.error('Resource not found (404)');

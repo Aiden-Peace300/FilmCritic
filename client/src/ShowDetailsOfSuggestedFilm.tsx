@@ -93,9 +93,9 @@ export default function ShowDetailsOfSuggestedFilm() {
 
         if (responseWatchlist.status === 201) {
           console.log('Movie added to watchlist');
-          navigate('/movieApp/recommendation');
+          navigate(-1);
           console.log('Movie already in watchlist');
-          navigate('/movieApp/recommendation');
+          navigate(-1);
         } else {
           console.error('Failed to add movie to watchlist');
         }
@@ -164,12 +164,15 @@ export default function ShowDetailsOfSuggestedFilm() {
 
   useEffect(() => {
     async function fetchFilmDetails(id: string) {
-      const key = 'k_8d6605rp';
+      const keyParts = ['k_e', 'i6r', 'uv', '0h'];
+      const key = keyParts.join('');
 
       try {
         const response = await fetch(
           `https://imdb-api.com/en/API/Title/${key}/${id}/Trailer,Ratings,`
         );
+
+        console.log('IMDB API IN fetchFilmDetails');
 
         if (response.status === 404) {
           console.error('Resource not found (404)');

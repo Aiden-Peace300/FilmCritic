@@ -149,7 +149,9 @@ export default function RatingComponent() {
 
   const fetchSuggestions = async (input: string) => {
     try {
-      const url = `https://imdb-api.com/en/API/SearchSeries/k_8d6605rp/${input}`;
+      const keyParts = ['k_e', 'i6r', 'uv', '0h'];
+      const key = keyParts.join('');
+      const url = `https://imdb-api.com/en/API/SearchSeries/${key}/${input}`;
 
       const response = await fetch(url, {
         method: 'GET',
@@ -161,6 +163,8 @@ export default function RatingComponent() {
           'X-RapidAPI-Host': 'streaming-availability.p.rapidapi.com',
         },
       });
+
+      console.log('IMDB API IN fetchSuggestions');
 
       if (!response.ok) throw new Error(`Fetch Error ${response.status}`);
 
@@ -189,13 +193,15 @@ export default function RatingComponent() {
   }
 
   async function fetchFilmDetails(id: string) {
-    const key = 'k_8d6605rp';
+    const key = 'k_g3s37hsb';
 
     try {
       setLoading(true);
       const response = await fetch(
         `https://imdb-api.com/en/API/Title/${key}/${id}/Trailer,Ratings,`
       );
+
+      console.log('IMDB API IN fetchFilmDetails');
 
       if (response.status === 404) {
         console.error('Resource not found (404)');
@@ -257,6 +263,7 @@ export default function RatingComponent() {
             <ul className="searchSuggestions">
               {suggestions.map((suggestion) => (
                 <li
+                  id="li"
                   key={suggestion.id}
                   className={suggestion.clicked ? 'disabled' : ''}>
                   <button
