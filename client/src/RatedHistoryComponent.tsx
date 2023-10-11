@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import './RatedHistoryComponent.css';
 
 type RatedFilm = {
   idImdb: string;
@@ -91,22 +92,33 @@ export default function RatedHistoryComponent() {
   return (
     <div>
       <h2>Rated History:</h2>
-      <ul>
+      <div className="row1">
         {ratedFilms.map((film) => (
-          <li key={film.idImdb}>
-            ID: {film.idImdb}, User Note: {film.userNote}
-            {film.filmPosters !== null && (
-              <div>
-                <h3>Title: {film.title}</h3>
-                <img
-                  src={film.filmPosters || ''}
-                  alt={`Film Poster for ${film.idImdb}`}
-                />
+          <div className="column1" key={film.idImdb}>
+            <div className="row2">
+              {film.filmPosters !== null && (
+                <div className="image-container">
+                  <img
+                    className="RatedHistoryImg"
+                    src={film.filmPosters || ''}
+                    alt={`Film Poster for ${film.idImdb}`}
+                  />
+                </div>
+              )}
+              <div className="text-details">
+                <p className="rated-title">
+                  <span className="red-text">FILM: </span>
+                  {film.title}
+                </p>
+                <p className="rated-note">{film.userNote}</p>
+                <div className="space1">
+                  <p className="rated-note">HEHRE</p>
+                </div>
               </div>
-            )}
-          </li>
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }
