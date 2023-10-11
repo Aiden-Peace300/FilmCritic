@@ -1,5 +1,5 @@
 import React from 'react';
-import './DeletePopup.css';
+import './WatchlistDeletePopup.css';
 
 interface DeleteConfirmationPopupProps {
   onClose: () => void;

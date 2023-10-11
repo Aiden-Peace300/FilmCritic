@@ -409,6 +409,11 @@ export function RecommendationComponent() {
   return (
     <div>
       <h1>RECOMMENDATION</h1>
+      <p className="disclamer-Msg">
+        DISCLAIMER: PLEASE ALLOW A FEW SECONDS FOR THE SEARCH BAR; WE ARE
+        LOOKING THROUGH THOUSANDS OF FILMS TO FIND THE PERFECT ONE FOR YOU.
+        PLEASE BE PATIENCE WITH US
+      </p>
       <form onSubmit={handleSearchSubmit}>
         <div className="row">
           <div className="column">

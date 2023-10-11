@@ -114,7 +114,7 @@ export default function RatedHistoryComponent() {
               <div className="text-details">
                 <p className="rated-title">
                   <span className="red-text">FILM: </span>
-                  {film.title}
+                  {film.title.toUpperCase()}
                 </p>
                 <p className="rated-note">{film.userNote}</p>
                 <div className="space1">
