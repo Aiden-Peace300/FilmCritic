@@ -284,15 +284,41 @@ app.post('/api/rating', authMiddleware, async (req, res, next) => {
   }
 });
 
-app.delete('/api/watchlist/:idImdb', async (req, res, next) => {
+app.delete('/api/watchlist/:idImdb', authMiddleware, async (req, res, next) => {
   try {
     const { idImdb } = req.params;
 
+    if (req.user === undefined) {
+      throw new ClientError(401, 'userId is undefined');
+    }
+    const { userId } = req.user;
+
     const sql = `
-      DELETE FROM "WatchList" WHERE "idImdb" = $1;
+      DELETE FROM "WatchList" WHERE "idImdb" = $1 and "userId" = $2;
     `;
 
-    await db.query(sql, [idImdb]);
+    await db.query(sql, [idImdb, userId]);
+
+    res.status(204).end();
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.delete('/api/rated/:idImdb', authMiddleware, async (req, res, next) => {
+  try {
+    const { idImdb } = req.params;
+
+    if (req.user === undefined) {
+      throw new ClientError(401, 'userId is undefined');
+    }
+    const { userId } = req.user;
+
+    const sql = `
+      DELETE FROM "RatedFilms" WHERE "idImdb" = $1 and "userId" = $2;
+    `;
+
+    await db.query(sql, [idImdb, userId]);
 
     res.status(204).end();
   } catch (err) {

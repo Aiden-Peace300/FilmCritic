@@ -4,6 +4,7 @@ import { AiOutlineHeart } from 'react-icons/ai';
 import { FaRegCommentAlt } from 'react-icons/fa';
 import { GrEdit } from 'react-icons/gr';
 import { BsTrash3 } from 'react-icons/bs';
+import DeleteConfirmationPopup from './RatedDeletePopup';
 import './RatedHistoryComponent.css';
 
 type RatedFilm = {
@@ -21,6 +22,20 @@ export default function RatedHistoryComponent() {
   const [ratedFilms, setRatedFilms] = useState<
     (RatedFilm & FilmTitleAndPoster)[]
   >([]);
+  const [isPopupVisible, setPopupVisible] = useState(false);
+  const [selectedIdImdb, setSelectedIdImdb] = useState<string | null>(null); // Add selectedIdImdb state
+
+  // Function to show the popup
+  const showPopup = (idImdb: string) => {
+    setSelectedIdImdb(idImdb); // Set the selected ID when showing the popup
+    setPopupVisible(true);
+  };
+
+  // Function to hide the popup
+  const hidePopup = () => {
+    setSelectedIdImdb(null); // Clear the selected ID when hiding the popup
+    setPopupVisible(false);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -139,9 +154,16 @@ export default function RatedHistoryComponent() {
                     <span className="like-prompt">EDIT</span>
                     <div className="vertical-line"> </div>
                     <span>
-                      <BsTrash3 className="like-button" />
+                      <BsTrash3
+                        className="like-button"
+                        onClick={() => showPopup(film.idImdb)}
+                      />
                     </span>
-                    <span className="like-prompt">DELETE</span>
+                    <span
+                      className="like-prompt"
+                      onClick={() => showPopup(film.idImdb)}>
+                      DELETE
+                    </span>
                   </div>
                 </div>
               </div>
@@ -149,6 +171,12 @@ export default function RatedHistoryComponent() {
           </div>
         ))}
       </div>
+      {isPopupVisible && (
+        <DeleteConfirmationPopup
+          onClose={hidePopup}
+          idImdb={selectedIdImdb} // Pass the selected ID to the DeleteConfirmationPopup
+        />
+      )}
     </div>
   );
 }

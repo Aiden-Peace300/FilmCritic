@@ -90,20 +90,18 @@ export default function RatingComponent() {
 
         if (responseFilms.status === 201) {
           console.log('Movie added to films table');
-          window.location.reload();
-          navigate('/movieApp/rating');
         } else if (responseFilms.status === 200) {
           console.log('Movie already in films table');
-          window.location.reload();
-          navigate('/movieApp/rating');
         } else {
           console.error('Failed to add movie to films table');
         }
 
         if (responseRatedFilms.status === 201) {
           console.log('Movie added to watchlist');
+          navigate('/movieApp/Profile');
         } else if (responseRatedFilms.status === 200) {
           console.log('Movie already in watchlist');
+          navigate('/movieApp/Profile');
         } else {
           console.error('Failed to add movie to watchlist');
         }
