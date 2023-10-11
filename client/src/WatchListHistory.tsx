@@ -101,37 +101,40 @@ export default function WatchListHistoryComponent() {
         <p>Click the Film Poster or Details for a reminder of details</p>
         <ul className="ul">
           <div className="row">
-            {watchlist.map((idImdb) => (
-              <li className="li-Profile" key={idImdb}>
-                {filmPosters[idImdb] !== null ? (
-                  <div className="row">
-                    <div className="column-profile">
-                      <img
-                        className="profile-image"
-                        onClick={() =>
-                          navigate(`/movieApp/recommendation/${idImdb}`)
-                        }
-                        src={filmPosters[idImdb] || ''}
-                        alt={`Film Poster for ${idImdb}`}
-                      />
-                      <button
-                        className="details-button"
-                        onClick={() =>
-                          navigate(`/movieApp/recommendation/${idImdb}`)
-                        }>
-                        Detail
-                      </button>
-                      <BsTrash3
-                        className="trash-icon"
-                        onClick={() => showPopup(idImdb)} // Pass the ID to the showPopup function
-                      />
+            {watchlist
+              .slice()
+              .reverse()
+              .map((idImdb) => (
+                <li className="li-Profile" key={idImdb}>
+                  {filmPosters[idImdb] !== null ? (
+                    <div className="row">
+                      <div className="column-profile">
+                        <img
+                          className="profile-image"
+                          onClick={() =>
+                            navigate(`/movieApp/recommendation/${idImdb}`)
+                          }
+                          src={filmPosters[idImdb] || ''}
+                          alt={`Film Poster for ${idImdb}`}
+                        />
+                        <button
+                          className="details-button"
+                          onClick={() =>
+                            navigate(`/movieApp/recommendation/${idImdb}`)
+                          }>
+                          Detail
+                        </button>
+                        <BsTrash3
+                          className="trash-icon"
+                          onClick={() => showPopup(idImdb)} // Pass the ID to the showPopup function
+                        />
+                      </div>
                     </div>
-                  </div>
-                ) : (
-                  <p>No poster available</p>
-                )}
-              </li>
-            ))}
+                  ) : (
+                    <p>No poster available</p>
+                  )}
+                </li>
+              ))}
           </div>
         </ul>
       </div>

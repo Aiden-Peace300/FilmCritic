@@ -114,62 +114,65 @@ export default function RatedHistoryComponent() {
     <div>
       <h2>Rated History:</h2>
       <div className="row1">
-        {ratedFilms.map((film) => (
-          <div className="column1" key={film.idImdb}>
-            <div className="row2">
-              {film.filmPosters !== null && (
-                <div className="image-container">
-                  <img
-                    className="RatedHistoryImg"
-                    src={film.filmPosters || ''}
-                    alt={`Film Poster for ${film.idImdb}`}
-                  />
-                </div>
-              )}
-              <div className="text-details">
-                <p className="rated-title">
-                  <span className="red-text">FILM: </span>
-                  {film.title.toUpperCase()}
-                </p>
-                <p className="rated-note">{film.userNote}</p>
-                <div className="space1">
-                  <hr className="line" />
-                  <div className="rating-container">
-                    <span>{<RatedStars rating={film.rating} />}</span>
-                    <span className="ratedRating">{film.rating}/5</span>
-                    <div className="vertical-line"> </div>
-                    <span>
-                      <AiOutlineHeart className="like-button" />
-                    </span>
-                    <span className="like-prompt">LIKE</span>
-                    <div className="vertical-line"> </div>
-                    <span>
-                      <FaRegCommentAlt className="like-button" />
-                    </span>
-                    <span className="like-prompt">COMMENT</span>
-                    <div className="vertical-line"> </div>
-                    <span>
-                      <GrEdit className="like-button" />
-                    </span>
-                    <span className="like-prompt">EDIT</span>
-                    <div className="vertical-line"> </div>
-                    <span>
-                      <BsTrash3
-                        className="like-button"
-                        onClick={() => showPopup(film.idImdb)}
-                      />
-                    </span>
-                    <span
-                      className="like-prompt"
-                      onClick={() => showPopup(film.idImdb)}>
-                      DELETE
-                    </span>
+        {ratedFilms
+          .slice()
+          .reverse()
+          .map((film) => (
+            <div className="column1" key={film.idImdb}>
+              <div className="row2">
+                {film.filmPosters !== null && (
+                  <div className="image-container">
+                    <img
+                      className="RatedHistoryImg"
+                      src={film.filmPosters || ''}
+                      alt={`Film Poster for ${film.idImdb}`}
+                    />
+                  </div>
+                )}
+                <div className="text-details">
+                  <p className="rated-title">
+                    <span className="red-text">FILM: </span>
+                    {film.title.toUpperCase()}
+                  </p>
+                  <p className="rated-note">{film.userNote}</p>
+                  <div className="space1">
+                    <hr className="line" />
+                    <div className="rating-container">
+                      <span>{<RatedStars rating={film.rating} />}</span>
+                      <span className="ratedRating">{film.rating}/5</span>
+                      <div className="vertical-line"> </div>
+                      <span>
+                        <AiOutlineHeart className="like-button" />
+                      </span>
+                      <span className="like-prompt">LIKE</span>
+                      <div className="vertical-line"> </div>
+                      <span>
+                        <FaRegCommentAlt className="like-button" />
+                      </span>
+                      <span className="like-prompt">COMMENT</span>
+                      <div className="vertical-line"> </div>
+                      <span>
+                        <GrEdit className="like-button" />
+                      </span>
+                      <span className="like-prompt">EDIT</span>
+                      <div className="vertical-line"> </div>
+                      <span>
+                        <BsTrash3
+                          className="like-button"
+                          onClick={() => showPopup(film.idImdb)}
+                        />
+                      </span>
+                      <span
+                        className="like-prompt"
+                        onClick={() => showPopup(film.idImdb)}>
+                        DELETE
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
       {isPopupVisible && (
         <DeleteConfirmationPopup
