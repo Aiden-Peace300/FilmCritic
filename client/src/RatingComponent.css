@@ -15,6 +15,11 @@ input[type='radio'] {
   margin: 2rem;
 }
 
+.disclamer-Msg {
+  font-size: 1rem;
+  text-align: center;
+}
+
 .ratedFilm {
   font-size: 1rem;
   color: white !important;

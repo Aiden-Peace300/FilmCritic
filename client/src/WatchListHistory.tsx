@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 export type PageTypeInsideApp = 'Logout';
 import { BsTrash3 } from 'react-icons/bs';
-import DeleteConfirmationPopup from './DeletePopup';
+import DeleteConfirmationPopup from './WatchlistDeletePopup';
 import './WatchListHistory.css';
 
 interface FilmPoster {
@@ -98,6 +98,7 @@ export default function WatchListHistoryComponent() {
     <>
       <div>
         <h2>Watchlist History:</h2>
+        <p>Click the Film Poster or Details for a reminder of details</p>
         <ul className="ul">
           <div className="row">
             {watchlist.map((idImdb) => (
