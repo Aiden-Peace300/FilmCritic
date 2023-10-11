@@ -94,7 +94,7 @@ export default function WatchListHistoryComponent() {
   return (
     <>
       <div>
-        <h2>Watchlist:</h2>
+        <h2>Watchlist History:</h2>
         <ul className="ul">
           <div className="row">
             {watchlist.map((idImdb) => (

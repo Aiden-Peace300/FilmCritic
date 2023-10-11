@@ -147,7 +147,7 @@ export default function ShowDetailsOfSuggestedFilm() {
         const response = await fetch(url, get);
         if (!response.ok) throw new Error(`fetch Error ${response.status}`);
         const responseData = await response.json();
-        console.log(responseData.result.streamingInfo.us);
+        console.log('Streaming', responseData.result.streamingInfo.us);
 
         // Extract platform names and set them in state
         const platformArray = responseData.result.streamingInfo.us.map(

@@ -2,6 +2,7 @@
 // import { useNavigate } from 'react-router-dom';
 export type PageTypeInsideApp = 'Logout';
 import WatchListHistory from './WatchListHistory';
+import RatedHistoryComponent from './RatedHistoryComponent';
 import './Profile.css';
 
 interface InsideWebsiteNavBarProps {
@@ -21,6 +22,7 @@ export default function ProfileComponent({
         Logout
       </button>
       <WatchListHistory />
+      <RatedHistoryComponent />
     </>
   );
 }

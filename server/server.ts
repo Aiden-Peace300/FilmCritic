@@ -217,26 +217,24 @@ app.get('/api/idImdb/ratedFilms', authMiddleware, async (req, res, next) => {
 
     const { userId } = req.user;
 
-    // Retrieve all idImdb values from WatchList for the specific user
-    const getWatchlistItemsSql = `
-      SELECT "idImdb" FROM "RatedFilms"
+    const getRatedFilmsSql = `
+      SELECT "idImdb", "userNote" FROM "RatedFilms"
       WHERE "userId" = $1
     `;
-    const getWatchlistItemsParams = [userId];
+    const getRatedFilmsParams = [userId];
 
-    const watchlistResult = await db.query(
-      getWatchlistItemsSql,
-      getWatchlistItemsParams
+    const ratedFilmsResult = await db.query(
+      getRatedFilmsSql,
+      getRatedFilmsParams
     );
 
-    if (watchlistResult.rows.length === 0) {
-      return res.status(404).json({ message: "User haven't rated any films" });
+    if (ratedFilmsResult.rows.length === 0) {
+      return res.status(404).json({ message: "User hasn't rated any films" });
     }
 
-    // Extract idImdb values from the result
-    const idImdbList = watchlistResult.rows.map((row) => row.idImdb);
+    const ratedFilms = ratedFilmsResult.rows;
 
-    res.status(200).json({ idImdbList });
+    res.status(200).json(ratedFilms);
   } catch (err) {
     next(err);
   }
