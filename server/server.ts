@@ -326,6 +326,49 @@ app.delete('/api/rated/:idImdb', authMiddleware, async (req, res, next) => {
   }
 });
 
+app.put('/api/rated/:idImdb', authMiddleware, async (req, res, next) => {
+  try {
+    const { idImdb } = req.params;
+
+    if (req.user === undefined) {
+      throw new ClientError(401, 'userId is undefined');
+    }
+    const { userId } = req.user;
+    const { rating, userNote } = req.body;
+
+    // Check if the movie is already in the ratedFilms for the user
+    const checkRatedFilmSql = `
+      SELECT * FROM "RatedFilms"
+      WHERE "userId" = $1 AND "idImdb" = $2
+    `;
+    const checkRatedFilmParams = [userId, idImdb];
+    const ratedFilmResult = await db.query(
+      checkRatedFilmSql,
+      checkRatedFilmParams
+    );
+
+    if (ratedFilmResult.rows.length === 0) {
+      // Movie is not found in the ratedFilms, return an error
+      throw new ClientError(404, 'Movie not found in ratedFilms');
+    }
+
+    // Update the rating and userNote for the movie in the ratedFilms
+    const updateRatedFilmSql = `
+      UPDATE "RatedFilms"
+      SET "rating" = $1, "userNote" = $2
+      WHERE "userId" = $3 AND "idImdb" = $4
+      RETURNING *
+    `;
+    const updateRatedFilmParams = [rating, userNote, userId, idImdb];
+    const result = await db.query(updateRatedFilmSql, updateRatedFilmParams);
+    const [updatedRatedFilm] = result.rows;
+
+    res.status(200).json(updatedRatedFilm);
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.get('/api/films/by-id/:idImdb', async (req, res, next) => {
   try {
     const { idImdb } = req.params;
