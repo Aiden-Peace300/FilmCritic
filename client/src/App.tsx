@@ -9,6 +9,7 @@ import SignInForm from './SignInForm';
 import FeedComponent from './FeedComponent';
 import { RecommendationComponent } from './RecommendationComponent';
 import RatingComponent from './RatingComponent';
+import UsersRatingComponent from './UsersRatingComponent';
 import Profile from './Profile';
 
 export default function App() {
@@ -57,6 +58,9 @@ export default function App() {
           </Route>
 
           <Route path="rating" element={<RatingComponent />} />
+          <Route path="rating/:filmTitle" element={<UsersRatingComponent />} />
+
+          {/* <Route path="rating" element={<RatingComponent />} /> */}
           <Route
             path="profile"
             element={<Profile onNavigate={handleNavigateInsideApp} />}
