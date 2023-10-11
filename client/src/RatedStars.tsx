@@ -16,7 +16,6 @@ const RatedStars: React.FC<StarRatingProps> = ({ rating }) => {
           />
         </label>
       ))}
-      {/* <p style={{ paddingLeft: '5rem' }}>{rating} STARS</p> */}
     </div>
   );
 };

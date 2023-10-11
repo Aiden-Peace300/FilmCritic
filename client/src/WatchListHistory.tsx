@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 export type PageTypeInsideApp = 'Logout';
-import { FaTrash } from 'react-icons/fa';
+import { BsTrash3 } from 'react-icons/bs';
 import DeleteConfirmationPopup from './DeletePopup';
 import './WatchListHistory.css';
 
@@ -120,7 +120,7 @@ export default function WatchListHistoryComponent() {
                         }>
                         Detail
                       </button>
-                      <FaTrash
+                      <BsTrash3
                         className="trash-icon"
                         onClick={() => showPopup(idImdb)} // Pass the ID to the showPopup function
                       />

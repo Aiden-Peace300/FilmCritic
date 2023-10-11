@@ -36,6 +36,7 @@ ul {
 .trash-icon {
   font-size: 1.7rem; /* Adjust the size as needed */
   cursor: pointer;
+  color: #db3434;
 }
 
 .column-profile {

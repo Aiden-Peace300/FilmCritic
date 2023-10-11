@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react';
 import RatedStars from './RatedStars';
+import { AiOutlineHeart } from 'react-icons/ai';
+import { FaRegCommentAlt } from 'react-icons/fa';
+import { GrEdit } from 'react-icons/gr';
+import { BsTrash3 } from 'react-icons/bs';
 import './RatedHistoryComponent.css';
 
 type RatedFilm = {
@@ -118,6 +122,26 @@ export default function RatedHistoryComponent() {
                   <div className="rating-container">
                     <span>{<RatedStars rating={film.rating} />}</span>
                     <span className="ratedRating">{film.rating}/5</span>
+                    <div className="vertical-line"> </div>
+                    <span>
+                      <AiOutlineHeart className="like-button" />
+                    </span>
+                    <span className="like-prompt">LIKE</span>
+                    <div className="vertical-line"> </div>
+                    <span>
+                      <FaRegCommentAlt className="like-button" />
+                    </span>
+                    <span className="like-prompt">COMMENT</span>
+                    <div className="vertical-line"> </div>
+                    <span>
+                      <GrEdit className="like-button" />
+                    </span>
+                    <span className="like-prompt">EDIT</span>
+                    <div className="vertical-line"> </div>
+                    <span>
+                      <BsTrash3 className="like-button" />
+                    </span>
+                    <span className="like-prompt">DELETE</span>
                   </div>
                 </div>
               </div>
