@@ -209,6 +209,39 @@ app.get('/api/watchlist', authMiddleware, async (req, res, next) => {
   }
 });
 
+app.get('/api/idImdb/ratedFilms', authMiddleware, async (req, res, next) => {
+  try {
+    if (req.user === undefined) {
+      throw new ClientError(401, 'userId is undefined');
+    }
+
+    const { userId } = req.user;
+
+    // Retrieve all idImdb values from WatchList for the specific user
+    const getWatchlistItemsSql = `
+      SELECT "idImdb" FROM "RatedFilms"
+      WHERE "userId" = $1
+    `;
+    const getWatchlistItemsParams = [userId];
+
+    const watchlistResult = await db.query(
+      getWatchlistItemsSql,
+      getWatchlistItemsParams
+    );
+
+    if (watchlistResult.rows.length === 0) {
+      return res.status(404).json({ message: "User haven't rated any films" });
+    }
+
+    // Extract idImdb values from the result
+    const idImdbList = watchlistResult.rows.map((row) => row.idImdb);
+
+    res.status(200).json({ idImdbList });
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.post('/api/rating', authMiddleware, async (req, res, next) => {
   try {
     const { idImdb, rating, userNote } = req.body;

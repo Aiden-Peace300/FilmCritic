@@ -14,15 +14,17 @@ export default function WatchListHistoryComponent() {
   const [watchlist, setWatchlist] = useState<string[]>([]);
   const [filmPosters, setFilmPosters] = useState<FilmPoster>({});
   const [isPopupVisible, setPopupVisible] = useState(false);
+  const [selectedIdImdb, setSelectedIdImdb] = useState<string | null>(null); // Add selectedIdImdb state
 
   // Function to show the popup
-  const showPopup = () => {
-    console.log('isPopupVisible: ', isPopupVisible);
+  const showPopup = (idImdb: string) => {
+    setSelectedIdImdb(idImdb); // Set the selected ID when showing the popup
     setPopupVisible(true);
   };
 
   // Function to hide the popup
   const hidePopup = () => {
+    setSelectedIdImdb(null); // Clear the selected ID when hiding the popup
     setPopupVisible(false);
   };
 
@@ -115,7 +117,10 @@ export default function WatchListHistoryComponent() {
                         }>
                         Detail
                       </button>
-                      <FaTrash className="trash-icon" onClick={showPopup} />
+                      <FaTrash
+                        className="trash-icon"
+                        onClick={() => showPopup(idImdb)} // Pass the ID to the showPopup function
+                      />
                     </div>
                   </div>
                 ) : (
@@ -126,7 +131,12 @@ export default function WatchListHistoryComponent() {
           </div>
         </ul>
       </div>
-      {isPopupVisible && <DeleteConfirmationPopup onClose={hidePopup} />}
+      {isPopupVisible && (
+        <DeleteConfirmationPopup
+          onClose={hidePopup}
+          idImdb={selectedIdImdb} // Pass the selected ID to the DeleteConfirmationPopup
+        />
+      )}
     </>
   );
 }
