@@ -1,10 +1,9 @@
 import { DebounceInput } from 'react-debounce-input';
+// import './ShowDetailsOfSuggestedFilm.css';
+// import './RecommendationComponent.css';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './ShowDetailsOfSuggestedFilm.css';
-import './RatingComponent.css';
-import { useState, useCallback } from 'react';
-import StarRating from './StarRating';
-import LoadingScreen from './LoadingScreen';
+// import { Link } from 'react-router-dom';
 
 type FilmDetails = {
   idImdb: string;
@@ -21,99 +20,15 @@ type FilmDetails = {
 
 export default function RatingComponent() {
   const navigate = useNavigate();
-  const [detailsObj, setDetailsObj] = useState<FilmDetails | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState<
     { id: string; title: string; clicked: boolean }[]
   >([]);
   const [showSuggestions, setShowSuggestions] = useState<boolean>(true);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [rating, setRating] = useState(0); // Initialize with a default value
-  const [note, setNote] = useState('');
-
-  const handleRatingChange = (newRating: number) => {
-    setRating(newRating); // Update the 'rating' state when a star is clicked
-  };
-
-  const addToFilmsTableAndWatchlist = useCallback(
-    async (detailsObj) => {
-      try {
-        if (!detailsObj) {
-          console.error('detailsObj is null');
-          return;
-        }
-
-        const idImdb = detailsObj.idImdb;
-
-        // // Extract idImdb from the URL
-        // const { idImdb } = detailsObj;
-        console.log(idImdb);
-
-        if (!idImdb) {
-          console.error('idImdb is missing');
-          return;
-        }
-
-        console.log(
-          'Adding movie to films table and RatedFilms:',
-          idImdb,
-          detailsObj
-        );
-
-        const releaseYearNumber = parseInt(detailsObj.releaseYear, 10);
-
-        const responseFilms = await fetch('/api/films', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            idImdb,
-            filmTitle: detailsObj.film,
-            genre: detailsObj.genre,
-            type: detailsObj.type,
-            releaseYear: releaseYearNumber,
-            creator: detailsObj.creator,
-            description: detailsObj.description,
-            trailer: detailsObj.trailer,
-          }),
-        });
-
-        const responseRatedFilms = await fetch('/api/rating', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-          },
-          body: JSON.stringify({ idImdb, rating, userNote: note }),
-        });
-
-        if (responseFilms.status === 201) {
-          console.log('Movie added to films table');
-        } else if (responseFilms.status === 200) {
-          console.log('Movie already in films table');
-        } else {
-          console.error('Failed to add movie to films table');
-        }
-
-        if (responseRatedFilms.status === 201) {
-          console.log('Movie added to watchlist');
-          navigate('/movieApp/Profile');
-        } else if (responseRatedFilms.status === 200) {
-          console.log('Movie already in watchlist');
-          navigate('/movieApp/Profile');
-        } else {
-          console.error('Failed to add movie to watchlist');
-        }
-      } catch (error) {
-        console.error('Error submitting rating:', error);
-      }
-    },
-    [rating, note, navigate]
-  );
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value;
+    console.log('Input:', input);
     setSearchTerm(input);
 
     // Fetch suggestions from IMDb API based on the user's input
@@ -140,6 +55,8 @@ export default function RatingComponent() {
           : prevSuggestion
       )
     );
+
+    console.log(showSuggestions);
     setShowSuggestions(false);
     console.log('Clicked suggestion:', suggestion.title);
     getFilm(suggestion.id);
@@ -147,9 +64,8 @@ export default function RatingComponent() {
 
   const fetchSuggestions = async (input: string) => {
     try {
-      const keyParts = ['k_e', 'i6r', 'uv', '0h'];
-      const key = keyParts.join('');
-      const url = `https://imdb-api.com/en/API/SearchSeries/${key}/${input}`;
+      console.log('fetchSuggestions Input', input);
+      const url = `https://imdb-api.com/en/API/SearchSeries/k_ei6ruv0h/${input}`;
 
       const response = await fetch(url, {
         method: 'GET',
@@ -162,13 +78,15 @@ export default function RatingComponent() {
         },
       });
 
-      console.log('IMDB API IN fetchSuggestions');
-
-      if (!response.ok) throw new Error(`Fetch Error ${response.status}`);
+      if (!response.ok) console.error(`Fetch Error ${response.status}`);
 
       const responseData = await response.json();
+      console.log('response:', response);
       const suggestionData = responseData.results || [];
       const limitedSuggestions = suggestionData.slice(0, 7);
+
+      console.log('suggestionData:', suggestionData);
+      console.log('limitedSuggestions:', limitedSuggestions);
 
       const suggestionsWithClickStatus = limitedSuggestions.map(
         (suggestion) => ({
@@ -176,6 +94,11 @@ export default function RatingComponent() {
           clicked: false,
         })
       );
+
+      console.log('suggestionData After:', suggestionData);
+      console.log('limitedSuggestions After:', limitedSuggestions);
+
+      console.log('Mapped Suggestions:', suggestionsWithClickStatus);
 
       setSuggestions(suggestionsWithClickStatus);
       setShowSuggestions(true);
@@ -191,15 +114,12 @@ export default function RatingComponent() {
   }
 
   async function fetchFilmDetails(id: string) {
-    const key = 'k_g3s37hsb';
+    const key = 'k_ei6ruv0h';
 
     try {
-      setLoading(true);
       const response = await fetch(
         `https://imdb-api.com/en/API/Title/${key}/${id}/Trailer,Ratings,`
       );
-
-      console.log('IMDB API IN fetchFilmDetails');
 
       if (response.status === 404) {
         console.error('Resource not found (404)');
@@ -222,17 +142,15 @@ export default function RatingComponent() {
           (responseData.tvSeriesInfo?.creators || responseData.writers) ?? '',
         description: responseData.plot ?? '',
         trailer: responseData.trailer?.linkEmbed ?? '',
-        type: responseData.ratings.type ?? '',
-        rating: responseData.ratings.imDb ?? '',
+        type: responseData.ratings?.type ?? '',
+        rating: responseData.ratings?.imDb ?? '',
         genre: responseData.genres ?? '',
       };
 
-      setDetailsObj(newDetailsObj);
-      console.log(newDetailsObj);
+      navigate(`${newDetailsObj.idImdb}`, { state: newDetailsObj });
+      console.log('newDetailsObj', newDetailsObj);
     } catch (error) {
       console.error('Error:', error);
-    } finally {
-      setLoading(false);
     }
   }
 
@@ -266,7 +184,6 @@ export default function RatingComponent() {
             <ul className="searchSuggestions">
               {suggestions.map((suggestion) => (
                 <li
-                  id="li"
                   key={suggestion.id}
                   className={suggestion.clicked ? 'disabled' : ''}>
                   <button
@@ -280,65 +197,6 @@ export default function RatingComponent() {
             </ul>
           </div>
         </div>
-      )}
-
-      {loading ? (
-        <LoadingScreen />
-      ) : (
-        detailsObj && (
-          <div className="body">
-            <div className="rowDetails">
-              <div className="column-half center">
-                <img
-                  className="rateImageDetails"
-                  src={detailsObj.poster}
-                  alt={`${detailsObj.film}`}
-                />
-              </div>
-              <div className="column-half">
-                <div className="center-mobile space">
-                  <p className="red-text center-mobile inline">FILM: </p>
-                  <p className="white-text center-mobile inline">
-                    {detailsObj.film}
-                  </p>
-                  <br />
-                  <p className="red-text center-mobile inline">RELEASE YEAR:</p>
-                  <p className="white-text center-mobile inline">
-                    {detailsObj.releaseYear}
-                  </p>
-                  <br />
-                  <p className="red-text center-mobile inline">TYPE: </p>
-                  <p className="white-text center-mobile inline">
-                    {detailsObj.type}
-                  </p>
-                  <br />
-                  <p className="red-text center-mobile inline">CREATOR: </p>
-                  <p className="white-text center-mobile inline">
-                    {detailsObj.creator}
-                  </p>
-                  <br />
-                  <div className="grid-container">
-                    <textarea
-                      placeholder="TYPE NOTE HERE"
-                      className="note inline"
-                      value={note}
-                      onChange={(e) => setNote(e.target.value)}></textarea>
-                    <div className="star">
-                      <StarRating onRatingChange={handleRatingChange} />
-                    </div>
-                  </div>
-                  <div>
-                    <button
-                      onClick={() => addToFilmsTableAndWatchlist(detailsObj)}
-                      className="ratedFilm">
-                      POST
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )
       )}
     </>
   );
