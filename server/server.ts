@@ -218,7 +218,7 @@ app.get('/api/idImdb/ratedFilms', authMiddleware, async (req, res, next) => {
     const { userId } = req.user;
 
     const getRatedFilmsSql = `
-      SELECT "idImdb", "userNote" FROM "RatedFilms"
+      SELECT "idImdb", "userNote", "rating" FROM "RatedFilms"
       WHERE "userId" = $1
     `;
     const getRatedFilmsParams = [userId];

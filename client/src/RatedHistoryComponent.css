@@ -70,3 +70,14 @@ body {
 .end {
   align-items: flex-end;
 }
+
+.rating-container {
+  display: flex;
+  align-items: center; /* To vertically center the content */
+  gap: 1.5rem; /* Add spacing between the two elements */
+}
+
+.ratedRating {
+  font-size: 1.2rem;
+  font-weight: bold;
+}

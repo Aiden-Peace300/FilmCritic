@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import RatedStars from './RatedStars';
 import './RatedHistoryComponent.css';
 
 type RatedFilm = {
   idImdb: string;
   userNote: string;
+  rating: number;
 };
 
 type FilmTitleAndPoster = {
@@ -113,7 +115,10 @@ export default function RatedHistoryComponent() {
                 <p className="rated-note">{film.userNote}</p>
                 <div className="space1">
                   <hr className="line" />
-                  <p className="rated-note">HEHRE</p>
+                  <div className="rating-container">
+                    <span>{<RatedStars rating={film.rating} />}</span>
+                    <span className="ratedRating">{film.rating}/5</span>
+                  </div>
                 </div>
               </div>
             </div>
