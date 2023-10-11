@@ -112,6 +112,7 @@ export default function RatedHistoryComponent() {
                 </p>
                 <p className="rated-note">{film.userNote}</p>
                 <div className="space1">
+                  <hr className="line" />
                   <p className="rated-note">HEHRE</p>
                 </div>
               </div>

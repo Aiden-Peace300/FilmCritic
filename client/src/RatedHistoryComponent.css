@@ -58,4 +58,15 @@ body {
   flex: 1;
   flex-direction: column;
   align-items: flex-start;
+  width: 100%;
+}
+
+.line {
+  border-top: 0.5rem solid black;
+  width: 100%; /* Set the width to 100% to make it span horizontally */
+  align-items: flex-end;
+}
+
+.end {
+  align-items: flex-end;
 }
