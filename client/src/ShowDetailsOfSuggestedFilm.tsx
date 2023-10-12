@@ -128,9 +128,12 @@ export default function ShowDetailsOfSuggestedFilm() {
    */
   const getStreamingPlatforms = useCallback(
     async (nameOfFilm: string | null) => {
-      setIsLoading(true);
       try {
-        nameOfFilm = extractParameterFromCurrentUrl();
+        if (!nameOfFilm) {
+          console.error('nameOfFilm is missing');
+          return;
+        }
+
         const apiKey = '1d8984c313msh20ce3032c3ab337p129762jsnad07952e57f1';
         const url = `https://streaming-availability.p.rapidapi.com/get?imdb_id=${nameOfFilm}&show_type=all&output_language=en`;
 
@@ -147,14 +150,27 @@ export default function ShowDetailsOfSuggestedFilm() {
         const response = await fetch(url, get);
         if (!response.ok) throw new Error(`fetch Error ${response.status}`);
         const responseData = await response.json();
-        console.log('Streaming', responseData.result.streamingInfo.us);
 
-        // Extract platform names and set them in state
-        const platformArray = responseData.result.streamingInfo.us.map(
-          (streamingPlatform: any) => streamingPlatform.service
-        );
-        setPlatforms(platformArray);
-        setIsLoading(false);
+        // Check if there is a "US" entry in streamingInfo
+        if (
+          responseData.result.streamingInfo &&
+          responseData.result.streamingInfo.us
+        ) {
+          const platformArray = responseData.result.streamingInfo.us.map(
+            (streamingPlatform: any) => streamingPlatform.service
+          );
+
+          console.log('platformArray: ', platformArray);
+          setPlatforms(platformArray);
+
+          // Set isLoading based on the presence of platforms
+          setIsLoading(platformArray.length === 0 ? true : false);
+        } else {
+          // No "US" entry in streamingInfo
+          console.log('No streaming platforms in the US');
+          setPlatforms([]); // Clear any previous platform data
+          setIsLoading(false);
+        }
       } catch (err) {
         console.error(err);
       }
@@ -280,36 +296,58 @@ export default function ShowDetailsOfSuggestedFilm() {
             {isLoading ? (
               <h1>Loading Streaming Apps...</h1>
             ) : (
+              // Replace with the new conditional rendering
               <>
-                {platforms.includes('netflix') && (
-                  <img className="netflix-size" src={netflixLogo} />
-                )}
-                {platforms.includes('prime') && (
-                  <img className="prime-size" src={primeLogo} />
-                )}
-                {platforms.includes('disney') && (
-                  <img className="disney-size" src={disneyLogo} />
-                )}
-                {platforms.includes('peacock') && (
-                  <img className="peacock-size" src={peacockLogo} />
-                )}
-                {platforms.includes('apple') && (
-                  <img className="apple-size" src={appleLogo} />
-                )}
-                {platforms.includes('hbo') && (
-                  <img className="hbo-size" src={hboLogo} />
-                )}
-                {platforms.includes('hulu') && (
-                  <img className="hulu-size" src={huluLogo} />
-                )}
-                {platforms.includes('paramount') && (
-                  <img className="paramount-size" src={paramountLogo} />
-                )}
-                {platforms.includes('starz') && (
-                  <img className="starz-size" src={starzLogo} />
-                )}
-                {platforms.includes('showtime') && (
-                  <img className="showtime-size" src={showtimeLogo} />
+                {platforms.length === 0 ? (
+                  <>
+                    <h2
+                      style={{ textAlign: 'center' }}
+                      className="no-streaming-info">
+                      NOT STREAMING ON COMMON PLATFORMS IN THE UNITED STATES
+                    </h2>
+                  </>
+                ) : (
+                  <>
+                    <p style={{ color: 'white', marginBottom: '2rem' }}>
+                      Click to Icon(s) below to start Streaming:{' '}
+                    </p>
+                    {platforms.includes('netflix') && (
+                      <img className="netflix-size clickMe" src={netflixLogo} />
+                    )}
+                    {platforms.includes('prime') && (
+                      <img className="prime-size clickMe" src={primeLogo} />
+                    )}
+                    {platforms.includes('disney') && (
+                      <img className="disney-size clickMe" src={disneyLogo} />
+                    )}
+                    {platforms.includes('peacock') && (
+                      <img className="peacock-size clickMe" src={peacockLogo} />
+                    )}
+                    {platforms.includes('apple') && (
+                      <img className="apple-size clickMe" src={appleLogo} />
+                    )}
+                    {platforms.includes('hbo') && (
+                      <img className="hbo-size clickMe" src={hboLogo} />
+                    )}
+                    {platforms.includes('hulu') && (
+                      <img className="hulu-size clickMe" src={huluLogo} />
+                    )}
+                    {platforms.includes('paramount') && (
+                      <img
+                        className="paramount-size clickMe"
+                        src={paramountLogo}
+                      />
+                    )}
+                    {platforms.includes('starz') && (
+                      <img className="starz-size clickMe" src={starzLogo} />
+                    )}
+                    {platforms.includes('showtime') && (
+                      <img
+                        className="showtime-size clickMe"
+                        src={showtimeLogo}
+                      />
+                    )}
+                  </>
                 )}
               </>
             )}
