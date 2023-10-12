@@ -2,6 +2,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import './RatingComponent.css';
 import { useState, useCallback } from 'react';
 import StarRating from './StarRating';
+import './ShowDetailsOfSuggestedFilm.css';
+import './RatingComponent.css';
 
 type FilmDetails = {
   idImdb: string;
