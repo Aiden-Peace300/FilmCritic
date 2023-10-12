@@ -185,7 +185,6 @@ export default function FeedComponent() {
                           </span>
                         </>
                       )}
-                      {/* {renderEditDeleteOptions(film, user)} Render "Edit" and "Delete" */}
                     </div>
                   </div>
                 </div>
