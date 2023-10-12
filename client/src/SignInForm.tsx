@@ -24,9 +24,10 @@ export default function SignInForm({ onSignIn }: Props) {
       if (!res.ok) {
         throw new Error(`fetch Error ${res.status}`);
       }
-      const { user, token } = await res.json();
+      const { payload, token } = await res.json();
       sessionStorage.setItem('token', token);
-      console.log('Signed In', user, '; received token:', token);
+      sessionStorage.setItem('userId', String(payload.userId));
+      console.log('Signed In', payload, '; received token:', token);
       onSignIn();
     } catch (err) {
       alert(`Error signing in: ${err}`);

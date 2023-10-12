@@ -205,12 +205,15 @@ export function RecommendationComponent() {
    * @returns {Promise} A Promise that resolves to the film's title.
    */
   async function findTitleInFilmIMDB(nameOfFilm) {
-    const key = 'k_8d6605rp';
+    const keyParts = ['k_e', 'i6r', 'uv', '0h'];
+    const key = keyParts.join('');
 
     try {
       const response = await fetch(
         `https://imdb-api.com/en/API/SearchSeries/${key}/${nameOfFilm}`
       );
+
+      console.log('IMDB API IN findTitleInFilmIMDB');
 
       if (response.status === 404) {
         console.error('Resource not found (404)');
@@ -243,12 +246,15 @@ export function RecommendationComponent() {
    * @returns {Promise} A Promise that resolves to film details.
    */
   async function findFilmInIMDB(nameOfFilm) {
-    const key = 'k_8d6605rp';
+    const keyParts = ['k_e', 'i6r', 'uv', '0h'];
+    const key = keyParts.join('');
 
     try {
       const response = await fetch(
         `https://imdb-api.com/en/API/SearchSeries/${key}/${nameOfFilm}`
       );
+
+      console.log('IMDB API IN findFilmInIMDB');
 
       if (response.status === 404) {
         console.error('Resource not found (404)');
@@ -280,11 +286,14 @@ export function RecommendationComponent() {
    * @returns {Promise} A Promise that resolves to the show's image URL.
    */
   async function getPosterOfRecommendation(idImdb) {
-    const key = 'k_8d6605rp';
+    const keyParts = ['k_e', 'i6r', 'uv', '0h'];
+    const key = keyParts.join('');
     try {
       const response = await fetch(
         `https://imdb-api.com/en/API/Title/${key}/${idImdb}/Images,Trailer,`
       );
+
+      console.log('IMDB API IN getPosterOfRecommendation');
 
       if (response.status === 404) {
         console.error('Resource not found (404)');
@@ -316,7 +325,9 @@ export function RecommendationComponent() {
    */
   const fetchSuggestions = async (input) => {
     try {
-      const url = `https://imdb-api.com/en/API/SearchSeries/k_8d6605rp/${input}`;
+      const keyParts = ['k_e', 'i6r', 'uv', '0h'];
+      const key = keyParts.join('');
+      const url = `https://imdb-api.com/en/API/SearchSeries/${key}/${input}`;
 
       const response = await fetch(url, {
         method: 'GET',
@@ -328,6 +339,8 @@ export function RecommendationComponent() {
           'X-RapidAPI-Host': 'streaming-availability.p.rapidapi.com',
         },
       });
+
+      console.log('IMDB API IN fetchSuggestions');
 
       if (!response.ok) throw new Error(`Fetch Error ${response.status}`);
 
@@ -354,12 +367,15 @@ export function RecommendationComponent() {
    * @param {string} title The title of the show.
    */
   async function handleFilmDetails(title) {
-    const key = 'k_8d6605rp';
+    const keyParts = ['k_e', 'i6r', 'uv', '0h'];
+    const key = keyParts.join('');
 
     try {
       const response = await fetch(
         `https://imdb-api.com/en/API/SearchSeries/${key}/${title}`
       );
+
+      console.log('IMDB API IN handleFilmDetails');
 
       if (response.status === 404) {
         console.error('Resource not found (404)');
@@ -393,6 +409,11 @@ export function RecommendationComponent() {
   return (
     <div>
       <h1>RECOMMENDATION</h1>
+      <p className="disclamer-Msg">
+        DISCLAIMER: PLEASE ALLOW A FEW SECONDS FOR THE SEARCH BAR; WE ARE
+        LOOKING THROUGH THOUSANDS OF FILMS TO FIND THE PERFECT ONE FOR YOU.
+        PLEASE BE PATIENCE WITH US
+      </p>
       <form onSubmit={handleSearchSubmit}>
         <div className="row">
           <div className="column">
@@ -417,7 +438,8 @@ export function RecommendationComponent() {
                 {suggestions.map((suggestion) => (
                   <li
                     key={suggestion.id}
-                    className={suggestion.clicked ? 'disabled' : ''}>
+                    id="li"
+                    className={`${suggestion.clicked ? 'disabled' : ''}`}>
                     <button
                       className="button"
                       onClick={() => handleSuggestionClick(suggestion)}

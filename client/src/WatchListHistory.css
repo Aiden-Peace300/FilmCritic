@@ -1,0 +1,45 @@
+ul {
+  list-style-type: none;
+}
+
+.profile-image {
+  display: block;
+  margin: 0 auto;
+  width: 210px;
+  height: 300px;
+  cursor: pointer;
+  padding: 1rem;
+}
+
+.margin-top {
+  margin-top: 10rem;
+}
+
+@media only screen and (width < 735px) {
+  .profile-image {
+    width: 280px;
+    height: 400px;
+    margin-bottom: 1rem;
+  }
+}
+
+.details-button {
+  cursor: pointer;
+  color: white;
+  background-color: #db3434;
+  border-radius: 0.5rem;
+  font-size: 1.3rem;
+  margin-left: 1rem;
+  padding: 0.2rem 4rem;
+}
+
+.trash-icon {
+  font-size: 1.7rem; /* Adjust the size as needed */
+  cursor: pointer;
+  color: #db3434;
+}
+
+.column-profile {
+  justify-content: space-around;
+  margin-bottom: 2rem;
+}

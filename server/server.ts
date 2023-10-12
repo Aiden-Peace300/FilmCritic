@@ -209,6 +209,128 @@ app.get('/api/watchlist', authMiddleware, async (req, res, next) => {
   }
 });
 
+app.get('/api/idImdb/ratedFilms', authMiddleware, async (req, res, next) => {
+  try {
+    if (req.user === undefined) {
+      throw new ClientError(401, 'userId is undefined');
+    }
+
+    const { userId } = req.user;
+
+    const getRatedFilmsSql = `
+      SELECT "idImdb", "userNote", "rating" FROM "RatedFilms"
+      WHERE "userId" = $1
+    `;
+    const getRatedFilmsParams = [userId];
+
+    const ratedFilmsResult = await db.query(
+      getRatedFilmsSql,
+      getRatedFilmsParams
+    );
+
+    if (ratedFilmsResult.rows.length === 0) {
+      return res.status(404).json({ message: "User hasn't rated any films" });
+    }
+
+    const ratedFilms = ratedFilmsResult.rows;
+
+    res.status(200).json(ratedFilms);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get('/api/Edit/ratedFilms', authMiddleware, async (req, res, next) => {
+  try {
+    if (req.user === undefined) {
+      throw new ClientError(401, 'userId is undefined');
+    }
+
+    const { userId } = req.user;
+
+    const getRatedFilmsSql = `
+      SELECT * FROM "RatedFilms"
+      WHERE "userId" = $1
+    `;
+    const getRatedFilmsParams = [userId];
+
+    const ratedFilmsResult = await db.query(
+      getRatedFilmsSql,
+      getRatedFilmsParams
+    );
+
+    if (ratedFilmsResult.rows.length === 0) {
+      return res.status(404).json({ message: 'No Post from anyone!' });
+    }
+
+    const ratedFilms = ratedFilmsResult.rows;
+
+    res.status(200).json(ratedFilms);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get('/api/Feed/ratedFilms', async (req, res, next) => {
+  try {
+    const getRatedFilmsSql = `
+      SELECT * FROM "RatedFilms"
+    `;
+
+    const ratedFilmsResult = await db.query(getRatedFilmsSql);
+
+    if (ratedFilmsResult.rows.length === 0) {
+      return res.status(404).json({ message: 'No Post from anyone!' });
+    }
+
+    const ratedFilms = ratedFilmsResult.rows;
+
+    res.status(200).json(ratedFilms);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get(
+  '/api/Edit/ratedFilms/:idImdb',
+  authMiddleware,
+  async (req, res, next) => {
+    try {
+      const { idImdb } = req.params;
+
+      if (!req.user) {
+        throw new ClientError(401, 'userId is undefined');
+      }
+
+      const { userId } = req.user;
+
+      const getRatedFilmsSql = `
+      SELECT "idImdb", "userNote", "rating" FROM "RatedFilms"
+      WHERE "userId" = $1 and "idImdb" = $2
+    `;
+      const getRatedFilmsParams = [userId, idImdb];
+
+      const ratedFilmsResult = await db.query(
+        getRatedFilmsSql,
+        getRatedFilmsParams
+      );
+
+      if (ratedFilmsResult.rows.length === 0) {
+        return res.status(404).json({
+          message:
+            'you can note edit this post for this film because you never made a post',
+        });
+      }
+
+      const ratedFilms = ratedFilmsResult.rows;
+
+      res.status(200).json(ratedFilms);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
 app.post('/api/rating', authMiddleware, async (req, res, next) => {
   try {
     const { idImdb, rating, userNote } = req.body;
@@ -253,17 +375,86 @@ app.post('/api/rating', authMiddleware, async (req, res, next) => {
   }
 });
 
-app.delete('/api/watchlist/:idImdb', async (req, res, next) => {
+app.delete('/api/watchlist/:idImdb', authMiddleware, async (req, res, next) => {
   try {
     const { idImdb } = req.params;
 
+    if (req.user === undefined) {
+      throw new ClientError(401, 'userId is undefined');
+    }
+    const { userId } = req.user;
+
     const sql = `
-      DELETE FROM "WatchList" WHERE "idImdb" = $1;
+      DELETE FROM "WatchList" WHERE "idImdb" = $1 and "userId" = $2;
     `;
 
-    await db.query(sql, [idImdb]);
+    await db.query(sql, [idImdb, userId]);
 
     res.status(204).end();
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.delete('/api/rated/:idImdb', authMiddleware, async (req, res, next) => {
+  try {
+    const { idImdb } = req.params;
+
+    if (req.user === undefined) {
+      throw new ClientError(401, 'userId is undefined');
+    }
+    const { userId } = req.user;
+
+    const sql = `
+      DELETE FROM "RatedFilms" WHERE "idImdb" = $1 and "userId" = $2;
+    `;
+
+    await db.query(sql, [idImdb, userId]);
+
+    res.status(204).end();
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.put('/api/rated/:idImdb', authMiddleware, async (req, res, next) => {
+  try {
+    const { idImdb } = req.params;
+
+    if (req.user === undefined) {
+      throw new ClientError(401, 'userId is undefined');
+    }
+    const { userId } = req.user;
+    const { rating, userNote } = req.body;
+
+    // Check if the movie is already in the ratedFilms for the user
+    const checkRatedFilmSql = `
+      SELECT * FROM "RatedFilms"
+      WHERE "userId" = $1 AND "idImdb" = $2
+    `;
+    const checkRatedFilmParams = [userId, idImdb];
+    const ratedFilmResult = await db.query(
+      checkRatedFilmSql,
+      checkRatedFilmParams
+    );
+
+    if (ratedFilmResult.rows.length === 0) {
+      // Movie is not found in the ratedFilms, return an error
+      throw new ClientError(404, 'Movie not found in ratedFilms');
+    }
+
+    // Update the rating and userNote for the movie in the ratedFilms
+    const updateRatedFilmSql = `
+      UPDATE "RatedFilms"
+      SET "rating" = $1, "userNote" = $2
+      WHERE "userId" = $3 AND "idImdb" = $4
+      RETURNING *
+    `;
+    const updateRatedFilmParams = [rating, userNote, userId, idImdb];
+    const result = await db.query(updateRatedFilmSql, updateRatedFilmParams);
+    const [updatedRatedFilm] = result.rows;
+
+    res.status(200).json(updatedRatedFilm);
   } catch (err) {
     next(err);
   }

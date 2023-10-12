@@ -2,6 +2,11 @@ import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { ClientError } from './client-error.js';
 
+type User = {
+  userId: number; // Adjust the actual structure to match your user data
+  // Add other user-related fields if needed
+};
+
 const secret = process.env.TOKEN_SECRET ?? '';
 if (!secret) throw new Error('TOKEN_SECRET not found in env');
 
@@ -15,6 +20,6 @@ export function authMiddleware(
   if (!token) {
     throw new ClientError(401, 'authentication required');
   }
-  req.user = jwt.verify(token, secret) as Request['user'];
+  req.user = jwt.verify(token, secret) as User;
   next();
 }

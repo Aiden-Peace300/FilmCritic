@@ -1,0 +1,106 @@
+body {
+  font-family: Exo, sans-serif;
+}
+
+.row1 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* Add spacing between columns */
+  padding: 2rem;
+}
+
+.column1 {
+  width: 100%;
+  background-color: #d9d9d9;
+  padding: 2rem;
+  border-radius: 2rem;
+}
+
+.row2 {
+  display: flex; /* Display the image and text side by side */
+}
+
+.image-container {
+  justify-content: center;
+  align-items: center;
+}
+
+.RatedHistoryImg {
+  width: 15rem;
+  height: 22rem;
+  margin-right: 1rem; /* Add some margin to separate the image from text */
+}
+
+.text-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.rated-note {
+  margin: 0;
+  font-size: 1.5rem;
+  color: black;
+}
+
+.rated-title {
+  font-size: 2rem;
+  margin: 0;
+  color: white;
+  font-weight: bold;
+}
+
+.space1 {
+  justify-content: flex-end;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.line {
+  border-top: 0.5rem solid black;
+  width: 100%; /* Set the width to 100% to make it span horizontally */
+  align-items: flex-end;
+}
+
+.vertical-line {
+  height: 100%;
+  border-left: 0.2rem solid black; /* Use border-left for a vertical line */
+  font-weight: bold;
+  margin: 0 0.5rem;
+}
+
+.end {
+  align-items: flex-end;
+}
+
+.rating-container {
+  display: flex;
+  align-items: center; /* To vertically center the content */
+}
+
+.ratedRating {
+  margin: 0 2rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.like-button {
+  margin-left: 2.5rem;
+  margin-right: 0.5rem;
+  font-size: 3rem;
+  cursor: pointer;
+  color: black;
+}
+
+.like-prompt {
+  cursor: pointer;
+  font-weight: bold;
+  margin-right: 2.5rem;
+  color: black;
+  font-size: 1.7rem;
+}
