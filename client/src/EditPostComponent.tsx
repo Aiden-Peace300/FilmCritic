@@ -1,6 +1,6 @@
 import { Fragment, useState, useCallback, useEffect } from 'react';
-import StarRating from './StarRating.tsx'; // Assuming StarRating component is imported correctly
 import { useNavigate } from 'react-router-dom';
+import PrepopulatedStars from './PrepopulatedStars.tsx';
 
 interface FilmDetails {
   idImdb: string;
@@ -8,8 +8,6 @@ interface FilmDetails {
   film: string;
   releaseYear: string;
   creator: string;
-  description: string;
-  trailer: string;
   type: string;
   genre: string;
 }
@@ -44,15 +42,12 @@ export default function EditPostComponent() {
     async (filmDetails: FilmDetails | null) => {
       if (filmDetails) {
         try {
-          const response = await fetch(
-            `/api/Edit/ratedFilms/${filmDetails.idImdb}`,
-            {
-              method: 'GET',
-              headers: {
-                Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-              },
-            }
-          );
+          const response = await fetch(`/api/Edit/ratedFilms/${idImdb}`, {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+            },
+          });
           console.log('response', response);
 
           if (response.status === 404) {
@@ -61,6 +56,7 @@ export default function EditPostComponent() {
             const data = await response.json();
             if (data.length > 0) {
               console.log('data[0].userNote', data[0].userNote);
+              setRating(data[0].rating);
               setNote(data[0].userNote);
             }
           } else {
@@ -73,7 +69,7 @@ export default function EditPostComponent() {
         }
       }
     },
-    []
+    [idImdb]
   );
 
   function extractParameterFromCurrentUrl() {
@@ -132,8 +128,6 @@ export default function EditPostComponent() {
         releaseYear: responseData.year || '',
         creator:
           responseData.tvSeriesInfo?.creators || responseData.writers || '',
-        description: responseData.plot || '',
-        trailer: responseData.trailer?.linkEmbed || '',
         type: responseData.ratings?.type || '',
         genre: responseData.genres || '',
       };
@@ -190,7 +184,10 @@ export default function EditPostComponent() {
                     value={note}
                     onChange={(e) => setNote(e.target.value)}></textarea>
                   <div className="star">
-                    <StarRating onRatingChange={handleRatingChange} />
+                    <PrepopulatedStars
+                      rated={rating}
+                      onRatingChange={handleRatingChange}
+                    />
                   </div>
                 </div>
                 <div>

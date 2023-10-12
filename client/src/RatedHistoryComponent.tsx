@@ -5,7 +5,6 @@ import { FaRegCommentAlt } from 'react-icons/fa';
 import { GrEdit } from 'react-icons/gr';
 import { BsTrash3 } from 'react-icons/bs';
 import DeleteConfirmationPopup from './RatedDeletePopup';
-// import EditPostComponent from './EditPostComponent';
 import './RatedHistoryComponent.css';
 import { useNavigate } from 'react-router-dom';
 
