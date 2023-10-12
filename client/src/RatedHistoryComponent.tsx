@@ -153,7 +153,10 @@ export default function RatedHistoryComponent() {
                       <span className="like-prompt">COMMENT</span>
                       <div className="vertical-line"> </div>
                       <span>
-                        <GrEdit className="like-button" />
+                        <GrEdit
+                          className="like-button"
+                          onClick={() => <EditPostComponent />}
+                        />
                       </span>
                       <span
                         className="like-prompt"

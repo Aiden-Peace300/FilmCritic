@@ -2,10 +2,11 @@ import { DebounceInput } from 'react-debounce-input';
 // import './ShowDetailsOfSuggestedFilm.css';
 // import './RecommendationComponent.css';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 // import { Link } from 'react-router-dom';
 
 export default function RatingComponent() {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState<
     { id: string; title: string; clicked: boolean }[]
@@ -119,7 +120,7 @@ export default function RatingComponent() {
 
       const responseData = await response.json();
 
-      <Link to={`${responseData.id}`}></Link>;
+      navigate(`${responseData.id}`);
       console.log('responseData.id', responseData.id);
     } catch (error) {
       console.error('Error:', error);

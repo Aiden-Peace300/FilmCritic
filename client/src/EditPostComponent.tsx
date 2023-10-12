@@ -1,3 +1,6 @@
-export default function RatedHistoryComponent() {
-  return <div>HEY</div>;
+import UsersRatingComponent from './UsersRatingComponent';
+
+export default function EditPostComponent() {
+  console.log('In RatedHistoryComponent');
+  return <UsersRatingComponent />;
 }
