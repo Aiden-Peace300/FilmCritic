@@ -1,5 +1,5 @@
 import { Fragment, useState, useCallback, useEffect } from 'react';
-import StarRating from './StarRating.tsx';
+import StarRating from './StarRating.tsx'; // Assuming StarRating component is imported correctly
 import { useNavigate } from 'react-router-dom';
 
 interface FilmDetails {
@@ -11,17 +11,21 @@ interface FilmDetails {
   description: string;
   trailer: string;
   type: string;
-  rating: string;
   genre: string;
 }
 
 export default function EditPostComponent() {
   const navigate = useNavigate();
   const [detailsObj, setDetailsObj] = useState<FilmDetails | null>(null);
-  const [rating, setRating] = useState(0);
   const [note, setNote] = useState('');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [rating, setRating] = useState(0);
 
   const idImdb = extractParameterFromCurrentUrl();
+
+  const handleRatingChange = (newRating: number) => {
+    setRating(newRating);
+  };
 
   const fetchFilmDetailsCallback = useCallback(async () => {
     if (idImdb) {
@@ -36,10 +40,42 @@ export default function EditPostComponent() {
     }
   }, [idImdb]);
 
-  /**
-   * Extracts the IMDB ID from the current URL.
-   * @returns {string | null} - The extracted IMDB ID or null if not found.
-   */
+  const gettingUsersPastRating = useCallback(
+    async (filmDetails: FilmDetails | null) => {
+      if (filmDetails) {
+        try {
+          const response = await fetch(
+            `/api/Edit/ratedFilms/${filmDetails.idImdb}`,
+            {
+              method: 'GET',
+              headers: {
+                Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+              },
+            }
+          );
+          console.log('response', response);
+
+          if (response.status === 404) {
+            console.error('Resource not found (404)');
+          } else if (response.ok) {
+            const data = await response.json();
+            if (data.length > 0) {
+              console.log('data[0].userNote', data[0].userNote);
+              setNote(data[0].userNote);
+            }
+          } else {
+            console.error(
+              'Failed to fetch user rating and note from the server'
+            );
+          }
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      }
+    },
+    []
+  );
+
   function extractParameterFromCurrentUrl() {
     const currentUrl = window.location.href;
     const regexPattern = /\/tt([0-9]+)/;
@@ -53,12 +89,16 @@ export default function EditPostComponent() {
   }
 
   useEffect(() => {
-    fetchFilmDetailsCallback();
-  }, [fetchFilmDetailsCallback]);
+    const fetchData = async () => {
+      await fetchFilmDetailsCallback();
+      if (detailsObj) {
+        await gettingUsersPastRating(detailsObj);
+      }
+    };
 
-  const handleRatingChange = (newRating: number) => {
-    setRating(newRating);
-  };
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function fetchFilmDetails(id: string) {
     const key = 'k_ei6ruv0h';
@@ -95,96 +135,17 @@ export default function EditPostComponent() {
         description: responseData.plot || '',
         trailer: responseData.trailer?.linkEmbed || '',
         type: responseData.ratings?.type || '',
-        rating: responseData.ratings?.imDb || '',
         genre: responseData.genres || '',
       };
 
       setDetailsObj(newDetailsObj);
-      console.log('newDetailsObj', newDetailsObj);
       return newDetailsObj;
     } catch (error) {
       console.error('Error:', error);
     }
   }
 
-  const addToFilmsTableAndWatchlist = useCallback(
-    async (detailsObj) => {
-      try {
-        if (!detailsObj) {
-          console.error('detailsObj is null');
-          return;
-        }
-
-        const idImdb = detailsObj.idImdb;
-
-        // // Extract idImdb from the URL
-        // const { idImdb } = detailsObj;
-        console.log(idImdb);
-
-        if (!idImdb) {
-          console.error('idImdb is missing');
-          return;
-        }
-
-        console.log(
-          'Adding movie to films table and RatedFilms:',
-          idImdb,
-          detailsObj
-        );
-
-        const releaseYearNumber = parseInt(detailsObj.releaseYear, 10);
-
-        const responseFilms = await fetch('/api/films', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            idImdb,
-            filmTitle: detailsObj.film,
-            genre: detailsObj.genre,
-            type: detailsObj.type,
-            releaseYear: releaseYearNumber,
-            creator: detailsObj.creator,
-            description: detailsObj.description,
-            trailer: detailsObj.trailer,
-          }),
-        });
-
-        const responseRatedFilms = await fetch('/api/rating', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-          },
-          body: JSON.stringify({ idImdb, rating, userNote: note }),
-        });
-
-        if (responseFilms.status === 201) {
-          console.log('Movie added to films table');
-          navigate('/movieApp/profile');
-        } else if (responseFilms.status === 200) {
-          console.log('Movie already in films table');
-          navigate('/movieApp/profile');
-        } else {
-          console.error('Failed to add movie to films table');
-        }
-
-        if (responseRatedFilms.status === 201) {
-          console.log('Movie added to watchlist');
-        } else if (responseRatedFilms.status === 200) {
-          console.log('Movie already in watchlist');
-        } else {
-          console.error('Failed to add movie to watchlist');
-        }
-      } catch (error) {
-        console.error('Error submitting rating:', error);
-      }
-    },
-    [rating, note, navigate]
-  );
-
-  console.log(detailsObj);
+  console.log('NOTES', typeof note);
 
   return (
     <>
@@ -236,9 +197,9 @@ export default function EditPostComponent() {
                   {detailsObj && (
                     <Fragment>
                       <button
-                        onClick={() => addToFilmsTableAndWatchlist(detailsObj)}
+                        onClick={() => gettingUsersPastRating(detailsObj)}
                         className="ratedFilm">
-                        POST
+                        EDIT
                       </button>
                       {/* Use navigate here within the Fragment */}
                       <button
