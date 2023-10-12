@@ -240,6 +240,37 @@ app.get('/api/idImdb/ratedFilms', authMiddleware, async (req, res, next) => {
   }
 });
 
+app.get('/api/Edit/ratedFilms', authMiddleware, async (req, res, next) => {
+  try {
+    if (req.user === undefined) {
+      throw new ClientError(401, 'userId is undefined');
+    }
+
+    const { userId } = req.user;
+
+    const getRatedFilmsSql = `
+      SELECT * FROM "RatedFilms"
+      WHERE "userId" = $1
+    `;
+    const getRatedFilmsParams = [userId];
+
+    const ratedFilmsResult = await db.query(
+      getRatedFilmsSql,
+      getRatedFilmsParams
+    );
+
+    if (ratedFilmsResult.rows.length === 0) {
+      return res.status(404).json({ message: 'No Post from anyone!' });
+    }
+
+    const ratedFilms = ratedFilmsResult.rows;
+
+    res.status(200).json(ratedFilms);
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.get(
   '/api/Edit/ratedFilms/:idImdb',
   authMiddleware,
@@ -265,12 +296,10 @@ app.get(
       );
 
       if (ratedFilmsResult.rows.length === 0) {
-        return res
-          .status(404)
-          .json({
-            message:
-              'you can note edit this post for this film because you never made a post',
-          });
+        return res.status(404).json({
+          message:
+            'you can note edit this post for this film because you never made a post',
+        });
       }
 
       const ratedFilms = ratedFilmsResult.rows;
