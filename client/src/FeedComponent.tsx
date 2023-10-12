@@ -6,11 +6,13 @@ import { AiOutlineHeart } from 'react-icons/ai';
 import RatedStars from './RatedStars';
 // import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 type RatedFilm = {
   idImdb: string;
   userNote: string;
   rating: number;
+  userId: number;
 };
 
 type FilmTitleAndPoster = {
@@ -19,7 +21,7 @@ type FilmTitleAndPoster = {
 };
 
 export default function FeedComponent() {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [ratedFilms, setRatedFilms] = useState<
     (RatedFilm & FilmTitleAndPoster)[]
   >([]);
@@ -27,11 +29,11 @@ export default function FeedComponent() {
   const [selectedIdImdb, setSelectedIdImdb] = useState<string | null>(null); // Add selectedIdImdb state
   // const [isEditVisible, setEditVisible] = useState(false);
 
-  // // Function to show the popup
-  // const showPopup = (idImdb: string) => {
-  //   setSelectedIdImdb(idImdb); // Set the selected ID when showing the popup
-  //   setPopupVisible(true);
-  // };
+  // Function to show the popup
+  const showPopup = (idImdb: string) => {
+    setSelectedIdImdb(idImdb); // Set the selected ID when showing the popup
+    setPopupVisible(true);
+  };
 
   // Function to hide the popup
   const hidePopup = () => {
@@ -39,21 +41,16 @@ export default function FeedComponent() {
     setPopupVisible(false);
   };
 
-  // const showEditComponent = (idImdb) => {
-  //   console.log('Showing Edit Component for idImdb:', idImdb);
-  //   navigate(`${idImdb}`);
-  //   // setEditVisible(true);
-  // };
+  const showEditComponent = (idImdb) => {
+    console.log('Showing Edit Component for idImdb:', idImdb);
+    navigate(`${idImdb}`);
+    // setEditVisible(true);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/Edit/ratedFilms', {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-          },
-        });
+        const response = await fetch('/api/Feed/ratedFilms');
 
         if (!response.ok) {
           console.error('Network response was not ok');
@@ -78,6 +75,11 @@ export default function FeedComponent() {
 
     fetchData();
   }, []);
+
+  const userId = Number(sessionStorage.getItem('userId'));
+  if (!userId) {
+    return <div>USER NOT FOUND</div>;
+  }
 
   async function fetchFilmPosterAndTitle(
     id: string
@@ -117,41 +119,6 @@ export default function FeedComponent() {
       return null; // Return null in case of an error
     }
   }
-
-  //   // Function to render the "Edit" and "Delete" options
-  //   const renderEditDeleteOptions = (film, user) => {
-  //     if (user && film.userId === user.userId) {
-  //     // The film belongs to the authenticated user
-  //     return (
-  //       <div>
-  //         <GrEdit
-  //           className="like-button"
-  //           onClick={() => showEditComponent(film.idImdb)}
-  //         />
-  //         <span
-  //           className="like-prompt"
-  //           onClick={() => showEditComponent(film.idImdb)}
-  //         >
-  //           EDIT
-  //         </span>
-  //         <div className="vertical-line"> </div>
-  //         <BsTrash3
-  //           className="like-button"
-  //           onClick={() => showPopup(film.idImdb)}
-  //         />
-  //         <span
-  //           className="like-prompt"
-  //           onClick={() => showPopup(film.idImdb)}
-  //         >
-  //           DELETE
-  //         </span>
-  //       </div>
-  //     );
-  //   } else {
-  //     // The film does not belong to the authenticated user
-  //     return null;
-  //   }
-  // };
 
   return (
     <div>
@@ -194,6 +161,18 @@ export default function FeedComponent() {
                       </span>
                       <span className="like-prompt">COMMENT</span>
                       <div className="vertical-line"> </div>
+                      <div className="vertical-line"> </div>
+                      {film.userId === userId && (
+                        <>
+                          <span onClick={() => showPopup(film.idImdb)}>
+                            Delete
+                          </span>
+                          <span className="vertical-line"> </span>
+                          <span onClick={() => showEditComponent(film.idImdb)}>
+                            Edit
+                          </span>
+                        </>
+                      )}
                       {/* {renderEditDeleteOptions(film, user)} Render "Edit" and "Delete" */}
                     </div>
                   </div>
