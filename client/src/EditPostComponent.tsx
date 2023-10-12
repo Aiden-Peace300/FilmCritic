@@ -93,8 +93,7 @@ export default function EditPostComponent() {
     };
 
     fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [detailsObj, fetchFilmDetailsCallback, gettingUsersPastRating]);
 
   async function fetchFilmDetails(id: string) {
     const key = 'k_ei6ruv0h';
@@ -139,7 +138,7 @@ export default function EditPostComponent() {
     }
   }
 
-  console.log('NOTES', typeof note);
+  console.log('NOTES', note);
 
   return (
     <>

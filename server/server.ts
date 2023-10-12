@@ -271,6 +271,26 @@ app.get('/api/Edit/ratedFilms', authMiddleware, async (req, res, next) => {
   }
 });
 
+app.get('/api/Feed/ratedFilms', async (req, res, next) => {
+  try {
+    const getRatedFilmsSql = `
+      SELECT * FROM "RatedFilms"
+    `;
+
+    const ratedFilmsResult = await db.query(getRatedFilmsSql);
+
+    if (ratedFilmsResult.rows.length === 0) {
+      return res.status(404).json({ message: 'No Post from anyone!' });
+    }
+
+    const ratedFilms = ratedFilmsResult.rows;
+
+    res.status(200).json(ratedFilms);
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.get(
   '/api/Edit/ratedFilms/:idImdb',
   authMiddleware,
