@@ -5,8 +5,9 @@ import { FaRegCommentAlt } from 'react-icons/fa';
 import { GrEdit } from 'react-icons/gr';
 import { BsTrash3 } from 'react-icons/bs';
 import DeleteConfirmationPopup from './RatedDeletePopup';
-import EditPostComponent from './EditPostComponent';
+// import EditPostComponent from './EditPostComponent';
 import './RatedHistoryComponent.css';
+import { useNavigate } from 'react-router-dom';
 
 type RatedFilm = {
   idImdb: string;
@@ -20,11 +21,13 @@ type FilmTitleAndPoster = {
 };
 
 export default function RatedHistoryComponent() {
+  const navigate = useNavigate();
   const [ratedFilms, setRatedFilms] = useState<
     (RatedFilm & FilmTitleAndPoster)[]
   >([]);
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [selectedIdImdb, setSelectedIdImdb] = useState<string | null>(null); // Add selectedIdImdb state
+  // const [isEditVisible, setEditVisible] = useState(false);
 
   // Function to show the popup
   const showPopup = (idImdb: string) => {
@@ -36,6 +39,12 @@ export default function RatedHistoryComponent() {
   const hidePopup = () => {
     setSelectedIdImdb(null); // Clear the selected ID when hiding the popup
     setPopupVisible(false);
+  };
+
+  const showEditComponent = (idImdb) => {
+    console.log('Showing Edit Component for idImdb:', idImdb);
+    navigate(`${idImdb}`);
+    // setEditVisible(true);
   };
 
   useEffect(() => {
@@ -155,12 +164,12 @@ export default function RatedHistoryComponent() {
                       <span>
                         <GrEdit
                           className="like-button"
-                          onClick={() => <EditPostComponent />}
+                          onClick={() => showEditComponent(film.idImdb)}
                         />
                       </span>
                       <span
                         className="like-prompt"
-                        onClick={() => <EditPostComponent />}>
+                        onClick={() => showEditComponent(film.idImdb)}>
                         EDIT
                       </span>
                       <div className="vertical-line"> </div>

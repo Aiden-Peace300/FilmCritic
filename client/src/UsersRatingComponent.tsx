@@ -168,12 +168,10 @@ export default function UsersRatingComponent() {
 
         if (responseFilms.status === 201) {
           console.log('Movie added to films table');
-          window.location.reload();
-          navigate('/movieApp/rating');
+          navigate('/movieApp/profile');
         } else if (responseFilms.status === 200) {
           console.log('Movie already in films table');
-          window.location.reload();
-          navigate('/movieApp/rating');
+          navigate('/movieApp/profile');
         } else {
           console.error('Failed to add movie to films table');
         }
