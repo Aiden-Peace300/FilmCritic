@@ -45,7 +45,7 @@ export default function FeedComponent() {
 
   const showEditComponent = (idImdb) => {
     console.log('Showing Edit Component for idImdb:', idImdb);
-    navigate(`${idImdb}`);
+    navigate(`profile/${idImdb}`);
     // setEditVisible(true);
   };
 
