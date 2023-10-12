@@ -2,24 +2,10 @@ import { DebounceInput } from 'react-debounce-input';
 // import './ShowDetailsOfSuggestedFilm.css';
 // import './RecommendationComponent.css';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 // import { Link } from 'react-router-dom';
 
-type FilmDetails = {
-  idImdb: string;
-  poster: string;
-  film: string;
-  releaseYear: string;
-  creator: string;
-  description: string;
-  trailer: string;
-  type: string;
-  rating: string;
-  genre: string;
-};
-
 export default function RatingComponent() {
-  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState<
     { id: string; title: string; clicked: boolean }[]
@@ -133,22 +119,8 @@ export default function RatingComponent() {
 
       const responseData = await response.json();
 
-      const newDetailsObj: FilmDetails = {
-        idImdb: responseData.id ?? '',
-        poster: responseData.image ?? '',
-        film: responseData.title ?? '',
-        releaseYear: responseData.year ?? '',
-        creator:
-          (responseData.tvSeriesInfo?.creators || responseData.writers) ?? '',
-        description: responseData.plot ?? '',
-        trailer: responseData.trailer?.linkEmbed ?? '',
-        type: responseData.ratings?.type ?? '',
-        rating: responseData.ratings?.imDb ?? '',
-        genre: responseData.genres ?? '',
-      };
-
-      navigate(`${newDetailsObj.idImdb}`, { state: newDetailsObj });
-      console.log('newDetailsObj', newDetailsObj);
+      <Link to={`${responseData.id}`}></Link>;
+      console.log('responseData.id', responseData.id);
     } catch (error) {
       console.error('Error:', error);
     }

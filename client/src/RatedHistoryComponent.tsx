@@ -5,6 +5,7 @@ import { FaRegCommentAlt } from 'react-icons/fa';
 import { GrEdit } from 'react-icons/gr';
 import { BsTrash3 } from 'react-icons/bs';
 import DeleteConfirmationPopup from './RatedDeletePopup';
+import EditPostComponent from './EditPostComponent';
 import './RatedHistoryComponent.css';
 
 type RatedFilm = {
@@ -154,7 +155,11 @@ export default function RatedHistoryComponent() {
                       <span>
                         <GrEdit className="like-button" />
                       </span>
-                      <span className="like-prompt">EDIT</span>
+                      <span
+                        className="like-prompt"
+                        onClick={() => <EditPostComponent />}>
+                        EDIT
+                      </span>
                       <div className="vertical-line"> </div>
                       <span>
                         <BsTrash3

@@ -1,31 +1,118 @@
-import { useLocation, useNavigate } from 'react-router-dom';
-import './RatingComponent.css';
-import { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useState, useCallback, useEffect } from 'react';
 import StarRating from './StarRating';
-import './ShowDetailsOfSuggestedFilm.css';
 import './RatingComponent.css';
+import './ShowDetailsOfSuggestedFilm.css';
 
-type FilmDetails = {
+// interface IdImdb {
+//   idImdb: string;
+// }
+
+interface FilmDetails {
   idImdb: string;
   poster: string;
   film: string;
   releaseYear: string;
   creator: string;
+  description: string;
+  trailer: string;
   type: string;
-};
+  rating: string;
+  genre: string;
+}
 
 export default function UsersRatingComponent() {
   const navigate = useNavigate();
-  const [rating, setRating] = useState(0); // Initialize with a default value
+  const [detailsObj, setDetailsObj] = useState<FilmDetails | null>(null);
+  const [rating, setRating] = useState(0);
   const [note, setNote] = useState('');
-  const location = useLocation();
-  const detailsObj = location.state as FilmDetails;
 
-  console.log(location.state);
-  console.log(detailsObj);
+  const idImdb = extractParameterFromCurrentUrl();
+
+  const fetchFilmDetailsCallback = useCallback(async () => {
+    if (idImdb) {
+      try {
+        const newDetailsObj = await fetchFilmDetails(idImdb);
+        if (newDetailsObj) {
+          setDetailsObj(newDetailsObj);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+  }, [idImdb]);
+
+  useEffect(() => {
+    fetchFilmDetailsCallback();
+  }, [fetchFilmDetailsCallback]);
+
+  /**
+   * Extracts the IMDB ID from the current URL.
+   * @returns {string | null} - The extracted IMDB ID or null if not found.
+   */
+  function extractParameterFromCurrentUrl() {
+    const currentUrl = window.location.href;
+    const regexPattern = /\/tt([0-9]+)/;
+
+    const match = currentUrl.match(regexPattern);
+
+    if (match && match.length > 1) {
+      return match[0].substring(1);
+    }
+    return null;
+  }
+
   const handleRatingChange = (newRating: number) => {
-    setRating(newRating); // Update the 'rating' state when a star is clicked
+    setRating(newRating);
   };
+
+  async function fetchFilmDetails(id: string) {
+    const key = 'k_ei6ruv0h';
+
+    try {
+      const response = await fetch(
+        `https://imdb-api.com/en/API/Title/${key}/${id}/Trailer,Ratings,`
+      );
+
+      if (response.status === 404) {
+        console.error('Resource not found (404)');
+        return;
+      }
+
+      if (!response.ok) {
+        console.error('Failed to fetch data from IMDb API');
+        return;
+      }
+
+      const responseData = await response.json();
+
+      if (!responseData) {
+        console.error('API response is empty');
+        return;
+      }
+
+      const newDetailsObj: FilmDetails = {
+        idImdb: responseData.id || '',
+        poster: responseData.image || '',
+        film: responseData.title || '',
+        releaseYear: responseData.year || '',
+        creator:
+          responseData.tvSeriesInfo?.creators || responseData.writers || '',
+        description: responseData.plot || '',
+        trailer: responseData.trailer?.linkEmbed || '',
+        type: responseData.ratings?.type || '',
+        rating: responseData.ratings?.imDb || '',
+        genre: responseData.genres || '',
+      };
+
+      setDetailsObj(newDetailsObj);
+      console.log('newDetailsObj', newDetailsObj);
+      return newDetailsObj;
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
   const addToFilmsTableAndWatchlist = useCallback(
     async (detailsObj) => {
       try {
@@ -104,6 +191,8 @@ export default function UsersRatingComponent() {
     },
     [rating, note, navigate]
   );
+
+  console.log(detailsObj);
 
   return (
     <>
