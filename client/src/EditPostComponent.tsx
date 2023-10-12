@@ -38,39 +38,32 @@ export default function EditPostComponent() {
     }
   }, [idImdb]);
 
-  const gettingUsersPastRating = useCallback(
-    async (filmDetails: FilmDetails | null) => {
-      if (filmDetails) {
-        try {
-          const response = await fetch(`/api/Edit/ratedFilms/${idImdb}`, {
-            method: 'GET',
-            headers: {
-              Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-            },
-          });
-          console.log('response', response);
+  const gettingUsersPastRating = useCallback(async () => {
+    try {
+      const response = await fetch(`/api/Edit/ratedFilms/${idImdb}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        },
+      });
+      console.log('response', response);
 
-          if (response.status === 404) {
-            console.error('Resource not found (404)');
-          } else if (response.ok) {
-            const data = await response.json();
-            if (data.length > 0) {
-              console.log('data[0].userNote', data[0].userNote);
-              setRating(data[0].rating);
-              setNote(data[0].userNote);
-            }
-          } else {
-            console.error(
-              'Failed to fetch user rating and note from the server'
-            );
-          }
-        } catch (error) {
-          console.error('Error:', error);
+      if (response.status === 404) {
+        console.error('Resource not found (404)');
+      } else if (response.ok) {
+        const data = await response.json();
+        if (data.length > 0) {
+          console.log('data[0].userNote', data[0].userNote);
+          setRating(data[0].rating);
+          setNote(data[0].userNote);
         }
+      } else {
+        console.error('Failed to fetch user rating and note from the server');
       }
-    },
-    [idImdb]
-  );
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }, [idImdb]);
 
   function extractParameterFromCurrentUrl() {
     const currentUrl = window.location.href;
@@ -86,14 +79,12 @@ export default function EditPostComponent() {
 
   useEffect(() => {
     const fetchData = async () => {
-      await fetchFilmDetailsCallback();
-      if (detailsObj) {
-        await gettingUsersPastRating(detailsObj);
-      }
+      fetchFilmDetailsCallback();
+      gettingUsersPastRating();
     };
 
     fetchData();
-  }, [detailsObj, fetchFilmDetailsCallback, gettingUsersPastRating]);
+  }, [fetchFilmDetailsCallback, gettingUsersPastRating]);
 
   async function fetchFilmDetails(id: string) {
     const key = 'k_ei6ruv0h';
@@ -137,6 +128,30 @@ export default function EditPostComponent() {
       console.error('Error:', error);
     }
   }
+
+  const handleEditClick = async () => {
+    try {
+      const response = await fetch(`/api/rated/${idImdb}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        },
+        body: JSON.stringify({ rating, userNote: note }),
+      });
+
+      if (response.ok) {
+        // Update was successful, you can navigate to another page or show a success message here.
+        console.log('Rating and note updated successfully');
+        navigate(-1);
+      } else {
+        // Handle errors or show an error message to the user.
+        console.error('Failed to update rating and note');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
   console.log('NOTES', note);
 
@@ -192,14 +207,12 @@ export default function EditPostComponent() {
                 <div>
                   {detailsObj && (
                     <Fragment>
-                      <button
-                        onClick={() => gettingUsersPastRating(detailsObj)}
-                        className="ratedFilm">
+                      <button onClick={handleEditClick} className="ratedFilm">
                         EDIT
                       </button>
                       {/* Use navigate here within the Fragment */}
                       <button
-                        onClick={() => navigate('/movieApp/profile')}
+                        onClick={() => navigate('/movieApp')}
                         className="ratedFilm">
                         CANCEL
                       </button>
