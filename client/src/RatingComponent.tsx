@@ -1,5 +1,5 @@
 import { DebounceInput } from 'react-debounce-input';
-// import './ShowDetailsOfSuggestedFilm.css';
+import './ShowDetailsOfSuggestedFilm.css';
 // import './RecommendationComponent.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -158,6 +158,7 @@ export default function RatingComponent() {
               {suggestions.map((suggestion) => (
                 <li
                   key={suggestion.id}
+                  id="li"
                   className={suggestion.clicked ? 'disabled' : ''}>
                   <button
                     className="button"
