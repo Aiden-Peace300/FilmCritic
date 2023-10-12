@@ -34,7 +34,7 @@ h1 {
   width: calc(100% - 4rem); /* Set the width to match the input with margins */
 }
 
-li {
+#li {
   list-style-type: none;
   background-color: white;
   color: black;

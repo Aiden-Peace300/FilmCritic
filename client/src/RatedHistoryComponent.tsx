@@ -1,20 +1,17 @@
+import { useState, useEffect } from 'react';
+import RatedStars from './RatedStars';
+import { AiOutlineHeart } from 'react-icons/ai';
+import { FaRegCommentAlt } from 'react-icons/fa';
+import { GrEdit } from 'react-icons/gr';
 import { BsTrash3 } from 'react-icons/bs';
 import DeleteConfirmationPopup from './RatedDeletePopup';
-import { GrEdit } from 'react-icons/gr';
-import { FaRegCommentAlt } from 'react-icons/fa';
-import { AiOutlineHeart } from 'react-icons/ai';
-import RatedStars from './RatedStars';
 import './RatedHistoryComponent.css';
-
-// import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 type RatedFilm = {
   idImdb: string;
   userNote: string;
   rating: number;
-  userId: number;
 };
 
 type FilmTitleAndPoster = {
@@ -22,7 +19,7 @@ type FilmTitleAndPoster = {
   filmPosters: string;
 };
 
-export default function FeedComponent() {
+export default function RatedHistoryComponent() {
   const navigate = useNavigate();
   const [ratedFilms, setRatedFilms] = useState<
     (RatedFilm & FilmTitleAndPoster)[]
@@ -45,14 +42,19 @@ export default function FeedComponent() {
 
   const showEditComponent = (idImdb) => {
     console.log('Showing Edit Component for idImdb:', idImdb);
-    navigate(`profile/${idImdb}`);
+    navigate(`${idImdb}`);
     // setEditVisible(true);
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/Feed/ratedFilms');
+        const response = await fetch('/api/idImdb/ratedFilms', {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+          },
+        });
 
         if (!response.ok) {
           console.error('Network response was not ok');
@@ -77,11 +79,6 @@ export default function FeedComponent() {
 
     fetchData();
   }, []);
-
-  const userId = Number(sessionStorage.getItem('userId'));
-  if (!userId) {
-    return <div>USER NOT FOUND</div>;
-  }
 
   async function fetchFilmPosterAndTitle(
     id: string
@@ -124,6 +121,7 @@ export default function FeedComponent() {
 
   return (
     <div>
+      <h2>Rated History:</h2>
       <div className="row1">
         {ratedFilms
           .slice()
@@ -162,29 +160,29 @@ export default function FeedComponent() {
                       </span>
                       <span className="like-prompt">COMMENT</span>
                       <div className="vertical-line"> </div>
-                      {film.userId === userId && (
-                        <>
-                          <GrEdit
-                            className="like-button"
-                            onClick={() => showEditComponent(film.idImdb)}
-                          />
-                          <span
-                            className="like-prompt"
-                            onClick={() => showEditComponent(film.idImdb)}>
-                            Edit
-                          </span>
-                          <span className="vertical-line"> </span>
-                          <BsTrash3
-                            className="like-button"
-                            onClick={() => showPopup(film.idImdb)}
-                          />
-                          <span
-                            className="like-prompt"
-                            onClick={() => showPopup(film.idImdb)}>
-                            Delete
-                          </span>
-                        </>
-                      )}
+                      <span>
+                        <GrEdit
+                          className="like-button"
+                          onClick={() => showEditComponent(film.idImdb)}
+                        />
+                      </span>
+                      <span
+                        className="like-prompt"
+                        onClick={() => showEditComponent(film.idImdb)}>
+                        EDIT
+                      </span>
+                      <div className="vertical-line"> </div>
+                      <span>
+                        <BsTrash3
+                          className="like-button"
+                          onClick={() => showPopup(film.idImdb)}
+                        />
+                      </span>
+                      <span
+                        className="like-prompt"
+                        onClick={() => showPopup(film.idImdb)}>
+                        DELETE
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -193,7 +191,10 @@ export default function FeedComponent() {
           ))}
       </div>
       {isPopupVisible && (
-        <DeleteConfirmationPopup onClose={hidePopup} idImdb={selectedIdImdb} />
+        <DeleteConfirmationPopup
+          onClose={hidePopup}
+          idImdb={selectedIdImdb} // Pass the selected ID to the DeleteConfirmationPopup
+        />
       )}
     </div>
   );
