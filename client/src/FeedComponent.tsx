@@ -1,9 +1,11 @@
-// import { BsTrash3 } from "react-icons/bs";
+import { BsTrash3 } from 'react-icons/bs';
 import DeleteConfirmationPopup from './RatedDeletePopup';
-// import { GrEdit } from "react-icons/gr";
+import { GrEdit } from 'react-icons/gr';
 import { FaRegCommentAlt } from 'react-icons/fa';
 import { AiOutlineHeart } from 'react-icons/ai';
 import RatedStars from './RatedStars';
+import './RatedHistoryComponent.css';
+
 // import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -122,7 +124,6 @@ export default function FeedComponent() {
 
   return (
     <div>
-      <h1>FEED</h1>
       <div className="row1">
         {ratedFilms
           .slice()
@@ -161,15 +162,26 @@ export default function FeedComponent() {
                       </span>
                       <span className="like-prompt">COMMENT</span>
                       <div className="vertical-line"> </div>
-                      <div className="vertical-line"> </div>
                       {film.userId === userId && (
                         <>
-                          <span onClick={() => showPopup(film.idImdb)}>
-                            Delete
+                          <GrEdit
+                            className="like-button"
+                            onClick={() => showEditComponent(film.idImdb)}
+                          />
+                          <span
+                            className="like-prompt"
+                            onClick={() => showEditComponent(film.idImdb)}>
+                            Edit
                           </span>
                           <span className="vertical-line"> </span>
-                          <span onClick={() => showEditComponent(film.idImdb)}>
-                            Edit
+                          <BsTrash3
+                            className="like-button"
+                            onClick={() => showPopup(film.idImdb)}
+                          />
+                          <span
+                            className="like-prompt"
+                            onClick={() => showPopup(film.idImdb)}>
+                            Delete
                           </span>
                         </>
                       )}

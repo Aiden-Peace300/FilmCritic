@@ -33,7 +33,7 @@
 .buttons-container {
   display: flex;
   justify-content: space-between;
-  width: 100%;
+  width: 50%;
 }
 
 .button {
@@ -46,13 +46,12 @@
 }
 
 .button.delete {
-  margin-left: 1rem;
+  margin-left: -5rem;
   background: red;
   color: white !important;
 }
 
 .button.cancel {
-  margin-right: 1rem;
   background: gray;
   color: black;
 }
