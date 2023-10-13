@@ -11,7 +11,7 @@ const RatedStars: React.FC<StarRatingProps> = ({ rating }) => {
         <label key={ratingValue}>
           <FaStar
             style={{ transition: 'color 200ms' }}
-            color={ratingValue <= rating ? '#ffc107' : '#e4e5e9'}
+            color={ratingValue <= rating ? '#DB3434' : '#e4e5e9'}
             size={50}
           />
         </label>

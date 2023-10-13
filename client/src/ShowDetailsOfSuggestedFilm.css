@@ -123,6 +123,10 @@ h1 {
   padding-top: 3rem;
 }
 
+.clickMe {
+  cursor: pointer;
+}
+
 @media screen and (width <= 768px) {
   .imageDetails {
     width: 280px;
