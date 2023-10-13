@@ -408,12 +408,15 @@ export function RecommendationComponent() {
 
   return (
     <div>
-      <h1>RECOMMENDATION</h1>
+      <h1 style={{ marginBottom: '0rem' }}>RECOMMENDATION</h1>
       <p className="disclamer-Msg">
         DISCLAIMER: PLEASE ALLOW A FEW SECONDS FOR THE SEARCH BAR; WE ARE
         LOOKING THROUGH THOUSANDS OF FILMS TO FIND THE PERFECT ONE FOR YOU.
         PLEASE BE PATIENCE WITH US
       </p>
+      <h2 style={{ color: 'white', marginBottom: '.5rem', marginLeft: '2rem' }}>
+        TYPE IN A SHOW THAT YOU WOULD LIKE TO GET FIVE SUGGESTIONS FOR:{' '}
+      </h2>
       <form onSubmit={handleSearchSubmit}>
         <div className="row">
           <div className="column">

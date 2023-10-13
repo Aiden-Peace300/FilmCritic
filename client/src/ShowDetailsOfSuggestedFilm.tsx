@@ -27,13 +27,12 @@ type FilmDetails = {
 export default function ShowDetailsOfSuggestedFilm() {
   const navigate = useNavigate();
   const [detailsObj, setDetailsObj] = useState<FilmDetails | null>(null);
-  const [platforms, setPlatforms] = useState<string[]>([]); // State to store platform names
+  const [platforms, setPlatforms] = useState<
+    Array<{ name: string; link: string }>
+  >([]);
   const [isLoading, setIsLoading] = useState(true);
+  const displayedPlatforms = new Set<string>();
 
-  /**
-   * Adds the film to the films table and watchlist.
-   * @param {FilmDetails} detailsObj - Film details to be added.
-   */
   const addToFilmsTableAndWatchlist = useCallback(
     async (detailsObj) => {
       try {
@@ -42,7 +41,6 @@ export default function ShowDetailsOfSuggestedFilm() {
           return;
         }
 
-        // Extract idImdb from the URL
         const idImdb = extractParameterFromCurrentUrl();
 
         if (!idImdb) {
@@ -106,10 +104,6 @@ export default function ShowDetailsOfSuggestedFilm() {
     [navigate]
   );
 
-  /**
-   * Extracts the IMDB ID from the current URL.
-   * @returns {string | null} - The extracted IMDB ID or null if not found.
-   */
   function extractParameterFromCurrentUrl() {
     const currentUrl = window.location.href;
     const regexPattern = /\/tt([0-9]+)/;
@@ -122,15 +116,14 @@ export default function ShowDetailsOfSuggestedFilm() {
     return null;
   }
 
-  /**
-   * Retrieves streaming platforms for the film.
-   * @param {string | null} nameOfFilm - The name of the film.
-   */
   const getStreamingPlatforms = useCallback(
     async (nameOfFilm: string | null) => {
-      setIsLoading(true);
       try {
-        nameOfFilm = extractParameterFromCurrentUrl();
+        if (!nameOfFilm) {
+          console.error('nameOfFilm is missing');
+          return;
+        }
+
         const apiKey = '1d8984c313msh20ce3032c3ab337p129762jsnad07952e57f1';
         const url = `https://streaming-availability.p.rapidapi.com/get?imdb_id=${nameOfFilm}&show_type=all&output_language=en`;
 
@@ -147,14 +140,33 @@ export default function ShowDetailsOfSuggestedFilm() {
         const response = await fetch(url, get);
         if (!response.ok) throw new Error(`fetch Error ${response.status}`);
         const responseData = await response.json();
-        console.log('Streaming', responseData.result.streamingInfo.us);
 
-        // Extract platform names and set them in state
-        const platformArray = responseData.result.streamingInfo.us.map(
-          (streamingPlatform: any) => streamingPlatform.service
-        );
-        setPlatforms(platformArray);
-        setIsLoading(false);
+        if (
+          responseData.result.streamingInfo &&
+          responseData.result.streamingInfo.us
+        ) {
+          const platformsArray = responseData.result.streamingInfo.us.map(
+            (streamingPlatform: any) => {
+              // Modify the link for Prime Video if the platform name is 'prime'
+              if (streamingPlatform.service === 'prime') {
+                streamingPlatform.link += '&tag=filmcriticpea-20';
+              }
+              return {
+                name: streamingPlatform.service,
+                link: streamingPlatform.link,
+              };
+            }
+          );
+
+          console.log('platformArray: ', platformsArray);
+          setPlatforms(platformsArray);
+
+          setIsLoading(platformsArray.length === 0 ? true : false);
+        } else {
+          console.log('No streaming platforms in the US');
+          setPlatforms([]);
+          setIsLoading(false);
+        }
       } catch (err) {
         console.error(err);
       }
@@ -281,36 +293,30 @@ export default function ShowDetailsOfSuggestedFilm() {
               <h1>Loading Streaming Apps...</h1>
             ) : (
               <>
-                {platforms.includes('netflix') && (
-                  <img className="netflix-size" src={netflixLogo} />
-                )}
-                {platforms.includes('prime') && (
-                  <img className="prime-size" src={primeLogo} />
-                )}
-                {platforms.includes('disney') && (
-                  <img className="disney-size" src={disneyLogo} />
-                )}
-                {platforms.includes('peacock') && (
-                  <img className="peacock-size" src={peacockLogo} />
-                )}
-                {platforms.includes('apple') && (
-                  <img className="apple-size" src={appleLogo} />
-                )}
-                {platforms.includes('hbo') && (
-                  <img className="hbo-size" src={hboLogo} />
-                )}
-                {platforms.includes('hulu') && (
-                  <img className="hulu-size" src={huluLogo} />
-                )}
-                {platforms.includes('paramount') && (
-                  <img className="paramount-size" src={paramountLogo} />
-                )}
-                {platforms.includes('starz') && (
-                  <img className="starz-size" src={starzLogo} />
-                )}
-                {platforms.includes('showtime') && (
-                  <img className="showtime-size" src={showtimeLogo} />
-                )}
+                <p style={{ color: 'white', marginBottom: '2rem' }}>
+                  Click to Icon(s) below to start Streaming:{' '}
+                </p>
+                {platforms.map((platform) => {
+                  // Check if the platform name is not already displayed
+                  if (!displayedPlatforms.has(platform.name)) {
+                    // If not displayed, add it to the set
+                    displayedPlatforms.add(platform.name);
+                    return (
+                      <a
+                        key={platform.name}
+                        href={platform.link}
+                        target="_blank"
+                        rel="noopener noreferrer">
+                        <img
+                          className={`${platform.name}-size clickMe`}
+                          src={getPlatformLogo(platform.name)}
+                          alt={platform.name}
+                        />
+                      </a>
+                    );
+                  }
+                  return null; // Don't render the platform icon if it's already displayed
+                })}
               </>
             )}
             <p className="red-text pad ref-links">REFERRAL LINKS: </p>
@@ -326,4 +332,31 @@ export default function ShowDetailsOfSuggestedFilm() {
       )}
     </div>
   );
+}
+
+function getPlatformLogo(platformName: string) {
+  switch (platformName) {
+    case 'netflix':
+      return netflixLogo;
+    case 'prime':
+      return primeLogo;
+    case 'disney':
+      return disneyLogo;
+    case 'peacock':
+      return peacockLogo;
+    case 'apple':
+      return appleLogo;
+    case 'hbo':
+      return hboLogo;
+    case 'hulu':
+      return huluLogo;
+    case 'paramount':
+      return paramountLogo;
+    case 'starz':
+      return starzLogo;
+    case 'showtime':
+      return showtimeLogo;
+    default:
+      return '';
+  }
 }
