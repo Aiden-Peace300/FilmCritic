@@ -1,5 +1,3 @@
-// import { useState, useEffect } from 'react';
-// import { useNavigate } from 'react-router-dom';
 export type PageTypeInsideApp = 'Logout';
 import WatchListHistory from './WatchListHistory';
 import RatedHistoryComponent from './RatedHistoryComponent';
@@ -14,13 +12,15 @@ export default function ProfileComponent({
 }: InsideWebsiteNavBarProps) {
   return (
     <>
+      <div className="profile Container">
+        <button
+          type="button"
+          onClick={() => onNavigate('Logout')}
+          className="logout-button">
+          Logout
+        </button>
+      </div>
       {/* Render your component here */}
-      <button
-        type="button"
-        onClick={() => onNavigate('Logout')}
-        className="entries-link">
-        Logout
-      </button>
       <WatchListHistory />
       <RatedHistoryComponent />
     </>
