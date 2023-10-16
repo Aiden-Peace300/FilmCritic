@@ -10,6 +10,9 @@ CREATE TABLE "public"."Users" (
   "userId" serial PRIMARY KEY,
   "username" text not null,
   "hashedPassword" text not null,
+  "imageURL" text,
+  "profileBio" text,
+  "updatedAt" timestamptz(6) not null default now(),
   "createdAt" timestamptz(6) not null default now()
 );
 
@@ -38,6 +41,8 @@ CREATE TABLE "public"."Films" (
   "releaseYear" integer not null,
   "creator" text not null,
   "description" text not null,
+  "generalRating" float not null,
+  "poster" text not null,
   "trailer" text not null
 );
 
