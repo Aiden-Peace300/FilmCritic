@@ -1,6 +1,7 @@
 export type PageTypeInsideApp = 'Logout';
 import WatchListHistory from './WatchListHistory';
 import RatedHistoryComponent from './RatedHistoryComponent';
+import ProfilePicture from './ProfilePicture';
 import './Profile.css';
 
 interface InsideWebsiteNavBarProps {
@@ -12,6 +13,7 @@ export default function ProfileComponent({
 }: InsideWebsiteNavBarProps) {
   return (
     <>
+      <ProfilePicture />
       <div className="profile Container">
         <button
           type="button"

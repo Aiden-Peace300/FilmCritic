@@ -8,3 +8,5 @@ node_modules
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+server/public/images/*
+!server/public/images/.gitkeep

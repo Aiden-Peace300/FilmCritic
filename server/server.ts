@@ -4,6 +4,7 @@ import argon2 from 'argon2';
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import { ClientError, errorMiddleware, authMiddleware } from './lib/index.js';
+import { uploadsMiddleware } from './lib/uploads-middleware.js';
 
 const connectionString =
   process.env.DATABASE_URL ||
@@ -129,6 +130,85 @@ app.delete('/api/users/:userId', async (req, res, next) => {
     next(err);
   }
 });
+
+// app.post(
+//   '/api/uploads',
+//   uploadsMiddleware.single('image'),
+//   async (req, res, next) => {
+//     try {
+//       if (!req.file) throw new ClientError(400, 'no file field in request');
+
+//       const url = `/images/${req.file.filename}`;
+//       const userId = req.user ? req.user.userId : null; // Ensure to handle the user's authentication
+
+//       console.log('URL: ', url, 'userId: ', userId )
+//       // Update the user's profile picture URL in the Users table
+//       const updateProfilePictureSql = `
+//       UPDATE "Users"
+//       SET "imageURL" = $1
+//       WHERE "userId" = $2
+//       RETURNING *
+//     `;
+//     const updateProfilePictureParams = [url, userId];
+//     const result = await db.query(updateProfilePictureSql, updateProfilePictureParams);
+
+//       if (result.rows.length === 0) {
+//         return res.status(404).json({ message: 'User not found' });
+//       }
+
+//       const updatedUser = result.rows[0];
+
+//       // Respond with the updated user data
+//       res.status(200).json(updatedUser);
+//     } catch (err) {
+//       next(err);
+//     }
+//   }
+// );
+
+app.post(
+  '/api/updateProfilePicture',
+  authMiddleware,
+  uploadsMiddleware.single('image'),
+  async (req, res, next) => {
+    try {
+      if (!req.file) throw new ClientError(400, 'no file field in request');
+
+      const imageUrl = `/images/${req.file.filename}`;
+
+      if (req.user === undefined) {
+        throw new ClientError(401, 'userId is undefined');
+      }
+      const { userId } = req.user;
+
+      console.log('userId', userId);
+
+      // Update the user's profile picture URL in the User table
+      const updateProfilePictureSql = `
+      UPDATE "Users"
+      SET "imageURL" = $1
+      WHERE "userId" = $2
+      RETURNING *
+    `;
+      const updateProfilePictureParams = [imageUrl, userId];
+      const result = await db.query(
+        updateProfilePictureSql,
+        updateProfilePictureParams
+      );
+
+      if (result.rows.length === 0) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      const updatedUser = result.rows[0];
+
+      // Respond with the updated user data
+      res.status(200).json(updatedUser);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 app.post('/api/watchlist', authMiddleware, async (req, res, next) => {
   try {
