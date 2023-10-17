@@ -493,13 +493,15 @@ app.post('/api/films', async (req, res, next) => {
       releaseYear,
       creator,
       description,
+      generalRating,
+      poster,
       trailer,
     } = req.body;
 
     // Insert the new film details into the Films table
     const sql = `
-      INSERT INTO "Films" ("idImdb", "filmTitle", "genre", "type", "releaseYear", "creator", "description", "trailer")
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      INSERT INTO "Films" ("idImdb", "filmTitle", "genre", "type", "releaseYear", "creator", "description", "generalRating", "poster", "trailer")
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       RETURNING *
     `;
     const values = [
@@ -510,6 +512,8 @@ app.post('/api/films', async (req, res, next) => {
       releaseYear,
       creator,
       description,
+      generalRating,
+      poster,
       trailer,
     ];
     const result = await db.query(sql, values);

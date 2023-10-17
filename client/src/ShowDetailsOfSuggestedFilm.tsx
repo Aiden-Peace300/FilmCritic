@@ -13,15 +13,16 @@ import { useNavigate } from 'react-router-dom';
 import LoadingScreen from './LoadingScreen';
 
 type FilmDetails = {
-  poster: string;
-  film: string;
+  idImdb: string;
+  filmTitle: string;
+  genre: string;
+  type: string;
   releaseYear: string;
   creator: string;
   description: string;
+  generalRating: string;
+  poster: string;
   trailer: string;
-  type: string;
-  rating: string;
-  genre: string;
 };
 
 export default function ShowDetailsOfSuggestedFilm() {
@@ -48,11 +49,8 @@ export default function ShowDetailsOfSuggestedFilm() {
           return;
         }
 
-        console.log(
-          'Adding movie to films table and watchlist:',
-          idImdb,
-          detailsObj
-        );
+        console.log('Before adding to films table', idImdb, detailsObj);
+
         const releaseYearNumber = parseInt(detailsObj.releaseYear, 10);
 
         const responseFilms = await fetch('/api/films', {
@@ -61,16 +59,23 @@ export default function ShowDetailsOfSuggestedFilm() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            idImdb,
-            filmTitle: detailsObj.film,
+            idImdb: detailsObj.idImdb,
+            filmTitle: detailsObj.filmTitle,
             genre: detailsObj.genre,
             type: detailsObj.type,
             releaseYear: releaseYearNumber,
             creator: detailsObj.creator,
             description: detailsObj.description,
+            generalRating: detailsObj.generalRating,
+            poster: detailsObj.poster,
             trailer: detailsObj.trailer,
           }),
         });
+
+        console.log(
+          'responseFilms after adding to films table: ',
+          responseFilms
+        );
 
         const responseWatchlist = await fetch('/api/watchlist', {
           method: 'POST',
@@ -80,6 +85,8 @@ export default function ShowDetailsOfSuggestedFilm() {
           },
           body: JSON.stringify({ idImdb }),
         });
+
+        console.log('responseWatchlist:', responseWatchlist);
 
         if (responseFilms.status === 201) {
           console.log('Movie added to films table');
@@ -97,6 +104,8 @@ export default function ShowDetailsOfSuggestedFilm() {
         } else {
           console.error('Failed to add movie to watchlist');
         }
+
+        console.log();
       } catch (error) {
         console.error('Error:', error);
       }
@@ -184,7 +193,7 @@ export default function ShowDetailsOfSuggestedFilm() {
           `https://imdb-api.com/en/API/Title/${key}/${id}/Trailer,Ratings,`
         );
 
-        console.log('IMDB API IN fetchFilmDetails');
+        console.log('response: ', response);
 
         if (response.status === 404) {
           console.error('Resource not found (404)');
@@ -198,21 +207,26 @@ export default function ShowDetailsOfSuggestedFilm() {
 
         const responseData = await response.json();
 
-        const newDetailsObj = {
-          poster: responseData.image ?? '',
-          film: responseData.title ?? '',
-          releaseYear: responseData.year ?? '',
-          creator:
-            (responseData.tvSeriesInfo?.creators || responseData.writers) ?? '',
-          description: responseData.plot ?? '',
-          trailer: responseData.trailer?.linkEmbed ?? '',
-          type: responseData.ratings.type ?? '',
-          rating: responseData.ratings.imDb ?? '',
-          genre: responseData.genres ?? '',
-        };
-
-        setDetailsObj(newDetailsObj);
-        getStreamingPlatforms(idImdb);
+        if (responseData) {
+          const newDetailsObj = {
+            idImdb: responseData.id ?? '',
+            poster: responseData.image ?? '',
+            filmTitle: responseData.title ?? '',
+            releaseYear: responseData.year ?? '',
+            creator:
+              (responseData.tvSeriesInfo?.creators || responseData.writers) ??
+              '',
+            description: responseData.plot ?? '',
+            trailer: responseData.trailer?.linkEmbed ?? '',
+            type: responseData.ratings.type ?? '',
+            generalRating: responseData.ratings.imDb ?? '',
+            genre: responseData.genres ?? '',
+          };
+          setDetailsObj(newDetailsObj);
+          getStreamingPlatforms(idImdb);
+        } else {
+          console.error('responseData is undefined');
+        }
       } catch (error) {
         console.error('Error:', error);
       }
@@ -234,14 +248,14 @@ export default function ShowDetailsOfSuggestedFilm() {
                 <img
                   className="imageDetails"
                   src={detailsObj.poster}
-                  alt={`${detailsObj.film}`}
+                  alt={`${detailsObj.filmTitle}`}
                 />
               </div>
               <div className="col-half">
                 <div className="center-mobile space">
                   <p className="red-text center-mobile inline">FILM: </p>
                   <p className="white-text center-mobile inline">
-                    {detailsObj.film}
+                    {detailsObj.filmTitle}
                   </p>
                   <br />
                   <p className="red-text center-mobile inline">RELEASE YEAR:</p>
@@ -257,7 +271,7 @@ export default function ShowDetailsOfSuggestedFilm() {
                   <p className="red-text center-mobile inline">
                     GENERAL RATING:
                   </p>
-                  <p className="white-text center-mobile inline">{` ${detailsObj.rating} / 10`}</p>
+                  <p className="white-text center-mobile inline">{` ${detailsObj.generalRating} / 10`}</p>
                   <br />
                   <p className="red-text center-mobile inline">CREATOR: </p>
                   <p className="white-text center-mobile inline">
