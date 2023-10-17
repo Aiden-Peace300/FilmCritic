@@ -131,41 +131,6 @@ app.delete('/api/users/:userId', async (req, res, next) => {
   }
 });
 
-// app.post(
-//   '/api/uploads',
-//   uploadsMiddleware.single('image'),
-//   async (req, res, next) => {
-//     try {
-//       if (!req.file) throw new ClientError(400, 'no file field in request');
-
-//       const url = `/images/${req.file.filename}`;
-//       const userId = req.user ? req.user.userId : null; // Ensure to handle the user's authentication
-
-//       console.log('URL: ', url, 'userId: ', userId )
-//       // Update the user's profile picture URL in the Users table
-//       const updateProfilePictureSql = `
-//       UPDATE "Users"
-//       SET "imageURL" = $1
-//       WHERE "userId" = $2
-//       RETURNING *
-//     `;
-//     const updateProfilePictureParams = [url, userId];
-//     const result = await db.query(updateProfilePictureSql, updateProfilePictureParams);
-
-//       if (result.rows.length === 0) {
-//         return res.status(404).json({ message: 'User not found' });
-//       }
-
-//       const updatedUser = result.rows[0];
-
-//       // Respond with the updated user data
-//       res.status(200).json(updatedUser);
-//     } catch (err) {
-//       next(err);
-//     }
-//   }
-// );
-
 app.post(
   '/api/updateProfilePicture',
   authMiddleware,
@@ -209,6 +174,32 @@ app.post(
     }
   }
 );
+
+app.get('/api/profilePicture', async (req, res, next) => {
+  try {
+    // if (req.user === undefined) {
+    //   throw new ClientError(401, 'userId is undefined');
+    // }
+
+    // // Retrieve the user's profile picture URL from your database
+    // const { userId } = req.user;
+
+    const sql = `
+      SELECT "imageURL" FROM "Users" WHERE "userId" = 2
+    `;
+
+    const result = await db.query(sql);
+
+    if (result.rows.length > 0) {
+      const profilePictureUrl = result.rows[0].imageURL;
+      res.status(200).json({ imageUrl: profilePictureUrl });
+    } else {
+      res.status(404).json({ imageUrl: null }); // You can customize the response based on your requirements
+    }
+  } catch (err) {
+    next(err);
+  }
+});
 
 app.post('/api/watchlist', authMiddleware, async (req, res, next) => {
   try {
