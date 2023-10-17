@@ -1,9 +1,40 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import placeholder from './images/ProfilePicture.png';
 import './ProfilePicture.css';
 
 export default function ProfileComponent() {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Fetch the user's profile picture URL from the server when the component mounts
+    fetchUserProfilePicture();
+  }, []);
+
+  const fetchUserProfilePicture = async () => {
+    try {
+      // Make an API request to fetch the user's profile picture URL
+      const response = await fetch('/api/profilePicture', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+
+        const imageUrl = data.imageUrl; // Access the imageUrl property
+
+        setImageUrl(imageUrl); // Set imageUrl as a string
+        console.log('data1', data);
+        console.log('imageUrl', imageUrl);
+      } else {
+        console.error('Failed to fetch user profile picture');
+      }
+    } catch (error) {
+      console.error('Error fetching user profile picture:', error);
+    }
+  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -39,6 +70,8 @@ export default function ProfileComponent() {
       console.error('Error uploading file:', error);
     }
   };
+
+  console.log(imageUrl);
 
   return (
     <div>
