@@ -1,0 +1,25 @@
+/* ProfilePicture.css */
+.profile-image-container {
+  text-align: center;
+}
+
+#profile-image {
+  margin: 2rem;
+  max-width: 240px;
+  max-height: 240px;
+  border-radius: 50%;
+}
+
+.upload-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.upload-button:hover {
+  background-color: #0056b3;
+}
