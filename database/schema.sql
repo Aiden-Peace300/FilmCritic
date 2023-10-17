@@ -41,7 +41,7 @@ CREATE TABLE "public"."Films" (
   "releaseYear" integer not null,
   "creator" text not null,
   "description" text not null,
-  "generalRating" float not null,
+  "generalRating" text not null,
   "poster" text not null,
   "trailer" text not null
 );
