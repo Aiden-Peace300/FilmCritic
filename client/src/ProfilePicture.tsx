@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import placeholder from './images/ProfilePicture.png';
 import './ProfilePicture.css';
-import EditProfileBio from './EditBio'; // Import EditBio component here
+import EditProfileBio from './EditBio';
 
 export default function ProfileComponent() {
   const [imageUrl, setImageUrl] = useState<string | null>(null);

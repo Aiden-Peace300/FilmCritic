@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import './WatchlistDeletePopup.css';
 
 type EditBioTypes = {
@@ -5,14 +6,80 @@ type EditBioTypes = {
 };
 
 const EditProfileBio: React.FC<EditBioTypes> = ({ onClose }) => {
+  const [newBio, setNewBio] = useState(''); // State to store the new bio
+
+  useEffect(() => {
+    // Fetch the user's existing bio
+    fetchUserBio();
+  }, []);
+
+  const fetchUserBio = async () => {
+    try {
+      const response = await fetch('/api/userBio', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setNewBio(data.profileBio); // Set the user's existing bio in the state
+      } else {
+        console.error('Failed to fetch user bio');
+      }
+    } catch (error) {
+      console.error('Error fetching user bio:', error);
+    }
+  };
+
+  const handleBioChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setNewBio(e.target.value); // Update the new bio as the user types
+  };
+
+  const saveBio = async () => {
+    // Make an API request to save the updated bio
+    try {
+      const response = await fetch('/api/enter/userBio', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        },
+        body: JSON.stringify({ profileBio: newBio }), // Send the updated bio
+      });
+
+      if (response.ok) {
+        // Bio updated successfully
+
+        // Refresh the window
+        window.location.reload();
+
+        onClose(); // Close the editing popup
+      } else {
+        console.error('Failed to update user bio');
+      }
+    } catch (error) {
+      console.error('Error updating user bio:', error);
+    }
+  };
+
   return (
     <div className="overlay" onClick={onClose}>
       <div className="popup" onClick={(e) => e.stopPropagation()}>
         <div className="message">
-          You are a bout to edit your Profile Bio Here
+          <textarea
+            value={newBio} // Display the new bio
+            onChange={handleBioChange}
+            rows={20}
+            cols={50}
+            placeholder="Edit your bio here"
+          />
         </div>
         <div className="buttons-container">
-          <button className="button delete">Save</button>
+          <button className="button delete" onClick={saveBio}>
+            Save
+          </button>
           <button className="button cancel" onClick={onClose}>
             Cancel
           </button>
