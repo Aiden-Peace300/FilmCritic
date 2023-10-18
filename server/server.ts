@@ -462,7 +462,7 @@ app.get(
       const { userId } = req.user;
 
       const getRatedFilmsSql = `
-      SELECT "idImdb", "userNote", "rating" FROM "RatedFilms"
+      SELECT "idImdb", "userNote", "rating", "likes" FROM "RatedFilms"
       WHERE "userId" = $1 and "idImdb" = $2
     `;
       const getRatedFilmsParams = [userId, idImdb];
@@ -584,7 +584,7 @@ app.put('/api/rated/:idImdb', authMiddleware, async (req, res, next) => {
       throw new ClientError(401, 'userId is undefined');
     }
     const { userId } = req.user;
-    const { rating, userNote, likes } = req.body;
+    const { rating, userNote } = req.body;
 
     // Check if the movie is already in the ratedFilms for the user
     const checkRatedFilmSql = `
@@ -605,13 +605,14 @@ app.put('/api/rated/:idImdb', authMiddleware, async (req, res, next) => {
     // Update the rating and userNote for the movie in the ratedFilms
     const updateRatedFilmSql = `
       UPDATE "RatedFilms"
-      SET "rating" = $1, "userNote" = $2, "likes" = $3
-      WHERE "userId" = $4 AND "idImdb" = $5
+      SET "rating" = $1, "userNote" = $2
+      WHERE "userId" = $3 AND "idImdb" = $4
       RETURNING *
     `;
-    const updateRatedFilmParams = [rating, userNote, likes, userId, idImdb];
+    const updateRatedFilmParams = [rating, userNote, userId, idImdb];
     const result = await db.query(updateRatedFilmSql, updateRatedFilmParams);
     const [updatedRatedFilm] = result.rows;
+    console.log('updatedRatedFilm', updatedRatedFilm);
 
     res.status(200).json(updatedRatedFilm);
   } catch (err) {

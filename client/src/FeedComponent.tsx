@@ -1,8 +1,8 @@
 import { BsTrash3 } from 'react-icons/bs';
 import DeleteConfirmationPopup from './RatedDeletePopup';
-import { FaRegCommentAlt } from 'react-icons/fa';
-import { GrEdit } from 'react-icons/gr';
-import { AiOutlineHeart } from 'react-icons/ai';
+import { FaComment } from 'react-icons/fa';
+import { MdOutlineModeEdit } from 'react-icons/md';
+// import { AiOutlineHeart } from 'react-icons/ai';
 import RatedStars from './RatedStars';
 import './RatedHistoryComponent.css';
 import HeartRating from './HeartLikes';
@@ -156,26 +156,28 @@ export default function FeedComponent() {
                       <span>{<RatedStars rating={film.rating} />}</span>
                       <span className="ratedRating">{film.rating}/5</span>
                       <div className="vertical-line"> </div>
-                      <span>
+                      {/* <span>
                         <AiOutlineHeart className="like-button" />
+                      </span> */}
+                      <span className="like-button">
+                        <HeartRating
+                          onHeartClick={() => handleLike(film.idImdb)}
+                        />
                       </span>
                       <span
                         className="like-prompt"
                         onClick={() => showEditComponent(film.idImdb)}>
-                        Edit
+                        Like
                       </span>
-                      <HeartRating
-                        onHeartClick={() => handleLike(film.idImdb)}
-                      />
                       <div className="vertical-line"> </div>
                       <span>
-                        <FaRegCommentAlt className="like-button" />
+                        <FaComment className="like-button" />
                       </span>
                       <span className="like-prompt">COMMENT</span>
                       <div className="vertical-line"> </div>
                       {film.userId === userId && (
                         <>
-                          <GrEdit
+                          <MdOutlineModeEdit
                             className="like-button"
                             onClick={() => showEditComponent(film.idImdb)}
                           />

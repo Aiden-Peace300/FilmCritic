@@ -16,11 +16,12 @@ const HeartRating: React.FC<HeartRatingProps> = ({ onHeartClick }) => {
   return (
     <div>
       <FaHeart
-        size={40}
+        size={50}
         style={{
+          marginTop: '1rem',
           cursor: 'pointer',
           transition: 'color 200ms',
-          color: isClicked ? 'red' : 'grey',
+          color: isClicked ? '#DB3434' : 'grey',
         }}
         onClick={handleHeartClick}
       />

@@ -94,7 +94,7 @@ body {
   margin-right: 0.5rem;
   font-size: 3rem;
   cursor: pointer;
-  color: black;
+  color: gray;
 }
 
 .like-prompt {
