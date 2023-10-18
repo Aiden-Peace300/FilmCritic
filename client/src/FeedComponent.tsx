@@ -1,12 +1,11 @@
 import { BsTrash3 } from 'react-icons/bs';
 import DeleteConfirmationPopup from './RatedDeletePopup';
-import { GrEdit } from 'react-icons/gr';
 import { FaRegCommentAlt } from 'react-icons/fa';
+import { GrEdit } from 'react-icons/gr';
 import { AiOutlineHeart } from 'react-icons/ai';
 import RatedStars from './RatedStars';
 import './RatedHistoryComponent.css';
-
-// import { useNavigate } from "react-router-dom";
+import HeartRating from './HeartLikes';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -28,25 +27,30 @@ export default function FeedComponent() {
     (RatedFilm & FilmTitleAndPoster)[]
   >([]);
   const [isPopupVisible, setPopupVisible] = useState(false);
-  const [selectedIdImdb, setSelectedIdImdb] = useState<string | null>(null); // Add selectedIdImdb state
-  // const [isEditVisible, setEditVisible] = useState(false);
+  const [selectedIdImdb, setSelectedIdImdb] = useState<string | null>(null);
+  const [likedFilms, setLikedFilms] = useState<string[]>([]);
 
-  // Function to show the popup
+  const handleLike = (idImdb: string) => {
+    if (likedFilms.includes(idImdb)) {
+      setLikedFilms(likedFilms.filter((id) => id !== idImdb));
+    } else {
+      setLikedFilms([...likedFilms, idImdb]);
+    }
+  };
+
   const showPopup = (idImdb: string) => {
-    setSelectedIdImdb(idImdb); // Set the selected ID when showing the popup
+    setSelectedIdImdb(idImdb);
     setPopupVisible(true);
   };
 
-  // Function to hide the popup
   const hidePopup = () => {
-    setSelectedIdImdb(null); // Clear the selected ID when hiding the popup
+    setSelectedIdImdb(null);
     setPopupVisible(false);
   };
 
-  const showEditComponent = (idImdb) => {
+  const showEditComponent = (idImdb: string) => {
     console.log('Showing Edit Component for idImdb:', idImdb);
     navigate(`profile/${idImdb}`);
-    // setEditVisible(true);
   };
 
   useEffect(() => {
@@ -118,7 +122,7 @@ export default function FeedComponent() {
       return filmTitleAndPoster;
     } catch (error) {
       console.error('Error:', error);
-      return null; // Return null in case of an error
+      return null;
     }
   }
 
@@ -155,7 +159,14 @@ export default function FeedComponent() {
                       <span>
                         <AiOutlineHeart className="like-button" />
                       </span>
-                      <span className="like-prompt">LIKE</span>
+                      <span
+                        className="like-prompt"
+                        onClick={() => showEditComponent(film.idImdb)}>
+                        Edit
+                      </span>
+                      <HeartRating
+                        onHeartClick={() => handleLike(film.idImdb)}
+                      />
                       <div className="vertical-line"> </div>
                       <span>
                         <FaRegCommentAlt className="like-button" />
