@@ -1,13 +1,49 @@
 /* ProfilePicture.css */
-.profile-image-container {
-  text-align: center;
+
+.profile-container {
+  /* display: flex;
+  flex-direction: column;
+  align-items: center; */
+  margin: 2rem;
 }
 
 #profile-image {
-  margin: 2rem;
-  max-width: 240px;
-  max-height: 240px;
+  /* margin: 2rem; */
+  width: 30rem;
+  height: 30rem;
   border-radius: 50%;
+}
+
+.profile-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-image-column {
+  flex: 0.5;
+}
+
+.username {
+  font-size: 4rem;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.UsersBio {
+  width: 100%;
+  height: 20rem;
+  border: 1px solid white;
+  border-radius: 0.5rem;
+  background-color: black;
+  color: white;
 }
 
 .upload-button {
@@ -22,4 +58,13 @@
 
 .upload-button:hover {
   background-color: #0056b3;
+}
+
+textarea::placeholder {
+  color: white;
+}
+
+input::selection,
+textarea::selection {
+  color: white;
 }

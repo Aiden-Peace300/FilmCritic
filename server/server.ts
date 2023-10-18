@@ -146,9 +146,6 @@ app.post(
       }
       const { userId } = req.user;
 
-      console.log('userId', userId);
-
-      // Update the user's profile picture URL in the User table
       const updateProfilePictureSql = `
       UPDATE "Users"
       SET "imageURL" = $1
@@ -175,26 +172,115 @@ app.post(
   }
 );
 
-app.get('/api/profilePicture', async (req, res, next) => {
+app.get('/api/profilePicture', authMiddleware, async (req, res, next) => {
   try {
-    // if (req.user === undefined) {
-    //   throw new ClientError(401, 'userId is undefined');
-    // }
+    if (req.user === undefined) {
+      throw new ClientError(401, 'userId is undefined');
+    }
 
-    // // Retrieve the user's profile picture URL from your database
-    // const { userId } = req.user;
+    const { userId } = req.user;
 
     const sql = `
-      SELECT "imageURL" FROM "Users" WHERE "userId" = 2
+      SELECT "imageURL" FROM "Users" WHERE "userId" = $1
     `;
 
-    const result = await db.query(sql);
+    const result = await db.query(sql, [userId]);
 
     if (result.rows.length > 0) {
       const profilePictureUrl = result.rows[0].imageURL;
       res.status(200).json({ imageUrl: profilePictureUrl });
     } else {
-      res.status(404).json({ imageUrl: null }); // You can customize the response based on your requirements
+      res.status(404).json({ imageUrl: null });
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get('/api/username', authMiddleware, async (req, res, next) => {
+  try {
+    if (req.user === undefined) {
+      throw new ClientError(401, 'userId is undefined');
+    }
+
+    const { userId } = req.user;
+
+    const sql = `
+      SELECT "username" FROM "Users" WHERE "userId" = $1
+    `;
+
+    const result = await db.query(sql, [userId]);
+
+    if (result.rows.length > 0) {
+      const username = result.rows[0].username;
+      res.status(200).json({ username: username });
+    } else {
+      res.status(404).json({ username: null });
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get('/api/userBio', authMiddleware, async (req, res, next) => {
+  try {
+    if (req.user === undefined) {
+      throw new ClientError(401, 'userId is undefined');
+    }
+
+    const { userId } = req.user;
+
+    const sql = `
+      SELECT "profileBio" FROM "Users" WHERE "userId" = $1
+    `;
+
+    const result = await db.query(sql, [userId]);
+
+    if (result.rows.length > 0) {
+      const profileBio = result.rows[0].profileBio;
+      res.status(200).json({ profileBio: profileBio });
+    } else {
+      res.status(404).json({ profileBio: null });
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post('/api/enter/userBio', async (req, res, next) => {
+  try {
+    const { profileBio } = req.body;
+
+    // if (req.user === undefined) {
+    //   throw new ClientError(401, 'userId is undefined');
+    // }
+
+    // const { userId } = req.user;
+
+    // // Check if the requested user ID matches the authenticated user's ID
+    // if (userId !== parseInt(req.params.userId, 10)) {
+    //   throw new ClientError(403, 'Access denied');
+    // }
+    console.log('profileBio ', profileBio);
+    if (!profileBio) {
+      throw new ClientError(400, 'profileBio is a required field');
+    }
+
+    // Update the user's profileBio in the Users table
+    const updateProfileBioSql = `
+      UPDATE "Users"
+      SET "profileBio" = $1
+      WHERE "userId" = 2
+      RETURNING *
+    `;
+    const updateProfileBioParams = [profileBio];
+    const result = await db.query(updateProfileBioSql, updateProfileBioParams);
+
+    if (result.rows.length === 0) {
+      res.status(404).json({ message: 'User not found' });
+    } else {
+      const updatedUser = result.rows[0];
+      res.status(200).json({ profileBio: updatedUser.profileBio });
     }
   } catch (err) {
     next(err);
