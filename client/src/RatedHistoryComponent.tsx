@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import RatedStars from './RatedStars';
-import { AiOutlineHeart } from 'react-icons/ai';
-import { FaRegCommentAlt } from 'react-icons/fa';
-import { GrEdit } from 'react-icons/gr';
+// import { AiOutlineHeart } from 'react-icons/ai';
+import { FaHeart, FaComment } from 'react-icons/fa';
+import { MdOutlineModeEdit } from 'react-icons/md';
 import { BsTrash3 } from 'react-icons/bs';
 import DeleteConfirmationPopup from './RatedDeletePopup';
 import './RatedHistoryComponent.css';
@@ -31,13 +31,13 @@ export default function RatedHistoryComponent() {
 
   // Function to show the popup
   const showPopup = (idImdb: string) => {
-    setSelectedIdImdb(idImdb); // Set the selected ID when showing the popup
+    setSelectedIdImdb(idImdb);
     setPopupVisible(true);
   };
 
   // Function to hide the popup
   const hidePopup = () => {
-    setSelectedIdImdb(null); // Clear the selected ID when hiding the popup
+    setSelectedIdImdb(null);
     setPopupVisible(false);
   };
 
@@ -152,17 +152,17 @@ export default function RatedHistoryComponent() {
                       <span className="ratedRating">{film.rating}/5</span>
                       <div className="vertical-line"> </div>
                       <span>
-                        <AiOutlineHeart className="like-button" />
+                        <FaHeart className="like-button" />
                       </span>
                       <span className="like-prompt">LIKE</span>
                       <div className="vertical-line"> </div>
                       <span>
-                        <FaRegCommentAlt className="like-button" />
+                        <FaComment className="like-button" />
                       </span>
                       <span className="like-prompt">COMMENT</span>
                       <div className="vertical-line"> </div>
                       <span>
-                        <GrEdit
+                        <MdOutlineModeEdit
                           className="like-button"
                           onClick={() => showEditComponent(film.idImdb)}
                         />

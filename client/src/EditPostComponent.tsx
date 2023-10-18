@@ -140,6 +140,8 @@ export default function EditPostComponent() {
         body: JSON.stringify({ rating, userNote: note }),
       });
 
+      console.log('response: ', response);
+
       if (response.ok) {
         // Update was successful, you can navigate to another page or show a success message here.
         console.log('Rating and note updated successfully');

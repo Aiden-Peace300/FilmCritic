@@ -20,7 +20,6 @@ export default function ProfileComponent() {
   return (
     <>
       <ProfilePicture onNavigate={handleNavigateInsideApp} />
-      {/* Render your component here */}
       <WatchListHistory />
       <RatedHistoryComponent />
     </>
