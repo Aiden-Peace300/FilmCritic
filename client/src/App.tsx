@@ -30,6 +30,10 @@ export default function App() {
       {isAuthenticated ? <InsideWebsiteNavBar /> : <NavBar />}
 
       <Routes>
+        <Route
+          path="/"
+          element={<SignInForm onSignIn={() => handleNavigate('movieApp')} />}
+        />
         <Route path="/register" element={<RegistrationForm />} />
         <Route
           path="/sign-in"
