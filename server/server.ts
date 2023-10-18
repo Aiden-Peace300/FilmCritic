@@ -366,23 +366,23 @@ app.get('/api/watchlist', authMiddleware, async (req, res, next) => {
   }
 });
 
-app.get('/api/idImdb/ratedFilms', authMiddleware, async (req, res, next) => {
+app.get('/api/idImdb/ratedFilms', async (req, res, next) => {
   try {
-    if (req.user === undefined) {
-      throw new ClientError(401, 'userId is undefined');
-    }
+    //   if (req.user === undefined) {
+    //     throw new ClientError(401, 'userId is undefined');
+    //   }
 
-    const { userId } = req.user;
+    //   const { userId } = req.user;
 
     const getRatedFilmsSql = `
-      SELECT "idImdb", "userNote", "rating" FROM "RatedFilms"
-      WHERE "userId" = $1
+      SELECT "idImdb", "userNote", "rating", "likes" FROM "RatedFilms"
+      WHERE "userId" = 2
     `;
-    const getRatedFilmsParams = [userId];
+    // const getRatedFilmsParams = [userId];
 
     const ratedFilmsResult = await db.query(
-      getRatedFilmsSql,
-      getRatedFilmsParams
+      getRatedFilmsSql
+      // getRatedFilmsParams
     );
 
     if (ratedFilmsResult.rows.length === 0) {
@@ -488,14 +488,14 @@ app.get(
   }
 );
 
-app.post('/api/rating', authMiddleware, async (req, res, next) => {
+app.post('/api/rating', async (req, res, next) => {
   try {
     const { idImdb, rating, userNote } = req.body;
 
-    if (req.user === undefined) {
-      throw new ClientError(401, 'userId is undefined');
-    }
-    const { userId } = req.user;
+    // if (req.user === undefined) {
+    //   throw new ClientError(401, 'userId is undefined');
+    // }
+    // const { userId } = req.user;
 
     if (!idImdb) {
       throw new ClientError(400, 'idImdb is a required field');
@@ -504,9 +504,9 @@ app.post('/api/rating', authMiddleware, async (req, res, next) => {
     // Check if the movie is already in the ratedFilms for the user
     const checkWatchlistSql = `
       SELECT * FROM "RatedFilms"
-      WHERE "userId" = $1 AND "idImdb" = $2
+      WHERE "userId" = 2 AND "idImdb" = $1
     `;
-    const checkWatchlistParams = [userId, idImdb];
+    const checkWatchlistParams = [idImdb];
     const watchlistResult = await db.query(
       checkWatchlistSql,
       checkWatchlistParams
@@ -518,13 +518,15 @@ app.post('/api/rating', authMiddleware, async (req, res, next) => {
     }
 
     // Add the movie to the watchlist with the associated userId
-    const addToWatchlistSql = `
-      INSERT INTO "RatedFilms" ("userId", "idImdb", "rating", "userNote")
-      VALUES ($1, $2, $3, $4)
+    const addToRatedFilmsSql = `
+      INSERT INTO "RatedFilms" ("userId", "idImdb", "rating", "userNote", "likes")
+      VALUES (2, $1, $2, $3, 0)
       RETURNING *
     `;
-    const addToWatchlistParams = [userId, idImdb, rating, userNote];
-    const result = await db.query(addToWatchlistSql, addToWatchlistParams);
+    const addToRatedFilmsParams = [idImdb, rating, userNote];
+
+    console.log('addToRatedFilmsParams:  ', addToRatedFilmsParams);
+    const result = await db.query(addToRatedFilmsSql, addToRatedFilmsParams);
     const [ratedItem] = result.rows;
     res.status(201).json(ratedItem);
   } catch (err) {
@@ -582,7 +584,7 @@ app.put('/api/rated/:idImdb', authMiddleware, async (req, res, next) => {
       throw new ClientError(401, 'userId is undefined');
     }
     const { userId } = req.user;
-    const { rating, userNote } = req.body;
+    const { rating, userNote, likes } = req.body;
 
     // Check if the movie is already in the ratedFilms for the user
     const checkRatedFilmSql = `
@@ -603,11 +605,11 @@ app.put('/api/rated/:idImdb', authMiddleware, async (req, res, next) => {
     // Update the rating and userNote for the movie in the ratedFilms
     const updateRatedFilmSql = `
       UPDATE "RatedFilms"
-      SET "rating" = $1, "userNote" = $2
-      WHERE "userId" = $3 AND "idImdb" = $4
+      SET "rating" = $1, "userNote" = $2, "likes" = $3
+      WHERE "userId" = $4 AND "idImdb" = $5
       RETURNING *
     `;
-    const updateRatedFilmParams = [rating, userNote, userId, idImdb];
+    const updateRatedFilmParams = [rating, userNote, likes, userId, idImdb];
     const result = await db.query(updateRatedFilmSql, updateRatedFilmParams);
     const [updatedRatedFilm] = result.rows;
 

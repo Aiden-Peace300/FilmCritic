@@ -12,6 +12,7 @@ type RatedFilm = {
   idImdb: string;
   userNote: string;
   rating: number;
+  likes: number;
 };
 
 type FilmTitleAndPoster = {

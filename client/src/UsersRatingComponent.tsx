@@ -119,8 +119,6 @@ export default function UsersRatingComponent() {
 
         const idImdb = detailsObj.idImdb;
 
-        // // Extract idImdb from the URL
-        // const { idImdb } = detailsObj;
         console.log(idImdb);
 
         if (!idImdb) {
