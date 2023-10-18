@@ -1,11 +1,21 @@
 import { useEffect, useState } from 'react';
 import placeholder from './images/ProfilePicture.png';
 import './ProfilePicture.css';
+import EditProfileBio from './EditBio'; // Import EditBio component here
 
 export default function ProfileComponent() {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [username, setUsername] = useState<string | null>(null);
   const [profileBio, setProfileBio] = useState<string | null>(null);
+  const [isEditBioVisible, setIsEditBioVisible] = useState(false);
+
+  const showEditBio = () => {
+    setIsEditBioVisible(true);
+  };
+
+  const hideEditBio = () => {
+    setIsEditBioVisible(false);
+  };
 
   useEffect(() => {
     try {
@@ -158,10 +168,12 @@ export default function ProfileComponent() {
             style={{ display: 'none' }}
           />
           <label htmlFor="profilePictureInput" className="upload-button">
-            Upload
+            Upload Profile Picture
           </label>
+          <button onClick={showEditBio}>Edit Bio</button>
         </div>
       </div>
+      {isEditBioVisible && <EditProfileBio onClose={hideEditBio} />}
     </div>
   );
 }
