@@ -165,28 +165,31 @@ export default function ProfileComponent({
         </div>
         <div className="profile-column user-info-column">
           <span className="username">{username || 'Loading UserName...'}</span>
-          <p>{profileBio || 'Loading Bio...'}</p>
-          <input
-            type="file"
-            accept="image/*"
-            name="image"
-            id="profilePictureInput"
-            onChange={handleFileChange}
-            style={{ display: 'none' }}
-          />
-          <label htmlFor="profilePictureInput" className="upload-button">
-            Upload Profile Picture
-          </label>
-          <button className="edit-button" onClick={showEditBio}>
-            Edit Bio
-          </button>
-          <div className="profile Container">
-            <button
+          <p className="profile-bio">{profileBio || 'Loading Bio...'}</p>
+          <div className="button-row">
+            <input
+              type="file"
+              accept="image/*"
+              name="image"
+              id="profilePictureInput"
+              onChange={handleFileChange}
+              style={{ display: 'none' }}
+            />
+            <label htmlFor="profilePictureInput" className="upload-button">
+              Upload Profile Picture
+            </label>
+            <input
+              type="button"
+              className="edit-button"
+              onClick={showEditBio}
+              value="Edit Bio"
+            />
+            <input
               type="button"
               onClick={() => onNavigate('Logout')}
-              className="logout-button">
-              Logout
-            </button>
+              className="logout-button"
+              value="Logout"
+            />
           </div>
         </div>
       </div>

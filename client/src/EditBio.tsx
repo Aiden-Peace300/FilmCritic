@@ -34,7 +34,10 @@ const EditProfileBio: React.FC<EditBioTypes> = ({ onClose }) => {
   };
 
   const handleBioChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setNewBio(e.target.value); // Update the new bio as the user types
+    const text = e.target.value;
+    if (text.length <= 500) {
+      setNewBio(text);
+    }
   };
 
   const saveBio = async () => {
@@ -71,9 +74,10 @@ const EditProfileBio: React.FC<EditBioTypes> = ({ onClose }) => {
           <textarea
             value={newBio} // Display the new bio
             onChange={handleBioChange}
-            rows={20}
+            rows={20} // Adjust the number of rows as needed
             cols={50}
-            placeholder="Edit your bio here"
+            maxLength={500} // Set the maximum character limit
+            placeholder="Edit your bio here (max 500 characters)"
           />
         </div>
         <div className="buttons-container">
