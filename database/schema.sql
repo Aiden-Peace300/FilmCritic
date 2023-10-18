@@ -21,6 +21,7 @@ CREATE TABLE "public"."RatedFilms" (
   "idImdb" text not null,
   "rating" float not null,
   "userNote" text not null,
+  "likes" integer not null,
   "updatedAt" timestamptz(6) not null default now(),
   "createdAt" timestamptz(6) not null default now(),
   PRIMARY KEY ("userId", "idImdb")
