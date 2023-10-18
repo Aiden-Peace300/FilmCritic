@@ -1,4 +1,5 @@
-// export type PageTypeInsideApp = 'Logout';
+export type PageTypeInsideApp = 'Logout';
+
 import WatchListHistory from './WatchListHistory';
 import RatedHistoryComponent from './RatedHistoryComponent';
 import ProfilePicture from './ProfileDetails';
@@ -8,10 +9,14 @@ import { useNavigate } from 'react-router-dom';
 export default function ProfileComponent() {
   const navigate = useNavigate();
 
-  function handleNavigateInsideApp() {
-    navigate('/sign-in');
+  function handleNavigateInsideApp(pageNew: PageTypeInsideApp) {
+    navigate(pageNew);
+    if (pageNew === 'Logout') {
+      sessionStorage.removeItem('token');
+      navigate('Logout');
+      navigate('/sign-in');
+    }
   }
-
   return (
     <>
       <ProfilePicture onNavigate={handleNavigateInsideApp} />
