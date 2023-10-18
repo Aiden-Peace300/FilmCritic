@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-export type PageTypeInsideApp = 'Logout';
+// export type PageTypeInsideApp = 'Logout';
 import { BsTrash3 } from 'react-icons/bs';
 import DeleteConfirmationPopup from './WatchlistDeletePopup';
 import './WatchListHistory.css';
