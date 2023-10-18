@@ -10,7 +10,7 @@ export type PageTypeInsideApp =
   | 'RECOMMENDATION'
   | 'RATING'
   | 'Profile'
-  | 'Logout'
+  // | 'Logout'
   | 'icon-clicked';
 
 export function InsideWebsiteNavBar() {

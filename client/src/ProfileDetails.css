@@ -49,12 +49,13 @@
 .upload-button {
   display: inline-block;
   padding: 10px 20px;
-  background-color: #007bff;
+  background-color: white;
   width: 11rem;
-  color: white;
+  color: #db3434;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 10px;
   margin-top: 10px;
+  font-weight: bold;
 }
 
 .upload-button:hover {
@@ -68,4 +69,16 @@ textarea::placeholder {
 input::selection,
 textarea::selection {
   color: white;
+}
+
+.edit-button {
+  font-size: 1.3rem;
+  display: inline-block;
+  padding: 7px 20px;
+  background-color: white;
+  width: 11rem;
+  color: #db3434;
+  cursor: pointer;
+  border-radius: 10px;
+  margin-top: 10px;
 }

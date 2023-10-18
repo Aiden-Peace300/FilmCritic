@@ -1,9 +1,16 @@
+export type PageTypeInsideApp = 'Logout';
 import { useEffect, useState } from 'react';
 import placeholder from './images/ProfilePicture.png';
-import './ProfilePicture.css';
+import './ProfileDetails.css';
 import EditProfileBio from './EditBio';
 
-export default function ProfileComponent() {
+type InsideWebsiteNavBarProps = {
+  onNavigate: (pageNew: PageTypeInsideApp) => void;
+};
+
+export default function ProfileComponent({
+  onNavigate,
+}: InsideWebsiteNavBarProps) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [username, setUsername] = useState<string | null>(null);
   const [profileBio, setProfileBio] = useState<string | null>(null);
@@ -170,7 +177,17 @@ export default function ProfileComponent() {
           <label htmlFor="profilePictureInput" className="upload-button">
             Upload Profile Picture
           </label>
-          <button onClick={showEditBio}>Edit Bio</button>
+          <button className="edit-button" onClick={showEditBio}>
+            Edit Bio
+          </button>
+          <div className="profile Container">
+            <button
+              type="button"
+              onClick={() => onNavigate('Logout')}
+              className="logout-button">
+              Logout
+            </button>
+          </div>
         </div>
       </div>
       {isEditBioVisible && <EditProfileBio onClose={hideEditBio} />}
