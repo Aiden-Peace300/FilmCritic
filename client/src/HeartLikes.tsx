@@ -10,7 +10,7 @@ const HeartRating: React.FC<HeartRatingProps> = ({ onHeartClick }) => {
 
   const handleHeartClick = () => {
     setIsClicked(!isClicked);
-    onHeartClick(!isClicked); // Call the callback function to update the parent component's state
+    onHeartClick(!isClicked);
   };
 
   return (

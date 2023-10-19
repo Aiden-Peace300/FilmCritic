@@ -2,7 +2,6 @@ import { BsTrash3 } from 'react-icons/bs';
 import DeleteConfirmationPopup from './RatedDeletePopup';
 import { FaComment } from 'react-icons/fa';
 import { MdOutlineModeEdit } from 'react-icons/md';
-// import { AiOutlineHeart } from 'react-icons/ai';
 import RatedStars from './RatedStars';
 import './RatedHistoryComponent.css';
 import HeartRating from './HeartLikes';
@@ -104,12 +103,12 @@ export default function FeedComponent() {
 
       if (response.status === 404) {
         console.error('Resource not found (404)');
-        return null; // Return null if no data is found
+        return null;
       }
 
       if (!response.ok) {
         console.error('Failed to fetch data from IMDb API');
-        return null; // Return null if there's an error
+        return null;
       }
 
       const responseData = await response.json();
@@ -156,9 +155,6 @@ export default function FeedComponent() {
                       <span>{<RatedStars rating={film.rating} />}</span>
                       <span className="ratedRating">{film.rating}/5</span>
                       <div className="vertical-line"> </div>
-                      {/* <span>
-                        <AiOutlineHeart className="like-button" />
-                      </span> */}
                       <span className="like-button">
                         <HeartRating
                           onHeartClick={() => handleLike(film.idImdb)}
