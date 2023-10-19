@@ -1,16 +1,11 @@
 import React, { useState } from 'react';
 import { FaHeart } from 'react-icons/fa';
 
-type HeartRatingProps = {
-  onHeartClick: (isClicked: boolean) => void;
-};
-
-const HeartRating: React.FC<HeartRatingProps> = ({ onHeartClick }) => {
+const HeartRating: React.FC = () => {
   const [isClicked, setIsClicked] = useState(false);
 
   const handleHeartClick = () => {
     setIsClicked(!isClicked);
-    onHeartClick(!isClicked);
   };
 
   return (

@@ -396,6 +396,37 @@ app.get('/api/idImdb/ratedFilms', authMiddleware, async (req, res, next) => {
   }
 });
 
+app.get('/api/likes/:idImdb', authMiddleware, async (req, res, next) => {
+  try {
+    const { idImdb } = req.params;
+
+    if (!req.user) {
+      throw new ClientError(401, 'userId is undefined');
+    }
+
+    const { userId } = req.user;
+
+    // Query the database to count the likes for the given post
+    const countLikesSql = `
+      SELECT "likes" FROM "RatedFilms"
+      WHERE "userId" = $1 AND "idImdb" = $2
+    `;
+    const countLikesParams = [userId, idImdb];
+    const result = await db.query(countLikesSql, countLikesParams);
+
+    if (result.rows.length === 0) {
+      // No rows found, handle the case where the movie doesn't exist in 0 for likeCount
+      res.status(200).json(0);
+    } else {
+      // Rows found, get the likeCount from the first row
+      const likes = result.rows[0].likes;
+      res.status(200).json(likes);
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.get('/api/Edit/ratedFilms', authMiddleware, async (req, res, next) => {
   try {
     if (req.user === undefined) {

@@ -103,7 +103,7 @@ export default function ShowDetailsOfSuggestedFilm() {
           navigate(-1);
         } else {
           console.error('Failed to add movie to watchlist');
-          avigate(-1);
+          navigate(-1);
         }
 
         console.log();
