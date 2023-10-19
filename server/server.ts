@@ -245,15 +245,15 @@ app.get('/api/userBio', authMiddleware, async (req, res, next) => {
   }
 });
 
-app.post('/api/enter/userBio', async (req, res, next) => {
+app.post('/api/enter/userBio', authMiddleware, async (req, res, next) => {
   try {
     const { profileBio } = req.body;
 
-    // if (req.user === undefined) {
-    //   throw new ClientError(401, 'userId is undefined');
-    // }
+    if (req.user === undefined) {
+      throw new ClientError(401, 'userId is undefined');
+    }
 
-    // const { userId } = req.user;
+    const { userId } = req.user;
 
     // // Check if the requested user ID matches the authenticated user's ID
     // if (userId !== parseInt(req.params.userId, 10)) {
@@ -268,12 +268,13 @@ app.post('/api/enter/userBio', async (req, res, next) => {
     const updateProfileBioSql = `
       UPDATE "Users"
       SET "profileBio" = $1
-      WHERE "userId" = 2
+      WHERE "userId" = $2
       RETURNING *
     `;
-    const updateProfileBioParams = [profileBio];
+    const updateProfileBioParams = [profileBio, userId];
     const result = await db.query(updateProfileBioSql, updateProfileBioParams);
 
+    // console.log('result: ', result)
     if (result.rows.length === 0) {
       res.status(404).json({ message: 'User not found' });
     } else {
@@ -364,23 +365,23 @@ app.get('/api/watchlist', authMiddleware, async (req, res, next) => {
   }
 });
 
-app.get('/api/idImdb/ratedFilms', async (req, res, next) => {
+app.get('/api/idImdb/ratedFilms', authMiddleware, async (req, res, next) => {
   try {
-    //   if (req.user === undefined) {
-    //     throw new ClientError(401, 'userId is undefined');
-    //   }
+    if (req.user === undefined) {
+      throw new ClientError(401, 'userId is undefined');
+    }
 
-    //   const { userId } = req.user;
+    const { userId } = req.user;
 
     const getRatedFilmsSql = `
       SELECT "idImdb", "userNote", "rating", "likes" FROM "RatedFilms"
-      WHERE "userId" = 2
+      WHERE "userId" = $1
     `;
-    // const getRatedFilmsParams = [userId];
+    const getRatedFilmsParams = [userId];
 
     const ratedFilmsResult = await db.query(
-      getRatedFilmsSql
-      // getRatedFilmsParams
+      getRatedFilmsSql,
+      getRatedFilmsParams
     );
 
     if (ratedFilmsResult.rows.length === 0) {
@@ -486,14 +487,14 @@ app.get(
   }
 );
 
-app.post('/api/rating', async (req, res, next) => {
+app.post('/api/rating', authMiddleware, async (req, res, next) => {
   try {
     const { idImdb, rating, userNote } = req.body;
 
-    // if (req.user === undefined) {
-    //   throw new ClientError(401, 'userId is undefined');
-    // }
-    // const { userId } = req.user;
+    if (req.user === undefined) {
+      throw new ClientError(401, 'userId is undefined');
+    }
+    const { userId } = req.user;
 
     if (!idImdb) {
       throw new ClientError(400, 'idImdb is a required field');
@@ -502,9 +503,9 @@ app.post('/api/rating', async (req, res, next) => {
     // Check if the movie is already in the ratedFilms for the user
     const checkWatchlistSql = `
       SELECT * FROM "RatedFilms"
-      WHERE "userId" = 2 AND "idImdb" = $1
+      WHERE "userId" = $1 AND "idImdb" = $2
     `;
-    const checkWatchlistParams = [idImdb];
+    const checkWatchlistParams = [userId, idImdb];
     const watchlistResult = await db.query(
       checkWatchlistSql,
       checkWatchlistParams
@@ -517,11 +518,12 @@ app.post('/api/rating', async (req, res, next) => {
 
     // Add the movie to the watchlist with the associated userId
     const addToRatedFilmsSql = `
-      INSERT INTO "RatedFilms" ("userId", "idImdb", "rating", "userNote", "likes")
-      VALUES (2, $1, $2, $3, 0)
-      RETURNING *
+        INSERT INTO "RatedFilms" ("userId", "idImdb", "rating", "userNote", "likes")
+        VALUES ($1, $2, $3, $4, 0)
+        ON CONFLICT ("userId", "idImdb") DO NOTHING
+        RETURNING *
     `;
-    const addToRatedFilmsParams = [idImdb, rating, userNote];
+    const addToRatedFilmsParams = [userId, idImdb, rating, userNote];
 
     console.log('addToRatedFilmsParams:  ', addToRatedFilmsParams);
     const result = await db.query(addToRatedFilmsSql, addToRatedFilmsParams);
