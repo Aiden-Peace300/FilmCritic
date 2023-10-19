@@ -13,6 +13,7 @@ type RatedFilm = {
   userNote: string;
   rating: number;
   userId: number;
+  likes: number;
 };
 
 type FilmTitleAndPoster = {
@@ -27,15 +28,6 @@ export default function FeedComponent() {
   >([]);
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [selectedIdImdb, setSelectedIdImdb] = useState<string | null>(null);
-  const [likedFilms, setLikedFilms] = useState<string[]>([]);
-
-  const handleLike = (idImdb: string) => {
-    if (likedFilms.includes(idImdb)) {
-      setLikedFilms(likedFilms.filter((id) => id !== idImdb));
-    } else {
-      setLikedFilms([...likedFilms, idImdb]);
-    }
-  };
 
   const showPopup = (idImdb: string) => {
     setSelectedIdImdb(idImdb);
@@ -55,11 +47,15 @@ export default function FeedComponent() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/Feed/ratedFilms');
+        const response = await fetch('/api/Feed/ratedFilms', {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+          },
+        });
 
         if (!response.ok) {
-          console.error('Network response was not ok');
-          return;
+          throw new Error('Network response was not ok');
         }
 
         const data = await response.json();
@@ -67,8 +63,17 @@ export default function FeedComponent() {
 
         const ratedFilmData = await Promise.all(
           data.map(async (film) => {
-            const filmData = await fetchFilmPosterAndTitle(film.idImdb);
-            return { ...film, ...filmData };
+            try {
+              console.log('film0', film);
+              const filmData = await fetchFilmPosterAndTitle(film.idImdb);
+              const likesResponse = await fetchLikesCount(film.idImdb);
+              console.log('film', film);
+              return { ...film, ...filmData, likes: likesResponse.likes };
+            } catch (error) {
+              console.error('Error fetching film data:', error);
+              // Handle the error for this film data here, e.g., set a default value
+              return { ...film, poster: '', title: '', likes: 0 };
+            }
           })
         );
 
@@ -80,6 +85,20 @@ export default function FeedComponent() {
 
     fetchData();
   }, []);
+
+  const fetchLikesCount = async (idImdb) => {
+    const response = await fetch(`/api/likes/${idImdb}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+      },
+    });
+    if (!response.ok) {
+      console.error('Failed to fetch likes count for', idImdb);
+      return { likes: 0 };
+    }
+    return response.json();
+  };
 
   const userId = Number(sessionStorage.getItem('userId'));
   if (!userId) {
@@ -131,8 +150,8 @@ export default function FeedComponent() {
         {ratedFilms
           .slice()
           .reverse()
-          .map((film) => (
-            <div className="column1" key={film.idImdb}>
+          .map((film, index) => (
+            <div className="column1" key={index}>
               <div className="row2">
                 {film.filmPosters !== null && (
                   <div className="image-container">
@@ -150,15 +169,13 @@ export default function FeedComponent() {
                   </p>
                   <p className="rated-note">{film.userNote}</p>
                   <div className="space1">
+                    <span className="like-prompt">Likes: {film.likes}</span>
                     <hr className="line" />
                     <div className="rating-container">
                       <span>{<RatedStars rating={film.rating} />}</span>
                       <span className="ratedRating">{film.rating}/5</span>
-                      <div className="vertical-line"> </div>
                       <span className="like-button">
-                        <HeartRating
-                          onHeartClick={() => handleLike(film.idImdb)}
-                        />
+                        <HeartRating />
                       </span>
                       <span
                         className="like-prompt"
