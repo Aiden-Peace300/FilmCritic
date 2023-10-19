@@ -35,6 +35,10 @@ export default function App() {
           element={<SignInForm onSignIn={() => handleNavigate('movieApp')} />}
         />
         <Route path="/register" element={<RegistrationForm />} />
+        <Route
+          path="/sign-in"
+          element={<SignInForm onSignIn={() => handleNavigate('movieApp')} />}
+        />
 
         <Route path="/movieApp">
           <Route index element={<FeedComponent />} />
