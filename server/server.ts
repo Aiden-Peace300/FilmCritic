@@ -163,8 +163,6 @@ app.post(
       }
 
       const updatedUser = result.rows[0];
-
-      // Respond with the updated user data
       res.status(200).json(updatedUser);
     } catch (err) {
       next(err);

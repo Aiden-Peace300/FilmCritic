@@ -14,7 +14,7 @@ export default function ProfileComponent() {
     if (pageNew === 'Logout') {
       sessionStorage.removeItem('token');
       navigate('Logout');
-      navigate('/sign-in');
+      navigate('/');
     }
   }
   return (
