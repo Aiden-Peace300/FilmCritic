@@ -52,6 +52,8 @@ const EditProfileBio: React.FC<EditBioTypes> = ({ onClose }) => {
         body: JSON.stringify({ profileBio: newBio }), // Send the updated bio
       });
 
+      console.log('response: ', response);
+
       if (response.ok) {
         // Bio updated successfully
 
