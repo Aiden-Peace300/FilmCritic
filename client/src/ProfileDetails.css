@@ -102,3 +102,52 @@ textarea::selection {
 .edit-button,
 .logout-button {
   margin: 10px; /* Add some space between buttons */
+
+@media only screen and (width < 735px) {
+  #profile-image {
+    width: 320px;
+    height: 340px;
+    margin-bottom: 1rem;
+  }
+
+  .profile-row {
+    flex-direction: column; /* Stack elements vertically on smaller screens */
+    align-items: center; /* Center items horizontally */
+  }
+
+  .profile-bio {
+    display: block;
+  }
+
+  .username,
+  .profile-bio {
+    margin-left: 2rem;
+    margin-right: 2rem;
+  }
+
+  .profile-image-column {
+    flex: 1; /* Allow #profile-image to take up the full width on small screens */
+  }
+
+  .username {
+    text-align: left;
+  }
+
+  .profile-container {
+    text-align: left;
+  }
+
+  .edit-button,
+  .logout-button {
+    margin-left: 3rem;
+    margin-right: 2rem;
+    width: 75%;
+  }
+
+  .upload-button {
+    text-align: center;
+    width: 15rem;
+    margin-left: 3rem;
+    margin-right: 3rem;
+  }
+}

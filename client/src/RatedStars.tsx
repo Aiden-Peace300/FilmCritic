@@ -1,4 +1,5 @@
 import { FaStar } from 'react-icons/fa';
+import './RatedHistoryComponent.css';
 
 type StarRatingProps = {
   rating: number;
@@ -6,7 +7,7 @@ type StarRatingProps = {
 
 const RatedStars: React.FC<StarRatingProps> = ({ rating }) => {
   return (
-    <div>
+    <div className="rated-stars-container">
       {[1, 2, 3, 4, 5].map((ratingValue) => (
         <label key={ratingValue}>
           <FaStar

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import RatedStars from './RatedStars';
 // import { AiOutlineHeart } from 'react-icons/ai';
-import { FaHeart, FaComment } from 'react-icons/fa';
+import { FaHeart } from 'react-icons/fa';
 import { MdOutlineModeEdit } from 'react-icons/md';
 import { BsTrash3 } from 'react-icons/bs';
 import DeleteConfirmationPopup from './RatedDeletePopup';
@@ -122,7 +122,7 @@ export default function RatedHistoryComponent() {
 
   return (
     <div>
-      <h2>Rated History:</h2>
+      <h2 className="watchlist-prompt mobile-top-margin">Rated History:</h2>
       <div className="row1">
         {ratedFilms
           .slice()
@@ -142,48 +142,56 @@ export default function RatedHistoryComponent() {
                 <div className="text-details">
                   <p className="rated-title">
                     <span className="red-text">FILM: </span>
-                    {film.title.toUpperCase()}
+                    <span className="film-title">
+                      {film.title.toUpperCase()}{' '}
+                    </span>
                   </p>
                   <p className="rated-note">{film.userNote}</p>
                   <div className="space1">
                     <hr className="line" />
                     <div className="rating-container">
-                      <span>{<RatedStars rating={film.rating} />}</span>
-                      <span className="ratedRating">{film.rating}/5</span>
-                      <div className="vertical-line"> </div>
-                      <span>
-                        <FaHeart className="like-button" />
-                      </span>
-                      <span className="like-prompt">LIKE</span>
-                      <div className="vertical-line"> </div>
-                      <span>
-                        <FaComment className="like-button" />
-                      </span>
-                      <span className="like-prompt">COMMENT</span>
-                      <div className="vertical-line"> </div>
-                      <span>
-                        <MdOutlineModeEdit
-                          className="like-button"
-                          onClick={() => showEditComponent(film.idImdb)}
-                        />
-                      </span>
-                      <span
-                        className="like-prompt"
-                        onClick={() => showEditComponent(film.idImdb)}>
-                        EDIT
-                      </span>
-                      <div className="vertical-line"> </div>
-                      <span>
-                        <BsTrash3
-                          className="like-button"
-                          onClick={() => showPopup(film.idImdb)}
-                        />
-                      </span>
-                      <span
-                        className="like-prompt"
-                        onClick={() => showPopup(film.idImdb)}>
-                        DELETE
-                      </span>
+                      <div className="rated-stars-row">
+                        <RatedStars rating={film.rating} />
+                        <span className="ratedRating">{film.rating}/5</span>
+                      </div>
+                      <hr className="line2" />
+                      <div className="rated-stars-row">
+                        <div className="vertical-line hidden-prompt"> </div>
+                        <span>
+                          <FaHeart className="like-button like-button-mobile" />
+                        </span>
+                        <span className="like-prompt">LIKE</span>
+                        {/* <div className="vertical-line"> </div> */}
+                        {/* <span>
+                          <FaComment className="like-button" />
+                        </span>
+                        <span className="like-prompt">COMMENT</span>
+                        <div className="vertical-line"> </div> */}
+                        <div className="vertical-line hidden-prompt"> </div>
+                        <span>
+                          <MdOutlineModeEdit
+                            className="like-button"
+                            onClick={() => showEditComponent(film.idImdb)}
+                          />
+                        </span>
+                        <span
+                          className="like-prompt hidden-prompt"
+                          onClick={() => showEditComponent(film.idImdb)}>
+                          EDIT
+                        </span>
+                        <div className="vertical-line"> </div>
+                        <span>
+                          <BsTrash3
+                            className="like-button"
+                            onClick={() => showPopup(film.idImdb)}
+                          />
+                        </span>
+                        <span
+                          className="like-prompt hidden-prompt"
+                          onClick={() => showPopup(film.idImdb)}>
+                          DELETE
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>

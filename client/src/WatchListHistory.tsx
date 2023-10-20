@@ -97,10 +97,14 @@ export default function WatchListHistoryComponent() {
   return (
     <>
       <div>
-        <h2>Watchlist History:</h2>
-        <p>Click the Film Poster or Details for a reminder of details</p>
+        <h2 className="watchlist-prompt mobile-top-margin">
+          Watchlist History:
+        </h2>
+        <p className="watchlist-prompt">
+          Click the Film Poster or Details for a reminder of details
+        </p>
         <ul className="ul">
-          <div className="row">
+          <div className="row center-img">
             {watchlist
               .slice()
               .reverse()
