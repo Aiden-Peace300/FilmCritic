@@ -68,7 +68,18 @@ export default function FeedComponent() {
               const filmData = await fetchFilmPosterAndTitle(film.idImdb);
               const likesResponse = await fetchLikesCount(film.idImdb);
               console.log('film', film);
-              return { ...film, ...filmData, likes: likesResponse.likes };
+
+              console.log('likesResponse:', likesResponse);
+
+              // Create a copy of the film object with updated 'likes'
+              const updatedFilm = {
+                ...film,
+                ...filmData,
+                likes: likesResponse.likes,
+              };
+
+              console.log('updatedFilm : ', updatedFilm);
+              return updatedFilm;
             } catch (error) {
               console.error('Error fetching film data:', error);
               // Handle the error for this film data here, e.g., set a default value
@@ -87,17 +98,32 @@ export default function FeedComponent() {
   }, []);
 
   const fetchLikesCount = async (idImdb) => {
-    const response = await fetch(`/api/likes/${idImdb}`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-      },
-    });
-    if (!response.ok) {
-      console.error('Failed to fetch likes count for', idImdb);
+    try {
+      const response = await fetch(`/api/likes/${idImdb}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        },
+      });
+
+      console.log('response: ', response);
+
+      if (!response.ok) {
+        console.error('Failed to fetch likes count for', idImdb);
+        return { likes: 0 }; // Default to 0 if there's an error
+      }
+
+      const likesData = await response.json();
+      console.log('likesData: ', likesData);
+      if (likesData.likes !== undefined) {
+        return { likes: likesData.likes }; // Extract the likes count from the API response
+      } else {
+        return { likes: likesData };
+      }
+    } catch (error) {
+      console.error('Error fetching likes count:', error);
       return { likes: 0 };
     }
-    return response.json();
   };
 
   const userId = Number(sessionStorage.getItem('userId'));
@@ -144,6 +170,16 @@ export default function FeedComponent() {
     }
   }
 
+  const handleUpdateLikes = (idImdb, newLikes) => {
+    setRatedFilms((prevFilms) =>
+      prevFilms.map((film) =>
+        film.idImdb === idImdb ? { ...film, likes: newLikes } : film
+      )
+    );
+  };
+
+  console.log('ratedFilms', ratedFilms);
+
   return (
     <div>
       <div className="row1">
@@ -175,7 +211,13 @@ export default function FeedComponent() {
                       <span>{<RatedStars rating={film.rating} />}</span>
                       <span className="ratedRating">{film.rating}/5</span>
                       <span className="like-button">
-                        <HeartRating />
+                        <HeartRating
+                          idImdb={film.idImdb}
+                          initialLikes={film.likes}
+                          onUpdateLikes={(newLikes) => {
+                            handleUpdateLikes(film.idImdb, newLikes);
+                          }}
+                        />
                       </span>
                       <span
                         className="like-prompt"

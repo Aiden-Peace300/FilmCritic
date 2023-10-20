@@ -400,6 +400,8 @@ app.get('/api/likes/:idImdb', authMiddleware, async (req, res, next) => {
   try {
     const { idImdb } = req.params;
 
+    console.log(idImdb);
+
     if (!req.user) {
       throw new ClientError(401, 'userId is undefined');
     }
@@ -414,6 +416,8 @@ app.get('/api/likes/:idImdb', authMiddleware, async (req, res, next) => {
     const countLikesParams = [userId, idImdb];
     const result = await db.query(countLikesSql, countLikesParams);
 
+    console.log(result);
+
     if (result.rows.length === 0) {
       // No rows found, handle the case where the movie doesn't exist in 0 for likeCount
       res.status(200).json(0);
@@ -421,7 +425,65 @@ app.get('/api/likes/:idImdb', authMiddleware, async (req, res, next) => {
       // Rows found, get the likeCount from the first row
       const likes = result.rows[0].likes;
       res.status(200).json(likes);
+      console.log('WORKING CORRECTLY');
     }
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post('/api/likes/:idImdb', authMiddleware, async (req, res, next) => {
+  try {
+    const { idImdb } = req.params;
+
+    // console.log('idImdb', idImdb);
+
+    if (!req.user) {
+      throw new ClientError(401, 'userId is undefined');
+    }
+
+    const { userId } = req.user;
+
+    // Check if the movie exists in the ratedFilms table
+    const checkRatedFilmSql = `
+      SELECT "likes" FROM "RatedFilms"
+      WHERE "userId" = $1 AND "idImdb" = $2
+    `;
+    const checkRatedFilmParams = [userId, idImdb];
+    const ratedFilmResult = await db.query(
+      checkRatedFilmSql,
+      checkRatedFilmParams
+    );
+
+    if (ratedFilmResult.rows.length === 0) {
+      // Movie is not found in the ratedFilms, return an error
+      throw new ClientError(404, 'Movie not found in ratedFilms');
+    }
+
+    // Get the current number of likes
+    const currentLikes = ratedFilmResult.rows[0].likes;
+
+    // Increment the like count
+    const newLikes = currentLikes + 1;
+
+    // console.log('newLikes: ', newLikes);
+
+    // Update the likes count in the ratedFilms table
+    const updateLikesSql = `
+      UPDATE "RatedFilms"
+      SET "likes" = $1
+      WHERE "userId" = $2 AND "idImdb" = $3
+      RETURNING *
+    `;
+    const updateLikesParams = [newLikes, userId, idImdb];
+    const result = await db.query(updateLikesSql, updateLikesParams);
+
+    if (result.rows.length === 0) {
+      throw new ClientError(404, 'Failed to update likes');
+    }
+
+    // Return the updated like count
+    res.status(200).json({ likes: newLikes });
   } catch (err) {
     next(err);
   }
