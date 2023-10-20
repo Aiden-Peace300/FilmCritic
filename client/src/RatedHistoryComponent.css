@@ -78,10 +78,10 @@ body {
 }
 
 .vertical-line {
-  height: 4rem; /* Set the width for the line */
-  border-left: 0.3rem solid black; /* Set the border for the left side only */
+  height: 4rem;
+  border-left: 0.3rem solid black;
   font-weight: bold;
-  margin: 0 2.5rem; /* Adjust margin as needed */
+  margin: 0 2.5rem;
   display: inline;
 }
 
@@ -134,8 +134,8 @@ body {
 
 .rated-stars-container {
   display: flex;
-  flex-direction: row; /* Stack stars vertically */
-  align-items: center; /* Center stars horizontally */
+  flex-direction: row;
+  align-items: center;
 }
 
 @media only screen and (width < 735px) {
@@ -169,8 +169,8 @@ body {
 
   .rated-stars-container {
     display: flex;
-    flex-direction: row; /* Stack stars vertically */
-    align-items: center; /* Center stars horizontally */
+    flex-direction: row;
+    align-items: center;
   }
 
   .rated-stars-row {
@@ -182,15 +182,13 @@ body {
   .mobile-rating-container {
     display: flex;
     flex-direction: column;
-
-    /* align-items: center; */
-    margin-top: 10px; /* Add spacing between stars and these elements */
+    margin-top: 10px;
   }
 
   .rating-container {
     display: flex;
-    flex-direction: column; /* Stack "LIKE," "COMMENT," "EDIT," and "DELETE" vertically */
-    align-items: center; /* Center them horizontally */
+    flex-direction: column;
+    align-items: center;
   }
 
   .like-button {

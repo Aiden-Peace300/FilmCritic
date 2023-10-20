@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-// export type PageTypeInsideApp = 'Logout';
 import { BsTrash3 } from 'react-icons/bs';
 import DeleteConfirmationPopup from './WatchlistDeletePopup';
 import './WatchListHistory.css';
@@ -14,7 +13,7 @@ export default function WatchListHistoryComponent() {
   const [watchlist, setWatchlist] = useState<string[]>([]);
   const [filmPosters, setFilmPosters] = useState<FilmPoster>({});
   const [isPopupVisible, setPopupVisible] = useState(false);
-  const [selectedIdImdb, setSelectedIdImdb] = useState<string | null>(null); // Add selectedIdImdb state
+  const [selectedIdImdb, setSelectedIdImdb] = useState<string | null>(null);
 
   // Function to show the popup
   const showPopup = (idImdb: string) => {
@@ -130,7 +129,7 @@ export default function WatchListHistoryComponent() {
                         </button>
                         <BsTrash3
                           className="trash-icon"
-                          onClick={() => showPopup(idImdb)} // Pass the ID to the showPopup function
+                          onClick={() => showPopup(idImdb)}
                         />
                       </div>
                     </div>
@@ -143,10 +142,7 @@ export default function WatchListHistoryComponent() {
         </ul>
       </div>
       {isPopupVisible && (
-        <DeleteConfirmationPopup
-          onClose={hidePopup}
-          idImdb={selectedIdImdb} // Pass the selected ID to the DeleteConfirmationPopup
-        />
+        <DeleteConfirmationPopup onClose={hidePopup} idImdb={selectedIdImdb} />
       )}
     </>
   );
