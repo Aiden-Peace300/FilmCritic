@@ -43,3 +43,57 @@ input[type='radio'] {
 .star {
   align-items: center;
 }
+
+@media only screen and (width < 735px) {
+  .rateImageDetails {
+    width: 300px;
+    height: 30rem;
+    margin: 2rem;
+  }
+
+  .rowDetails {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobile-view {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    align-items: center; /* Center align items */
+    text-align: center; /* Center-align text within each item */
+  }
+
+  .note {
+    margin-top: 4rem;
+    width: 18rem;
+    height: 20rem;
+  }
+
+  .star {
+    margin-top: 2rem; /* Add margin to separate the note and PrepopulatedStars */
+  }
+
+  .ratedFilm {
+    margin-top: 1rem; /* Add margin to separate the "POST" button */
+    margin-left: 0; /* Remove margin-left to center-align the button */
+  }
+
+  .grid-container {
+    display: flex;
+    flex-direction: column; /* Display the elements vertically on mobile */
+    align-items: center; /* Center-align elements */
+  }
+
+  .rating-prompt {
+    margin: 0;
+    padding: 0;
+  }
+
+  .font-size {
+    font-size: 2rem;
+  }
+
+  .cancel {
+    margin-left: 1rem;
+  }
+}

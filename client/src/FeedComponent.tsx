@@ -28,6 +28,7 @@ export default function FeedComponent() {
   >([]);
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [selectedIdImdb, setSelectedIdImdb] = useState<string | null>(null);
+  const [filmLikes, setFilmLikes] = useState<Map<string, number>>(new Map());
 
   const showPopup = (idImdb: string) => {
     setSelectedIdImdb(idImdb);
@@ -61,6 +62,8 @@ export default function FeedComponent() {
         const data = await response.json();
         console.log('rated history:', data);
 
+        const localLikes = new Map();
+
         const ratedFilmData = await Promise.all(
           data.map(async (film) => {
             try {
@@ -78,6 +81,9 @@ export default function FeedComponent() {
                 likes: likesResponse.likes,
               };
 
+              // Update the local likes count
+              localLikes.set(film.idImdb, updatedFilm.likes);
+
               console.log('updatedFilm : ', updatedFilm);
               return updatedFilm;
             } catch (error) {
@@ -89,6 +95,7 @@ export default function FeedComponent() {
         );
 
         setRatedFilms(ratedFilmData);
+        setFilmLikes(localLikes);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -171,11 +178,26 @@ export default function FeedComponent() {
   }
 
   const handleUpdateLikes = (idImdb, newLikes) => {
-    setRatedFilms((prevFilms) =>
-      prevFilms.map((film) =>
-        film.idImdb === idImdb ? { ...film, likes: newLikes } : film
-      )
-    );
+    setRatedFilms((prevFilms) => {
+      // Create a copy of the previous state
+      const updatedFilms = [...prevFilms];
+
+      // Find the index of the film in the array
+      const filmIndex = updatedFilms.findIndex(
+        (film) => film.idImdb === idImdb
+      );
+
+      if (filmIndex !== -1) {
+        // Update the likes count for the specific film with the newLikes and the correct idImdb
+        updatedFilms[filmIndex] = {
+          ...updatedFilms[filmIndex],
+          likes: newLikes,
+          idImdb: idImdb,
+        };
+      }
+
+      return updatedFilms;
+    });
   };
 
   console.log('ratedFilms', ratedFilms);
@@ -218,7 +240,7 @@ export default function FeedComponent() {
                         <span className="like-button">
                           <HeartRating
                             idImdb={film.idImdb}
-                            initialLikes={film.likes}
+                            initialLikes={filmLikes.get(film.idImdb) || 0}
                             onUpdateLikes={(newLikes) => {
                               handleUpdateLikes(film.idImdb, newLikes);
                             }}
