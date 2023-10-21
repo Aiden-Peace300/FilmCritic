@@ -36,7 +36,7 @@ input[type='radio'] {
 
 .grid-container {
   display: grid;
-  grid-template-columns: auto auto; /* Two columns for two elements */
+  grid-template-columns: auto auto;
   align-items: center;
 }
 
@@ -58,9 +58,9 @@ input[type='radio'] {
 
   .mobile-view {
     display: flex;
-    flex-direction: column; /* Stack items vertically */
-    align-items: center; /* Center align items */
-    text-align: center; /* Center-align text within each item */
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
 
   .note {
@@ -70,18 +70,18 @@ input[type='radio'] {
   }
 
   .star {
-    margin-top: 2rem; /* Add margin to separate the note and PrepopulatedStars */
+    margin-top: 2rem;
   }
 
   .ratedFilm {
-    margin-top: 1rem; /* Add margin to separate the "POST" button */
-    margin-left: 0; /* Remove margin-left to center-align the button */
+    margin-top: 1rem;
+    margin-left: 0;
   }
 
   .grid-container {
     display: flex;
-    flex-direction: column; /* Display the elements vertically on mobile */
-    align-items: center; /* Center-align elements */
+    flex-direction: column;
+    align-items: center;
   }
 
   .rating-prompt {
