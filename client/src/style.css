@@ -1,0 +1,9 @@
+.rated-prompt {
+  padding-left: 5rem;
+}
+
+@media only screen and (width < 735px) {
+  .rated-prompt {
+    padding-left: 0;
+  }
+}

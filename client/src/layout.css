@@ -110,7 +110,8 @@
   }
 
   .column-half {
-    width: 50%;
-    padding-left: 0.75rem;
+    width: 100%;
+
+    /* padding-left: 0.75rem; */
   }
 }

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FaStar } from 'react-icons/fa';
+import './RatingComponent.css';
 
 type StarRatingProps = {
   onRatingChange: (newRating: number) => void;
@@ -46,7 +47,7 @@ const StarRating: React.FC<StarRatingProps> = ({
           </label>
         );
       })}
-      <p style={{ paddingLeft: '5rem' }}>{rating} STARS</p>
+      <p className="rated-prompt">{rating} STARS</p>
     </div>
   );
 };

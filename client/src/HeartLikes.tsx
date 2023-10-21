@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FaHeart } from 'react-icons/fa';
 
 type HeartRatingProps = {
@@ -12,38 +12,78 @@ const HeartRating: React.FC<HeartRatingProps> = ({
   initialLikes,
   onUpdateLikes,
 }) => {
-  const [isClicked, setIsClicked] = useState(false);
-  const [likes, setLikes] = useState(initialLikes);
+  const [isLiked, setIsLiked] = useState(false); // Track whether the user has liked the post
 
   const handleHeartClick = async () => {
     try {
-      // Toggle the like status
-      setIsClicked(!isClicked);
+      if (!isLiked) {
+        // If not liked, the user clicks to like
 
-      // Calculate the new number of likes
-      const newLikes = isClicked ? likes - 1 : likes + 1;
-      setLikes(newLikes);
+        // Calculate the new like count immediately
+        const newLikes = initialLikes + 1;
 
-      // Make an API request to update the likes in the database
-      const response = await fetch(`/api/likes/${idImdb}`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ likes: newLikes }),
-      });
-
-      if (!response.ok) {
-        console.error('Failed to update likes');
-        // Handle the error here
-      } else {
-        // Call the callback to update the likes in your component
+        // Update the UI with the new like count
         onUpdateLikes(idImdb, newLikes);
+
+        // Make the API request
+        const response = await fetch(`/api/likes/${idImdb}`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ likes: newLikes }),
+        });
+
+        if (!response.ok) {
+          // Handle API request error here
+          console.error('Failed to update likes');
+          // You can display an error message to the user
+
+          // Revert the optimistic update
+          onUpdateLikes(idImdb, initialLikes);
+        } else {
+          // User has liked the post
+          setIsLiked(true);
+        }
+      } else {
+        // If already liked, the user clicks to unlike
+
+        // Calculate the new like count immediately
+        const newLikes = initialLikes - 1;
+
+        // Update the UI with the new like count
+        onUpdateLikes(idImdb, newLikes);
+
+        // Make the API request
+        const response = await fetch(`/api/likes/${idImdb}`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ likes: newLikes }),
+        });
+
+        if (!response.ok) {
+          // Handle API request error here
+          console.error('Failed to update likes');
+          // You can display an error message to the user
+
+          // Revert the optimistic update
+          onUpdateLikes(idImdb, initialLikes);
+        } else {
+          // User has unliked the post
+          setIsLiked(false);
+        }
       }
     } catch (error) {
+      // Handle other errors
       console.error('Error:', error);
-      // Handle the error here
+      // You can display an error message to the user
+
+      // Revert the optimistic update
+      onUpdateLikes(idImdb, initialLikes);
     }
   };
 
@@ -55,7 +95,7 @@ const HeartRating: React.FC<HeartRatingProps> = ({
           marginTop: '1rem',
           cursor: 'pointer',
           transition: 'color 200ms',
-          color: isClicked ? '#DB3434' : 'grey',
+          color: isLiked ? '#DB3434' : 'grey', // Change color based on liking
         }}
         onClick={handleHeartClick}
       />

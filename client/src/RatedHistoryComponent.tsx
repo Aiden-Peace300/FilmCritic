@@ -128,7 +128,7 @@ export default function RatedHistoryComponent() {
           .slice()
           .reverse()
           .map((film) => (
-            <div className="column1" key={film.idImdb}>
+            <div className="column1 mobile-view" key={film.idImdb}>
               <div className="row2">
                 {film.filmPosters !== null && (
                   <div className="image-container">
@@ -143,7 +143,7 @@ export default function RatedHistoryComponent() {
                   <p className="rated-title">
                     <span className="red-text">FILM: </span>
                     <span className="film-title">
-                      {film.title.toUpperCase()}{' '}
+                      {film.title.toUpperCase()}
                     </span>
                   </p>
                   <p className="rated-note">{film.userNote}</p>

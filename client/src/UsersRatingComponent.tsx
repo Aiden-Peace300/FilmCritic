@@ -206,22 +206,22 @@ export default function UsersRatingComponent() {
             <div className="column-half">
               <div className="center-mobile space">
                 <p className="red-text center-mobile inline">FILM: </p>
-                <p className="white-text center-mobile inline">
+                <p className="white-text center-mobile inline font-size">
                   {detailsObj.filmTitle}
                 </p>
                 <br />
                 <p className="red-text center-mobile inline">RELEASE YEAR:</p>
-                <p className="white-text center-mobile inline">
+                <p className="white-text center-mobile inline font-size">
                   {detailsObj.releaseYear}
                 </p>
                 <br />
                 <p className="red-text center-mobile inline">TYPE: </p>
-                <p className="white-text center-mobile inline">
+                <p className="white-text center-mobile inline font-size">
                   {detailsObj.type}
                 </p>
                 <br />
                 <p className="red-text center-mobile inline">CREATOR: </p>
-                <p className="white-text center-mobile inline">
+                <p className="white-text center-mobile inline font-size">
                   {detailsObj.creator}
                 </p>
                 <br />
