@@ -1,26 +1,25 @@
 export type PageTypeInsideApp = 'Logout';
+
 import WatchListHistory from './WatchListHistory';
 import RatedHistoryComponent from './RatedHistoryComponent';
+import ProfilePicture from './ProfileDetails';
 import './Profile.css';
+import { useNavigate } from 'react-router-dom';
 
-interface InsideWebsiteNavBarProps {
-  onNavigate: (pageNew: PageTypeInsideApp) => void;
-}
+export default function ProfileComponent() {
+  const navigate = useNavigate();
 
-export default function ProfileComponent({
-  onNavigate,
-}: InsideWebsiteNavBarProps) {
+  function handleNavigateInsideApp(pageNew: PageTypeInsideApp) {
+    navigate(pageNew);
+    if (pageNew === 'Logout') {
+      sessionStorage.removeItem('token');
+      navigate('Logout');
+      navigate('/');
+    }
+  }
   return (
     <>
-      <div className="profile Container">
-        <button
-          type="button"
-          onClick={() => onNavigate('Logout')}
-          className="logout-button">
-          Logout
-        </button>
-      </div>
-      {/* Render your component here */}
+      <ProfilePicture onNavigate={handleNavigateInsideApp} />
       <WatchListHistory />
       <RatedHistoryComponent />
     </>

@@ -1,12 +1,10 @@
 import { BsTrash3 } from 'react-icons/bs';
 import DeleteConfirmationPopup from './RatedDeletePopup';
-import { GrEdit } from 'react-icons/gr';
-import { FaRegCommentAlt } from 'react-icons/fa';
-import { AiOutlineHeart } from 'react-icons/ai';
+// import { FaComment } from 'react-icons/fa';
+import { MdOutlineModeEdit } from 'react-icons/md';
 import RatedStars from './RatedStars';
 import './RatedHistoryComponent.css';
-
-// import { useNavigate } from "react-router-dom";
+import HeartRating from './HeartLikes';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -15,6 +13,7 @@ type RatedFilm = {
   userNote: string;
   rating: number;
   userId: number;
+  likes: number;
 };
 
 type FilmTitleAndPoster = {
@@ -28,48 +27,75 @@ export default function FeedComponent() {
     (RatedFilm & FilmTitleAndPoster)[]
   >([]);
   const [isPopupVisible, setPopupVisible] = useState(false);
-  const [selectedIdImdb, setSelectedIdImdb] = useState<string | null>(null); // Add selectedIdImdb state
-  // const [isEditVisible, setEditVisible] = useState(false);
+  const [selectedIdImdb, setSelectedIdImdb] = useState<string | null>(null);
+  const [filmLikes, setFilmLikes] = useState<Map<string, number>>(new Map());
 
-  // Function to show the popup
   const showPopup = (idImdb: string) => {
-    setSelectedIdImdb(idImdb); // Set the selected ID when showing the popup
+    setSelectedIdImdb(idImdb);
     setPopupVisible(true);
   };
 
-  // Function to hide the popup
   const hidePopup = () => {
-    setSelectedIdImdb(null); // Clear the selected ID when hiding the popup
+    setSelectedIdImdb(null);
     setPopupVisible(false);
   };
 
-  const showEditComponent = (idImdb) => {
+  const showEditComponent = (idImdb: string) => {
     console.log('Showing Edit Component for idImdb:', idImdb);
     navigate(`profile/${idImdb}`);
-    // setEditVisible(true);
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/Feed/ratedFilms');
+        const response = await fetch('/api/Feed/ratedFilms', {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+          },
+        });
 
         if (!response.ok) {
-          console.error('Network response was not ok');
-          return;
+          throw new Error('Network response was not ok');
         }
 
         const data = await response.json();
         console.log('rated history:', data);
 
+        const localLikes = new Map();
+
         const ratedFilmData = await Promise.all(
           data.map(async (film) => {
-            const filmData = await fetchFilmPosterAndTitle(film.idImdb);
-            return { ...film, ...filmData };
+            try {
+              console.log('film0', film);
+              const filmData = await fetchFilmPosterAndTitle(film.idImdb);
+              const likesResponse = await fetchLikesCount(film.idImdb);
+              console.log('film', film);
+
+              console.log('likesResponse:', likesResponse);
+
+              // Create a copy of the film object with updated 'likes'
+              const updatedFilm = {
+                ...film,
+                ...filmData,
+                likes: likesResponse.likes,
+              };
+
+              // Update the local likes count
+              localLikes.set(film.idImdb, updatedFilm.likes);
+
+              console.log('updatedFilm : ', updatedFilm);
+              return updatedFilm;
+            } catch (error) {
+              console.error('Error fetching film data:', error);
+              // Handle the error for this film data here, e.g., set a default value
+              return { ...film, poster: '', title: '', likes: 0 };
+            }
           })
         );
 
         setRatedFilms(ratedFilmData);
+        setFilmLikes(localLikes);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -77,6 +103,35 @@ export default function FeedComponent() {
 
     fetchData();
   }, []);
+
+  const fetchLikesCount = async (idImdb) => {
+    try {
+      const response = await fetch(`/api/likes/${idImdb}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        },
+      });
+
+      console.log('response: ', response);
+
+      if (!response.ok) {
+        console.error('Failed to fetch likes count for', idImdb);
+        return { likes: 0 }; // Default to 0 if there's an error
+      }
+
+      const likesData = await response.json();
+      console.log('likesData: ', likesData);
+      if (likesData.likes !== undefined) {
+        return { likes: likesData.likes }; // Extract the likes count from the API response
+      } else {
+        return { likes: likesData };
+      }
+    } catch (error) {
+      console.error('Error fetching likes count:', error);
+      return { likes: 0 };
+    }
+  };
 
   const userId = Number(sessionStorage.getItem('userId'));
   if (!userId) {
@@ -100,12 +155,12 @@ export default function FeedComponent() {
 
       if (response.status === 404) {
         console.error('Resource not found (404)');
-        return null; // Return null if no data is found
+        return null;
       }
 
       if (!response.ok) {
         console.error('Failed to fetch data from IMDb API');
-        return null; // Return null if there's an error
+        return null;
       }
 
       const responseData = await response.json();
@@ -118,9 +173,34 @@ export default function FeedComponent() {
       return filmTitleAndPoster;
     } catch (error) {
       console.error('Error:', error);
-      return null; // Return null in case of an error
+      return null;
     }
   }
+
+  const handleUpdateLikes = (idImdb, newLikes) => {
+    setRatedFilms((prevFilms) => {
+      // Create a copy of the previous state
+      const updatedFilms = [...prevFilms];
+
+      // Find the index of the film in the array
+      const filmIndex = updatedFilms.findIndex(
+        (film) => film.idImdb === idImdb
+      );
+
+      if (filmIndex !== -1) {
+        // Update the likes count for the specific film with the newLikes and the correct idImdb
+        updatedFilms[filmIndex] = {
+          ...updatedFilms[filmIndex],
+          likes: newLikes,
+          idImdb: idImdb,
+        };
+      }
+
+      return updatedFilms;
+    });
+  };
+
+  console.log('ratedFilms', ratedFilms);
 
   return (
     <div>
@@ -128,8 +208,8 @@ export default function FeedComponent() {
         {ratedFilms
           .slice()
           .reverse()
-          .map((film) => (
-            <div className="column1" key={film.idImdb}>
+          .map((film, index) => (
+            <div className="column1" key={index}>
               <div className="row2">
                 {film.filmPosters !== null && (
                   <div className="image-container">
@@ -147,44 +227,60 @@ export default function FeedComponent() {
                   </p>
                   <p className="rated-note">{film.userNote}</p>
                   <div className="space1">
+                    <span className="like-prompt">Likes: {film.likes}</span>
                     <hr className="line" />
                     <div className="rating-container">
-                      <span>{<RatedStars rating={film.rating} />}</span>
-                      <span className="ratedRating">{film.rating}/5</span>
-                      <div className="vertical-line"> </div>
-                      <span>
-                        <AiOutlineHeart className="like-button" />
-                      </span>
-                      <span className="like-prompt">LIKE</span>
-                      <div className="vertical-line"> </div>
-                      <span>
-                        <FaRegCommentAlt className="like-button" />
-                      </span>
-                      <span className="like-prompt">COMMENT</span>
-                      <div className="vertical-line"> </div>
-                      {film.userId === userId && (
-                        <>
-                          <GrEdit
-                            className="like-button"
-                            onClick={() => showEditComponent(film.idImdb)}
+                      <div className="rated-stars-row">
+                        <span>{<RatedStars rating={film.rating} />}</span>
+                        <span className="ratedRating">{film.rating}/5</span>
+                      </div>
+                      <div className="vertical-line hidden-prompt"></div>
+                      <hr className="line2" />
+                      <div className="rated-stars-row">
+                        <span className="like-button">
+                          <HeartRating
+                            idImdb={film.idImdb}
+                            initialLikes={filmLikes.get(film.idImdb) || 0}
+                            onUpdateLikes={(newLikes) => {
+                              handleUpdateLikes(film.idImdb, newLikes);
+                            }}
                           />
-                          <span
-                            className="like-prompt"
-                            onClick={() => showEditComponent(film.idImdb)}>
-                            Edit
-                          </span>
-                          <span className="vertical-line"> </span>
-                          <BsTrash3
-                            className="like-button"
-                            onClick={() => showPopup(film.idImdb)}
-                          />
-                          <span
-                            className="like-prompt"
-                            onClick={() => showPopup(film.idImdb)}>
-                            Delete
-                          </span>
-                        </>
-                      )}
+                        </span>
+                        <div className="vertical-line margin-left"></div>
+                        <span
+                          className="like-prompt like-button-mobile"
+                          onClick={() => showEditComponent(film.idImdb)}>
+                          Like
+                        </span>
+                        {/* <span>
+                        <FaComment className="like-button" />
+                      </span>
+                      <span className="like-prompt">COMMENT</span> */}
+                        <div className="vertical-line hidden-prompt"> </div>
+                        {film.userId === userId && (
+                          <>
+                            <MdOutlineModeEdit
+                              className="like-button"
+                              onClick={() => showEditComponent(film.idImdb)}
+                            />
+                            <span
+                              className="like-prompt hidden-prompt"
+                              onClick={() => showEditComponent(film.idImdb)}>
+                              Edit
+                            </span>
+                            <span className="vertical-line"> </span>
+                            <BsTrash3
+                              className="like-button"
+                              onClick={() => showPopup(film.idImdb)}
+                            />
+                            <span
+                              className="like-prompt hidden-prompt"
+                              onClick={() => showPopup(film.idImdb)}>
+                              Delete
+                            </span>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>

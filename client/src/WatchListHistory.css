@@ -5,10 +5,10 @@ ul {
 .profile-image {
   display: block;
   margin: 0 auto;
-  width: 210px;
-  height: 300px;
+  width: 280px;
+  height: 400px;
   cursor: pointer;
-  padding: 1rem;
+  padding: 2rem;
 }
 
 .margin-top {
@@ -17,9 +17,19 @@ ul {
 
 @media only screen and (width < 735px) {
   .profile-image {
-    width: 280px;
-    height: 400px;
-    margin-bottom: 1rem;
+    width: 320px;
+    height: 420px;
+    padding-bottom: 0;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .watchlist-prompt {
+    text-align: center;
+  }
+
+  .mobile-top-margin {
+    margin-top: 10rem;
   }
 }
 
@@ -28,13 +38,14 @@ ul {
   color: white;
   background-color: #db3434;
   border-radius: 0.5rem;
-  font-size: 1.3rem;
-  margin-left: 1rem;
-  padding: 0.2rem 4rem;
+  font-size: 2rem;
+  margin-left: 0.5rem;
+  margin-right: 0.8rem;
+  padding: 0.3rem 6rem;
 }
 
 .trash-icon {
-  font-size: 1.7rem; /* Adjust the size as needed */
+  font-size: 2rem;
   cursor: pointer;
   color: #db3434;
 }

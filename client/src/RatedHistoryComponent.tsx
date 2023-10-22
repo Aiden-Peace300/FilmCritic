@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import RatedStars from './RatedStars';
-import { AiOutlineHeart } from 'react-icons/ai';
-import { FaRegCommentAlt } from 'react-icons/fa';
-import { GrEdit } from 'react-icons/gr';
+// import { AiOutlineHeart } from 'react-icons/ai';
+import { FaHeart } from 'react-icons/fa';
+import { MdOutlineModeEdit } from 'react-icons/md';
 import { BsTrash3 } from 'react-icons/bs';
 import DeleteConfirmationPopup from './RatedDeletePopup';
 import './RatedHistoryComponent.css';
@@ -12,6 +12,7 @@ type RatedFilm = {
   idImdb: string;
   userNote: string;
   rating: number;
+  likes: number;
 };
 
 type FilmTitleAndPoster = {
@@ -30,13 +31,13 @@ export default function RatedHistoryComponent() {
 
   // Function to show the popup
   const showPopup = (idImdb: string) => {
-    setSelectedIdImdb(idImdb); // Set the selected ID when showing the popup
+    setSelectedIdImdb(idImdb);
     setPopupVisible(true);
   };
 
   // Function to hide the popup
   const hidePopup = () => {
-    setSelectedIdImdb(null); // Clear the selected ID when hiding the popup
+    setSelectedIdImdb(null);
     setPopupVisible(false);
   };
 
@@ -121,13 +122,13 @@ export default function RatedHistoryComponent() {
 
   return (
     <div>
-      <h2>Rated History:</h2>
+      <h2 className="watchlist-prompt mobile-top-margin">Rated History:</h2>
       <div className="row1">
         {ratedFilms
           .slice()
           .reverse()
           .map((film) => (
-            <div className="column1" key={film.idImdb}>
+            <div className="column1 mobile-view" key={film.idImdb}>
               <div className="row2">
                 {film.filmPosters !== null && (
                   <div className="image-container">
@@ -141,48 +142,56 @@ export default function RatedHistoryComponent() {
                 <div className="text-details">
                   <p className="rated-title">
                     <span className="red-text">FILM: </span>
-                    {film.title.toUpperCase()}
+                    <span className="film-title">
+                      {film.title.toUpperCase()}
+                    </span>
                   </p>
                   <p className="rated-note">{film.userNote}</p>
                   <div className="space1">
                     <hr className="line" />
                     <div className="rating-container">
-                      <span>{<RatedStars rating={film.rating} />}</span>
-                      <span className="ratedRating">{film.rating}/5</span>
-                      <div className="vertical-line"> </div>
-                      <span>
-                        <AiOutlineHeart className="like-button" />
-                      </span>
-                      <span className="like-prompt">LIKE</span>
-                      <div className="vertical-line"> </div>
-                      <span>
-                        <FaRegCommentAlt className="like-button" />
-                      </span>
-                      <span className="like-prompt">COMMENT</span>
-                      <div className="vertical-line"> </div>
-                      <span>
-                        <GrEdit
-                          className="like-button"
-                          onClick={() => showEditComponent(film.idImdb)}
-                        />
-                      </span>
-                      <span
-                        className="like-prompt"
-                        onClick={() => showEditComponent(film.idImdb)}>
-                        EDIT
-                      </span>
-                      <div className="vertical-line"> </div>
-                      <span>
-                        <BsTrash3
-                          className="like-button"
-                          onClick={() => showPopup(film.idImdb)}
-                        />
-                      </span>
-                      <span
-                        className="like-prompt"
-                        onClick={() => showPopup(film.idImdb)}>
-                        DELETE
-                      </span>
+                      <div className="rated-stars-row">
+                        <RatedStars rating={film.rating} />
+                        <span className="ratedRating">{film.rating}/5</span>
+                      </div>
+                      <hr className="line2" />
+                      <div className="rated-stars-row">
+                        <div className="vertical-line hidden-prompt"> </div>
+                        <span>
+                          <FaHeart className="like-button like-button-mobile" />
+                        </span>
+                        <span className="like-prompt">LIKE</span>
+                        {/* <div className="vertical-line"> </div> */}
+                        {/* <span>
+                          <FaComment className="like-button" />
+                        </span>
+                        <span className="like-prompt">COMMENT</span>
+                        <div className="vertical-line"> </div> */}
+                        <div className="vertical-line hidden-prompt"> </div>
+                        <span>
+                          <MdOutlineModeEdit
+                            className="like-button"
+                            onClick={() => showEditComponent(film.idImdb)}
+                          />
+                        </span>
+                        <span
+                          className="like-prompt hidden-prompt"
+                          onClick={() => showEditComponent(film.idImdb)}>
+                          EDIT
+                        </span>
+                        <div className="vertical-line"> </div>
+                        <span>
+                          <BsTrash3
+                            className="like-button"
+                            onClick={() => showPopup(film.idImdb)}
+                          />
+                        </span>
+                        <span
+                          className="like-prompt hidden-prompt"
+                          onClick={() => showPopup(film.idImdb)}>
+                          DELETE
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
