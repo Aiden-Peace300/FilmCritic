@@ -1,9 +1,11 @@
 import { FormEvent, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 /**
  * Form that registers a user.
  */
 export default function RegistrationForm() {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -23,6 +25,7 @@ export default function RegistrationForm() {
       }
       const user = await res.json();
       console.log('Registered', user);
+      navigate('/sign-in');
     } catch (err) {
       alert(`Error registering user: ${err}`);
     } finally {
