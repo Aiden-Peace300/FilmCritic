@@ -4,6 +4,7 @@ import argon2 from 'argon2';
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import { ClientError, errorMiddleware, authMiddleware } from './lib/index.js';
+import { uploadsMiddleware } from './lib/uploads-middleware.js';
 
 const connectionString =
   process.env.DATABASE_URL ||
@@ -48,8 +49,8 @@ app.post('/api/auth/sign-up', async (req, res, next) => {
 
     const hashedPassword = await argon2.hash(password);
     const insertUserSql = `
-      INSERT INTO "Users" ("username", "hashedPassword")
-      VALUES ($1, $2)
+      INSERT INTO "Users" ("username", "hashedPassword", "imageURL", "profileBio")
+      VALUES ($1, $2, null, null)
       RETURNING *
     `;
     const insertUserParams = [username, hashedPassword];
@@ -125,6 +126,161 @@ app.delete('/api/users/:userId', async (req, res, next) => {
       throw new ClientError(404, `Entry with id ${userId} not found`);
     }
     res.sendStatus(204);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post(
+  '/api/updateProfilePicture',
+  authMiddleware,
+  uploadsMiddleware.single('image'),
+  async (req, res, next) => {
+    try {
+      if (!req.file) throw new ClientError(400, 'no file field in request');
+
+      const imageUrl = `/images/${req.file.filename}`;
+
+      if (req.user === undefined) {
+        throw new ClientError(401, 'userId is undefined');
+      }
+      const { userId } = req.user;
+
+      const updateProfilePictureSql = `
+      UPDATE "Users"
+      SET "imageURL" = $1
+      WHERE "userId" = $2
+      RETURNING *
+    `;
+      const updateProfilePictureParams = [imageUrl, userId];
+      const result = await db.query(
+        updateProfilePictureSql,
+        updateProfilePictureParams
+      );
+
+      if (result.rows.length === 0) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      const updatedUser = result.rows[0];
+      res.status(200).json(updatedUser);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+app.get('/api/profilePicture', authMiddleware, async (req, res, next) => {
+  try {
+    if (req.user === undefined) {
+      throw new ClientError(401, 'userId is undefined');
+    }
+
+    const { userId } = req.user;
+
+    const sql = `
+      SELECT "imageURL" FROM "Users" WHERE "userId" = $1
+    `;
+
+    const result = await db.query(sql, [userId]);
+
+    if (result.rows.length > 0) {
+      const profilePictureUrl = result.rows[0].imageURL;
+      res.status(200).json({ imageUrl: profilePictureUrl });
+    } else {
+      res.status(404).json({ imageUrl: null });
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get('/api/username', authMiddleware, async (req, res, next) => {
+  try {
+    if (req.user === undefined) {
+      throw new ClientError(401, 'userId is undefined');
+    }
+
+    const { userId } = req.user;
+
+    const sql = `
+      SELECT "username" FROM "Users" WHERE "userId" = $1
+    `;
+
+    const result = await db.query(sql, [userId]);
+
+    if (result.rows.length > 0) {
+      const username = result.rows[0].username;
+      res.status(200).json({ username: username });
+    } else {
+      res.status(404).json({ username: null });
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get('/api/userBio', authMiddleware, async (req, res, next) => {
+  try {
+    if (req.user === undefined) {
+      throw new ClientError(401, 'userId is undefined');
+    }
+
+    const { userId } = req.user;
+
+    const sql = `
+      SELECT "profileBio" FROM "Users" WHERE "userId" = $1
+    `;
+
+    const result = await db.query(sql, [userId]);
+
+    if (result.rows.length > 0) {
+      const profileBio = result.rows[0].profileBio;
+      res.status(200).json({ profileBio: profileBio });
+    } else {
+      res.status(404).json({ profileBio: null });
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post('/api/enter/userBio', authMiddleware, async (req, res, next) => {
+  try {
+    const { profileBio } = req.body;
+
+    if (req.user === undefined) {
+      throw new ClientError(401, 'userId is undefined');
+    }
+
+    const { userId } = req.user;
+
+    // // Check if the requested user ID matches the authenticated user's ID
+    // if (userId !== parseInt(req.params.userId, 10)) {
+    //   throw new ClientError(403, 'Access denied');
+    // }
+    console.log('profileBio ', profileBio);
+    if (!profileBio) {
+      throw new ClientError(400, 'profileBio is a required field');
+    }
+
+    // Update the user's profileBio in the Users table
+    const updateProfileBioSql = `
+      UPDATE "Users"
+      SET "profileBio" = $1
+      WHERE "userId" = $2
+      RETURNING *
+    `;
+    const updateProfileBioParams = [profileBio, userId];
+    const result = await db.query(updateProfileBioSql, updateProfileBioParams);
+
+    // console.log('result: ', result)
+    if (result.rows.length === 0) {
+      res.status(404).json({ message: 'User not found' });
+    } else {
+      const updatedUser = result.rows[0];
+      res.status(200).json({ profileBio: updatedUser.profileBio });
+    }
   } catch (err) {
     next(err);
   }
@@ -218,7 +374,7 @@ app.get('/api/idImdb/ratedFilms', authMiddleware, async (req, res, next) => {
     const { userId } = req.user;
 
     const getRatedFilmsSql = `
-      SELECT "idImdb", "userNote", "rating" FROM "RatedFilms"
+      SELECT "idImdb", "userNote", "rating", "likes" FROM "RatedFilms"
       WHERE "userId" = $1
     `;
     const getRatedFilmsParams = [userId];
@@ -235,6 +391,99 @@ app.get('/api/idImdb/ratedFilms', authMiddleware, async (req, res, next) => {
     const ratedFilms = ratedFilmsResult.rows;
 
     res.status(200).json(ratedFilms);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get('/api/likes/:idImdb', authMiddleware, async (req, res, next) => {
+  try {
+    const { idImdb } = req.params;
+
+    console.log(idImdb);
+
+    if (!req.user) {
+      throw new ClientError(401, 'userId is undefined');
+    }
+
+    const { userId } = req.user;
+
+    // Query the database to count the likes for the given post
+    const countLikesSql = `
+      SELECT "likes" FROM "RatedFilms"
+      WHERE "userId" = $1 AND "idImdb" = $2
+    `;
+    const countLikesParams = [userId, idImdb];
+    const result = await db.query(countLikesSql, countLikesParams);
+
+    console.log(result);
+
+    if (result.rows.length === 0) {
+      // No rows found, handle the case where the movie doesn't exist in 0 for likeCount
+      res.status(200).json(0);
+    } else {
+      // Rows found, get the likeCount from the first row
+      const likes = result.rows[0].likes;
+      res.status(200).json(likes);
+      console.log('WORKING CORRECTLY');
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post('/api/likes/:idImdb', authMiddleware, async (req, res, next) => {
+  try {
+    const { idImdb } = req.params;
+
+    // console.log('idImdb', idImdb);
+
+    if (!req.user) {
+      throw new ClientError(401, 'userId is undefined');
+    }
+
+    const { userId } = req.user;
+
+    // Check if the movie exists in the ratedFilms table
+    const checkRatedFilmSql = `
+      SELECT "likes" FROM "RatedFilms"
+      WHERE "userId" = $1 AND "idImdb" = $2
+    `;
+    const checkRatedFilmParams = [userId, idImdb];
+    const ratedFilmResult = await db.query(
+      checkRatedFilmSql,
+      checkRatedFilmParams
+    );
+
+    if (ratedFilmResult.rows.length === 0) {
+      // Movie is not found in the ratedFilms, return an error
+      throw new ClientError(404, 'Movie not found in ratedFilms');
+    }
+
+    // Get the current number of likes
+    const currentLikes = ratedFilmResult.rows[0].likes;
+
+    // Increment the like count
+    const newLikes = currentLikes + 1;
+
+    // console.log('newLikes: ', newLikes);
+
+    // Update the likes count in the ratedFilms table
+    const updateLikesSql = `
+      UPDATE "RatedFilms"
+      SET "likes" = $1
+      WHERE "userId" = $2 AND "idImdb" = $3
+      RETURNING *
+    `;
+    const updateLikesParams = [newLikes, userId, idImdb];
+    const result = await db.query(updateLikesSql, updateLikesParams);
+
+    if (result.rows.length === 0) {
+      throw new ClientError(404, 'Failed to update likes');
+    }
+
+    // Return the updated like count
+    res.status(200).json({ likes: newLikes });
   } catch (err) {
     next(err);
   }
@@ -305,7 +554,7 @@ app.get(
       const { userId } = req.user;
 
       const getRatedFilmsSql = `
-      SELECT "idImdb", "userNote", "rating" FROM "RatedFilms"
+      SELECT "idImdb", "userNote", "rating", "likes" FROM "RatedFilms"
       WHERE "userId" = $1 and "idImdb" = $2
     `;
       const getRatedFilmsParams = [userId, idImdb];
@@ -361,13 +610,16 @@ app.post('/api/rating', authMiddleware, async (req, res, next) => {
     }
 
     // Add the movie to the watchlist with the associated userId
-    const addToWatchlistSql = `
-      INSERT INTO "RatedFilms" ("userId", "idImdb", "rating", "userNote")
-      VALUES ($1, $2, $3, $4)
-      RETURNING *
+    const addToRatedFilmsSql = `
+        INSERT INTO "RatedFilms" ("userId", "idImdb", "rating", "userNote", "likes")
+        VALUES ($1, $2, $3, $4, 0)
+        ON CONFLICT ("userId", "idImdb") DO NOTHING
+        RETURNING *
     `;
-    const addToWatchlistParams = [userId, idImdb, rating, userNote];
-    const result = await db.query(addToWatchlistSql, addToWatchlistParams);
+    const addToRatedFilmsParams = [userId, idImdb, rating, userNote];
+
+    console.log('addToRatedFilmsParams:  ', addToRatedFilmsParams);
+    const result = await db.query(addToRatedFilmsSql, addToRatedFilmsParams);
     const [ratedItem] = result.rows;
     res.status(201).json(ratedItem);
   } catch (err) {
@@ -453,6 +705,7 @@ app.put('/api/rated/:idImdb', authMiddleware, async (req, res, next) => {
     const updateRatedFilmParams = [rating, userNote, userId, idImdb];
     const result = await db.query(updateRatedFilmSql, updateRatedFilmParams);
     const [updatedRatedFilm] = result.rows;
+    console.log('updatedRatedFilm', updatedRatedFilm);
 
     res.status(200).json(updatedRatedFilm);
   } catch (err) {
@@ -493,13 +746,15 @@ app.post('/api/films', async (req, res, next) => {
       releaseYear,
       creator,
       description,
+      generalRating,
+      poster,
       trailer,
     } = req.body;
 
     // Insert the new film details into the Films table
     const sql = `
-      INSERT INTO "Films" ("idImdb", "filmTitle", "genre", "type", "releaseYear", "creator", "description", "trailer")
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      INSERT INTO "Films" ("idImdb", "filmTitle", "genre", "type", "releaseYear", "creator", "description", "generalRating", "poster", "trailer")
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       RETURNING *
     `;
     const values = [
@@ -510,6 +765,8 @@ app.post('/api/films', async (req, res, next) => {
       releaseYear,
       creator,
       description,
+      generalRating,
+      poster,
       trailer,
     ];
     const result = await db.query(sql, values);

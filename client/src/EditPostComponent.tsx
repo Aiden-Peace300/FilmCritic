@@ -140,6 +140,8 @@ export default function EditPostComponent() {
         body: JSON.stringify({ rating, userNote: note }),
       });
 
+      console.log('response: ', response);
+
       if (response.ok) {
         // Update was successful, you can navigate to another page or show a success message here.
         console.log('Rating and note updated successfully');
@@ -172,22 +174,22 @@ export default function EditPostComponent() {
             <div className="column-half">
               <div className="center-mobile space">
                 <p className="red-text center-mobile inline">FILM: </p>
-                <p className="white-text center-mobile inline">
+                <p className="white-text center-mobile inline font-size">
                   {detailsObj.film}
                 </p>
                 <br />
                 <p className="red-text center-mobile inline">RELEASE YEAR:</p>
-                <p className="white-text center-mobile inline">
+                <p className="white-text center-mobile inline font-size">
                   {detailsObj.releaseYear}
                 </p>
                 <br />
                 <p className="red-text center-mobile inline">TYPE: </p>
-                <p className="white-text center-mobile inline">
+                <p className="white-text center-mobile inline font-size">
                   {detailsObj.type}
                 </p>
                 <br />
                 <p className="red-text center-mobile inline">CREATOR: </p>
-                <p className="white-text center-mobile inline">
+                <p className="white-text center-mobile inline font-size">
                   {detailsObj.creator}
                 </p>
                 <br />
@@ -208,12 +210,11 @@ export default function EditPostComponent() {
                   {detailsObj && (
                     <Fragment>
                       <button onClick={handleEditClick} className="ratedFilm">
-                        EDIT
+                        POST
                       </button>
-                      {/* Use navigate here within the Fragment */}
                       <button
                         onClick={() => navigate('/movieApp')}
-                        className="ratedFilm">
+                        className="ratedFilm cancel">
                         CANCEL
                       </button>
                     </Fragment>

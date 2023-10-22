@@ -1,6 +1,6 @@
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { NavBar, PageType } from './NavBar';
-import { InsideWebsiteNavBar, PageTypeInsideApp } from './InsideWebsiteNavBar';
+import { InsideWebsiteNavBar } from './InsideWebsiteNavBar';
 import { IconClicked } from './IconClicked';
 import { RecProvider } from './RecContext';
 import ShowDetailsOfSuggestedFilm from './ShowDetailsOfSuggestedFilm';
@@ -25,19 +25,15 @@ export default function App() {
     }
   }
 
-  function handleNavigateInsideApp(pageNew: PageTypeInsideApp) {
-    navigate(pageNew);
-    if (pageNew === 'Logout') {
-      sessionStorage.removeItem('token');
-      navigate('Logout');
-    }
-  }
-
   return (
     <div>
       {isAuthenticated ? <InsideWebsiteNavBar /> : <NavBar />}
 
       <Routes>
+        <Route
+          path="/"
+          element={<SignInForm onSignIn={() => handleNavigate('movieApp')} />}
+        />
         <Route path="/register" element={<RegistrationForm />} />
         <Route
           path="/sign-in"
@@ -61,10 +57,7 @@ export default function App() {
           <Route path="rating" element={<RatingComponent />} />
           <Route path="rating/:filmId" element={<UsersRatingComponent />} />
           {/* <Route path="rating" element={<RatingComponent />} /> */}
-          <Route
-            path="profile"
-            element={<Profile onNavigate={handleNavigateInsideApp} />}
-          />
+          <Route path="profile" element={<Profile />} />
           <Route path="profile/:filmId" element={<EditPostComponent />} />
           <Route path="icon-clicked" element={<IconClicked />} />
         </Route>

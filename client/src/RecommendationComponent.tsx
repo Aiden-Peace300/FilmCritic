@@ -42,12 +42,11 @@ export function RecommendationComponent() {
   };
 
   /**
-   * Handles form submission (not implemented).
+   * Handles form submission.
    * @param {Object} e The event object.
    */
   const handleSearchSubmit = (e: any) => {
     e.preventDefault();
-    console.log('Start searching:', searchTerm);
   };
 
   /**
@@ -126,13 +125,14 @@ export function RecommendationComponent() {
   }
 
   /**
-   * Gets show recommendations based on user input.
-   * @param {string} filmFromUser The user's input.
+   * Fetch film recommendations based on user input, fetch details from IMDb API,
+   * and update component state with the results.
+   * @param {string} filmFromUser - The user's input.
    */
   async function getRecommendations(filmFromUser) {
     setIsLoading(true);
     const suggestion = await suggestionFromAI(
-      `GIVE ME A LIST OF 5 SHOWS THAT WOULD CLOSELY RESEMBLE THIS SHOW (ONLY THE NAMES OF THE SHOWS, NO OTHER PROMPTS WITH NO NUMBERING): ${filmFromUser}?`
+      `GIVE ME A LIST OF 5 FILMS THAT WOULD CLOSELY RESEMBLE THIS FILM (ONLY THE NAMES OF THE FILMS, NO OTHER PROMPTS WITH NO NUMBERING): ${filmFromUser}?`
     );
 
     // Break the suggestion into individual show names
@@ -190,7 +190,7 @@ export function RecommendationComponent() {
    * @returns {string[]} An array of individual show names.
    */
   function breakShowsFilmsStrings(showsList) {
-    // Split the shows list into individual strings using a delimiter (e.g., '. ')
+    // Split the shows list into individual strings using a delimiter
     const showStrings = showsList.split('. ');
 
     // Filter out any empty strings

@@ -4,21 +4,17 @@ import StarRating from './StarRating';
 import './RatingComponent.css';
 import './ShowDetailsOfSuggestedFilm.css';
 
-// interface IdImdb {
-//   idImdb: string;
-// }
-
 interface FilmDetails {
   idImdb: string;
-  poster: string;
-  film: string;
+  filmTitle: string;
+  genre: string;
+  type: string;
   releaseYear: string;
   creator: string;
   description: string;
+  generalRating: string;
+  poster: string;
   trailer: string;
-  type: string;
-  rating: string;
-  genre: string;
 }
 
 export default function UsersRatingComponent() {
@@ -92,17 +88,17 @@ export default function UsersRatingComponent() {
       }
 
       const newDetailsObj: FilmDetails = {
-        idImdb: responseData.id || '',
-        poster: responseData.image || '',
-        film: responseData.title || '',
-        releaseYear: responseData.year || '',
+        idImdb: responseData.id ?? '',
+        poster: responseData.image ?? '',
+        filmTitle: responseData.title ?? '',
+        releaseYear: responseData.year ?? '',
         creator:
-          responseData.tvSeriesInfo?.creators || responseData.writers || '',
-        description: responseData.plot || '',
-        trailer: responseData.trailer?.linkEmbed || '',
-        type: responseData.ratings?.type || '',
-        rating: responseData.ratings?.imDb || '',
-        genre: responseData.genres || '',
+          (responseData.tvSeriesInfo?.creators || responseData.writers) ?? '',
+        description: responseData.plot ?? '',
+        trailer: responseData.trailer?.linkEmbed ?? '',
+        type: responseData.ratings.type ?? '',
+        generalRating: responseData.ratings.imDb ?? '',
+        genre: responseData.genres ?? '',
       };
 
       setDetailsObj(newDetailsObj);
@@ -123,8 +119,6 @@ export default function UsersRatingComponent() {
 
         const idImdb = detailsObj.idImdb;
 
-        // // Extract idImdb from the URL
-        // const { idImdb } = detailsObj;
         console.log(idImdb);
 
         if (!idImdb) {
@@ -146,13 +140,15 @@ export default function UsersRatingComponent() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            idImdb,
-            filmTitle: detailsObj.film,
+            idImdb: detailsObj.idImdb,
+            filmTitle: detailsObj.filmTitle,
             genre: detailsObj.genre,
             type: detailsObj.type,
             releaseYear: releaseYearNumber,
             creator: detailsObj.creator,
             description: detailsObj.description,
+            generalRating: detailsObj.generalRating,
+            poster: detailsObj.poster,
             trailer: detailsObj.trailer,
           }),
         });
@@ -174,6 +170,7 @@ export default function UsersRatingComponent() {
           navigate('/movieApp/profile');
         } else {
           console.error('Failed to add movie to films table');
+          navigate('/movieApp/profile');
         }
 
         if (responseRatedFilms.status === 201) {
@@ -203,28 +200,28 @@ export default function UsersRatingComponent() {
               <img
                 className="rateImageDetails"
                 src={detailsObj.poster}
-                alt={`${detailsObj.film}`}
+                alt={`${detailsObj.filmTitle}`}
               />
             </div>
             <div className="column-half">
               <div className="center-mobile space">
                 <p className="red-text center-mobile inline">FILM: </p>
-                <p className="white-text center-mobile inline">
-                  {detailsObj.film}
+                <p className="white-text center-mobile inline font-size">
+                  {detailsObj.filmTitle}
                 </p>
                 <br />
                 <p className="red-text center-mobile inline">RELEASE YEAR:</p>
-                <p className="white-text center-mobile inline">
+                <p className="white-text center-mobile inline font-size">
                   {detailsObj.releaseYear}
                 </p>
                 <br />
                 <p className="red-text center-mobile inline">TYPE: </p>
-                <p className="white-text center-mobile inline">
+                <p className="white-text center-mobile inline font-size">
                   {detailsObj.type}
                 </p>
                 <br />
                 <p className="red-text center-mobile inline">CREATOR: </p>
-                <p className="white-text center-mobile inline">
+                <p className="white-text center-mobile inline font-size">
                   {detailsObj.creator}
                 </p>
                 <br />
