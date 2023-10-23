@@ -1,11 +1,19 @@
 import React from 'react';
 import './WatchlistDeletePopup.css';
+// import { useNavigate } from 'react-router-dom';
+export type PageTypeInsideApp = 'Logout';
 
 interface DeleteConfirmationPopupProps {
+  onNavigate: (pageNew: PageTypeInsideApp) => void;
   onClose: () => void;
 }
 
-const GuestPopup: React.FC<DeleteConfirmationPopupProps> = ({ onClose }) => {
+const GuestPopup: React.FC<DeleteConfirmationPopupProps> = ({
+  onClose,
+  onNavigate,
+}) => {
+  // const navigate = useNavigate();
+
   return (
     <div className="overlay" onClick={onClose}>
       <div className="popup" onClick={(e) => e.stopPropagation()}>
@@ -22,10 +30,15 @@ const GuestPopup: React.FC<DeleteConfirmationPopupProps> = ({ onClose }) => {
           films your already acquainted with.
         </div>
         <div className="buttons-container">
-          <button style={{ fontSize: '1.4rem' }} className="button delete">
+          <button
+            style={{ fontSize: '1.4rem' }}
+            className="button delete"
+            onClick={() => onNavigate('Logout')}>
             Sign-up
           </button>
-          <button className="button cancel" onClick={onClose}>
+          <button
+            className="button cancel"
+            onClick={() => onNavigate('Logout')}>
             Cancel
           </button>
         </div>
