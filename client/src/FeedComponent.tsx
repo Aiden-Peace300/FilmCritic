@@ -108,9 +108,6 @@ export default function FeedComponent() {
     try {
       const response = await fetch(`/api/likes/${idImdb}`, {
         method: 'GET',
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-        },
       });
 
       console.log('response: ', response);
@@ -241,8 +238,8 @@ export default function FeedComponent() {
                           <HeartRating
                             idImdb={film.idImdb}
                             initialLikes={filmLikes.get(film.idImdb) || 0}
-                            onUpdateLikes={(newLikes) => {
-                              handleUpdateLikes(film.idImdb, newLikes);
+                            onUpdateLikes={(idImdb, newLikes) => {
+                              handleUpdateLikes(idImdb, newLikes);
                             }}
                           />
                         </span>

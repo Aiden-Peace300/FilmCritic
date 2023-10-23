@@ -479,24 +479,24 @@ app.get('/api/idImdb/ratedFilms', authMiddleware, async (req, res, next) => {
   }
 });
 
-app.get('/api/likes/:idImdb', authMiddleware, async (req, res, next) => {
+app.get('/api/likes/:idImdb', async (req, res, next) => {
   try {
     const { idImdb } = req.params;
 
     console.log(idImdb);
 
-    if (!req.user) {
-      throw new ClientError(401, 'userId is undefined');
-    }
+    // if (!req.user) {
+    //   throw new ClientError(401, 'userId is undefined');
+    // }
 
-    const { userId } = req.user;
+    // const { userId } = req.user;
 
     // Query the database to count the likes for the given post
     const countLikesSql = `
       SELECT "likes" FROM "RatedFilms"
-      WHERE "userId" = $1 AND "idImdb" = $2
+      WHERE "idImdb" = $1
     `;
-    const countLikesParams = [userId, idImdb];
+    const countLikesParams = [idImdb];
     const result = await db.query(countLikesSql, countLikesParams);
 
     console.log(result);
@@ -515,32 +515,30 @@ app.get('/api/likes/:idImdb', authMiddleware, async (req, res, next) => {
   }
 });
 
-app.post('/api/likes/:idImdb', authMiddleware, async (req, res, next) => {
+app.post('/api/likes/:idImdb', async (req, res, next) => {
   try {
     const { idImdb } = req.params;
 
-    // console.log('idImdb', idImdb);
+    // if (!req.user) {
+    //   throw new ClientError(401, 'userId is undefined');
+    // }
 
-    if (!req.user) {
-      throw new ClientError(401, 'userId is undefined');
-    }
+    // const { userId } = req.user;
 
-    const { userId } = req.user;
-
-    // Check if the movie exists in the ratedFilms table
+    // Check if the movie exists in the RatedFilms table
     const checkRatedFilmSql = `
       SELECT "likes" FROM "RatedFilms"
-      WHERE "userId" = $1 AND "idImdb" = $2
+      WHERE "idImdb" = $1
     `;
-    const checkRatedFilmParams = [userId, idImdb];
+    const checkRatedFilmParams = [idImdb];
     const ratedFilmResult = await db.query(
       checkRatedFilmSql,
       checkRatedFilmParams
     );
 
     if (ratedFilmResult.rows.length === 0) {
-      // Movie is not found in the ratedFilms, return an error
-      throw new ClientError(404, 'Movie not found in ratedFilms');
+      // Movie is not found in the RatedFilms, you can choose to create a new entry or return an error as per your application logic.
+      throw new ClientError(404, 'Movie not found in RatedFilms');
     }
 
     // Get the current number of likes
@@ -549,16 +547,14 @@ app.post('/api/likes/:idImdb', authMiddleware, async (req, res, next) => {
     // Increment the like count
     const newLikes = currentLikes + 1;
 
-    // console.log('newLikes: ', newLikes);
-
-    // Update the likes count in the ratedFilms table
+    // Update the likes count in the RatedFilms table
     const updateLikesSql = `
       UPDATE "RatedFilms"
       SET "likes" = $1
-      WHERE "userId" = $2 AND "idImdb" = $3
+      WHERE "idImdb" = $2
       RETURNING *
     `;
-    const updateLikesParams = [newLikes, userId, idImdb];
+    const updateLikesParams = [newLikes, idImdb];
     const result = await db.query(updateLikesSql, updateLikesParams);
 
     if (result.rows.length === 0) {
