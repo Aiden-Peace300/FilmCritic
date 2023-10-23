@@ -286,6 +286,89 @@ app.post('/api/enter/userBio', authMiddleware, async (req, res, next) => {
   }
 });
 
+// Define an API endpoint to check if a user with the username "UnknownUser" exists
+app.get('/api/check-unknown-user', authMiddleware, async (req, res, next) => {
+  try {
+    if (req.user === undefined) {
+      throw new ClientError(401, 'User is not logged in');
+    }
+
+    const { userId } = req.user;
+
+    if (userId) {
+      // Check if a user with userId and username "UnknownUser" exists in the "Users" table
+      const checkUnknownUserSql = `
+        SELECT * FROM "Users" WHERE "userId" = $1 AND "username" = 'UnknownUser'
+      `;
+      const checkUnknownUserParams = [userId];
+      const unknownUserResult = await db.query(
+        checkUnknownUserSql,
+        checkUnknownUserParams
+      );
+
+      if (unknownUserResult.rows.length > 0) {
+        res.status(200).json({ userExists: true });
+      } else {
+        res.status(200).json({ userExists: false });
+      }
+    } else {
+      res.status(401).json({ error: 'User ID not available in req.user' });
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post('/api/auth/sign-in-guest', async (req, res, next) => {
+  try {
+    const guestUsername = 'UnknownUser';
+    const guestPassword = 'UnknownUserPassword';
+
+    // Check if the guest credentials are provided in the request
+    const { username, password } = req.body;
+
+    if (username === guestUsername && password === guestPassword) {
+      // The provided credentials match the guest credentials
+      // You can sign in the user as a guest
+
+      const sql = `
+        SELECT "userId"
+        FROM "Users"
+        WHERE "username" = $1
+      `;
+
+      const result = await db.query(sql, [guestUsername]);
+
+      if (result.rows.length === 0) {
+        throw new ClientError(401, 'Guest user not found');
+      }
+
+      const user = result.rows[0];
+
+      const payload = {
+        userId: user.userId,
+        username: guestUsername,
+      };
+
+      if (!process.env.TOKEN_SECRET) {
+        throw new Error('TOKEN_SECRET environment variable is not defined');
+      }
+
+      const token = jwt.sign(payload, process.env.TOKEN_SECRET);
+
+      res.status(200).json({
+        token,
+        payload,
+      });
+    } else {
+      // Invalid credentials for guest sign-in
+      throw new ClientError(401, 'Invalid guest credentials');
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.post('/api/watchlist', authMiddleware, async (req, res, next) => {
   try {
     const { idImdb } = req.body;
