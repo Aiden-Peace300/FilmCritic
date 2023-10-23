@@ -60,7 +60,12 @@ export default function ProfileComponent() {
       <ProfilePicture onNavigate={handleNavigateInsideApp} />
       <WatchListHistory />
       <RatedHistoryComponent />
-      {showGuestPopup && <GuestPopup onClose={handleCloseGuestPopup} />}
+      {showGuestPopup && (
+        <GuestPopup
+          onClose={handleCloseGuestPopup}
+          onNavigate={handleNavigateInsideApp}
+        />
+      )}
     </>
   );
 }
