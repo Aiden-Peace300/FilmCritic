@@ -22,10 +22,20 @@ const GuestPopup: React.FC<DeleteConfirmationPopupProps> = ({
           <br />
           will allow you to experience all the incredible <br />
           features of this web application. <br />
-          features like adding films you enjoy <br />
-          to your watchlist history. <br />
-          And making personalized post on <br />
-          films your already acquainted with.
+          Features like adding films you enjoy <br />
+          to your watchlist history <br />
+          and making personalized posts on <br />
+          films you're already acquainted with.
+          <br />
+          <br />
+          As a way to showcase our full features to you,
+          <br />
+          our guest account is a shared account. Feel free to add
+          <br />
+          family-friendly films to the watchlist and make posts
+          <br />
+          about films you've watched!
+          <br />
         </div>
         <div className="buttons-container">
           <button
