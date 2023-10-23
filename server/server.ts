@@ -286,6 +286,39 @@ app.post('/api/enter/userBio', authMiddleware, async (req, res, next) => {
   }
 });
 
+// Define an API endpoint to check if a user with the username "UnknownUser" exists
+app.get('/api/check-unknown-user', authMiddleware, async (req, res, next) => {
+  try {
+    if (req.user === undefined) {
+      throw new ClientError(401, 'User is not logged in');
+    }
+
+    const { userId } = req.user;
+
+    if (userId) {
+      // Check if a user with userId and username "UnknownUser" exists in the "Users" table
+      const checkUnknownUserSql = `
+        SELECT * FROM "Users" WHERE "userId" = $1 AND "username" = 'UnknownUser'
+      `;
+      const checkUnknownUserParams = [userId];
+      const unknownUserResult = await db.query(
+        checkUnknownUserSql,
+        checkUnknownUserParams
+      );
+
+      if (unknownUserResult.rows.length > 0) {
+        res.status(200).json({ userExists: true });
+      } else {
+        res.status(200).json({ userExists: false });
+      }
+    } else {
+      res.status(401).json({ error: 'User ID not available in req.user' });
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.post('/api/watchlist', authMiddleware, async (req, res, next) => {
   try {
     const { idImdb } = req.body;
