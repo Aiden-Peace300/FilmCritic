@@ -12,8 +12,6 @@ const GuestPopup: React.FC<DeleteConfirmationPopupProps> = ({
   onClose,
   onNavigate,
 }) => {
-  // const navigate = useNavigate();
-
   return (
     <div className="overlay" onClick={onClose}>
       <div className="popup" onClick={(e) => e.stopPropagation()}>
@@ -36,9 +34,7 @@ const GuestPopup: React.FC<DeleteConfirmationPopupProps> = ({
             onClick={() => onNavigate('Logout')}>
             Sign-up
           </button>
-          <button
-            className="button cancel"
-            onClick={() => onNavigate('Logout')}>
+          <button className="button cancel" onClick={onClose}>
             Cancel
           </button>
         </div>
