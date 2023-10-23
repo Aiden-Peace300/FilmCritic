@@ -60,7 +60,7 @@ export default function FeedComponent() {
         }
 
         const data = await response.json();
-        console.log('rated history:', data);
+        console.log('RATED HISTORY!!!!:', data);
 
         const localLikes = new Map();
 
@@ -69,7 +69,10 @@ export default function FeedComponent() {
             try {
               console.log('film0', film);
               const filmData = await fetchFilmPosterAndTitle(film.idImdb);
-              const likesResponse = await fetchLikesCount(film.idImdb);
+              const likesResponse = await fetchLikesCount(
+                film.idImdb,
+                film.userId
+              );
               console.log('film', film);
 
               console.log('likesResponse:', likesResponse);
@@ -104,9 +107,9 @@ export default function FeedComponent() {
     fetchData();
   }, []);
 
-  const fetchLikesCount = async (idImdb) => {
+  const fetchLikesCount = async (idImdb, userId) => {
     try {
-      const response = await fetch(`/api/likes/${idImdb}`, {
+      const response = await fetch(`/api/likes/${idImdb}/${userId}`, {
         method: 'GET',
       });
 
@@ -174,15 +177,19 @@ export default function FeedComponent() {
     }
   }
 
-  const handleUpdateLikes = (idImdb, newLikes) => {
+  const handleUpdateLikes = (idImdb, newLikes, userId) => {
     setRatedFilms((prevFilms) => {
       // Create a copy of the previous state
       const updatedFilms = [...prevFilms];
 
       // Find the index of the film in the array
       const filmIndex = updatedFilms.findIndex(
-        (film) => film.idImdb === idImdb
+        (film) => film.idImdb === idImdb && film.userId === userId
       );
+
+      console.log('idImdb', idImdb);
+      console.log('newLikes', newLikes);
+      console.log('userId', userId);
 
       if (filmIndex !== -1) {
         // Update the likes count for the specific film with the newLikes and the correct idImdb
@@ -190,6 +197,7 @@ export default function FeedComponent() {
           ...updatedFilms[filmIndex],
           likes: newLikes,
           idImdb: idImdb,
+          userId: userId,
         };
       }
 
@@ -238,8 +246,9 @@ export default function FeedComponent() {
                           <HeartRating
                             idImdb={film.idImdb}
                             initialLikes={filmLikes.get(film.idImdb) || 0}
-                            onUpdateLikes={(idImdb, newLikes) => {
-                              handleUpdateLikes(idImdb, newLikes);
+                            userId={film.userId}
+                            onUpdateLikes={(idImdb, newLikes, userId) => {
+                              handleUpdateLikes(idImdb, newLikes, userId);
                             }}
                           />
                         </span>

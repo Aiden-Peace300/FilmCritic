@@ -4,12 +4,14 @@ import { FaHeart } from 'react-icons/fa';
 type HeartRatingProps = {
   idImdb: string;
   initialLikes: number;
-  onUpdateLikes: (idImdb: string, newLikes: number) => void;
+  userId: number;
+  onUpdateLikes: (idImdb: string, newLikes: number, userId: number) => void;
 };
 
 const HeartRating: React.FC<HeartRatingProps> = ({
   idImdb,
   initialLikes,
+  userId,
   onUpdateLikes,
 }) => {
   const [isLiked, setIsLiked] = useState(false); // Track whether the user has liked the post
@@ -23,10 +25,10 @@ const HeartRating: React.FC<HeartRatingProps> = ({
         const newLikes = initialLikes + 1;
 
         // Update the UI with the new like count
-        onUpdateLikes(idImdb, newLikes);
+        onUpdateLikes(idImdb, newLikes, userId);
 
         // Make the API request
-        const response = await fetch(`/api/likes/${idImdb}`, {
+        const response = await fetch(`/api/likes/${idImdb}/${userId}`, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${sessionStorage.getItem('token')}`,
@@ -41,7 +43,7 @@ const HeartRating: React.FC<HeartRatingProps> = ({
           // You can display an error message to the user
 
           // Revert the optimistic update
-          onUpdateLikes(idImdb, initialLikes);
+          onUpdateLikes(idImdb, initialLikes, userId);
         } else {
           // User has liked the post
           setIsLiked(true);
@@ -53,10 +55,10 @@ const HeartRating: React.FC<HeartRatingProps> = ({
         const newLikes = initialLikes - 1;
 
         // Update the UI with the new like count
-        onUpdateLikes(idImdb, newLikes);
+        onUpdateLikes(idImdb, newLikes, userId);
 
         // Make the API request
-        const response = await fetch(`/api/likes/${idImdb}`, {
+        const response = await fetch(`/api/likes/${idImdb}/${userId}`, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${sessionStorage.getItem('token')}`,
@@ -71,7 +73,7 @@ const HeartRating: React.FC<HeartRatingProps> = ({
           // You can display an error message to the user
 
           // Revert the optimistic update
-          onUpdateLikes(idImdb, initialLikes);
+          onUpdateLikes(idImdb, initialLikes, userId);
         } else {
           // User has unliked the post
           setIsLiked(false);
@@ -83,7 +85,7 @@ const HeartRating: React.FC<HeartRatingProps> = ({
       // You can display an error message to the user
 
       // Revert the optimistic update
-      onUpdateLikes(idImdb, initialLikes);
+      onUpdateLikes(idImdb, initialLikes, userId);
     }
   };
 
