@@ -479,9 +479,9 @@ app.get('/api/idImdb/ratedFilms', authMiddleware, async (req, res, next) => {
   }
 });
 
-app.get('/api/likes/:idImdb', async (req, res, next) => {
+app.get('/api/likes/:idImdb/:userId', async (req, res, next) => {
   try {
-    const { idImdb } = req.params;
+    const { idImdb, userId } = req.params;
 
     console.log(idImdb);
 
@@ -494,9 +494,9 @@ app.get('/api/likes/:idImdb', async (req, res, next) => {
     // Query the database to count the likes for the given post
     const countLikesSql = `
       SELECT "likes" FROM "RatedFilms"
-      WHERE "idImdb" = $1
+      WHERE "userId" = $1 AND "idImdb" = $2
     `;
-    const countLikesParams = [idImdb];
+    const countLikesParams = [userId, idImdb];
     const result = await db.query(countLikesSql, countLikesParams);
 
     console.log(result);
@@ -515,9 +515,9 @@ app.get('/api/likes/:idImdb', async (req, res, next) => {
   }
 });
 
-app.post('/api/likes/:idImdb', async (req, res, next) => {
+app.post('/api/likes/:idImdb/:userId', async (req, res, next) => {
   try {
-    const { idImdb } = req.params;
+    const { idImdb, userId } = req.params;
 
     // if (!req.user) {
     //   throw new ClientError(401, 'userId is undefined');
@@ -528,9 +528,9 @@ app.post('/api/likes/:idImdb', async (req, res, next) => {
     // Check if the movie exists in the RatedFilms table
     const checkRatedFilmSql = `
       SELECT "likes" FROM "RatedFilms"
-      WHERE "idImdb" = $1
+      WHERE "userId" = $1 AND "idImdb" = $2
     `;
-    const checkRatedFilmParams = [idImdb];
+    const checkRatedFilmParams = [userId, idImdb];
     const ratedFilmResult = await db.query(
       checkRatedFilmSql,
       checkRatedFilmParams
@@ -551,10 +551,10 @@ app.post('/api/likes/:idImdb', async (req, res, next) => {
     const updateLikesSql = `
       UPDATE "RatedFilms"
       SET "likes" = $1
-      WHERE "idImdb" = $2
+      WHERE "userId" = $2 AND "idImdb" = $3
       RETURNING *
     `;
-    const updateLikesParams = [newLikes, idImdb];
+    const updateLikesParams = [newLikes, userId, idImdb];
     const result = await db.query(updateLikesSql, updateLikesParams);
 
     if (result.rows.length === 0) {
