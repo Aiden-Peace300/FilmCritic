@@ -8,6 +8,34 @@ type Props = {
 };
 export default function SignInForm({ onSignIn }: Props) {
   const [isLoading, setIsLoading] = useState(false);
+  const guestCredentials = {
+    username: 'UnknownUser',
+    password: 'UnknownUserPassword',
+  };
+
+  async function handleGuestSignIn() {
+    setIsLoading(true);
+    try {
+      const req = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(guestCredentials),
+      };
+      const res = await fetch('/api/auth/sign-in', req);
+      if (!res.ok) {
+        throw new Error(`fetch Error ${res.status}`);
+      }
+      const { payload, token } = await res.json();
+      sessionStorage.setItem('token', token);
+      sessionStorage.setItem('userId', String(payload.userId));
+      console.log('Signed In as Guest', payload, '; received token:', token);
+      onSignIn();
+    } catch (err) {
+      alert(`Error signing in as guest: ${err}`);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -72,6 +100,12 @@ export default function SignInForm({ onSignIn }: Props) {
               disabled={isLoading}
               className="input-b-radius text-padding purple-background white-text">
               Sign In
+            </button>
+            <button
+              disabled={isLoading}
+              className="input-b-radius text-padding purple-background white-text"
+              onClick={handleGuestSignIn}>
+              Sign-in As Guest
             </button>
           </div>
         </div>
