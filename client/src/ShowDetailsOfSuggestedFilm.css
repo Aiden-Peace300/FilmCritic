@@ -87,6 +87,11 @@ h1 {
   height: 5rem;
 }
 
+.apple-size {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
 .prime-size {
   width: 9rem;
   height: 5rem;
