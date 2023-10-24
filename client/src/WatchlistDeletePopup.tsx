@@ -6,6 +6,10 @@ interface DeleteConfirmationPopupProps {
   idImdb: string | null; // Update the type to accept null
 }
 
+/**
+ * A confirmation popup for deleting a film from the watchlist.
+ * @param {DeleteConfirmationPopupProps} props - Props for the component.
+ */
 const DeleteConfirmationPopup: React.FC<DeleteConfirmationPopupProps> = ({
   onClose,
   idImdb,
@@ -14,7 +18,9 @@ const DeleteConfirmationPopup: React.FC<DeleteConfirmationPopupProps> = ({
     return null; // Return null if idImdb is null
   }
 
-  // Function to handle the deletion when the "Delete" button is clicked
+  /**
+   * Handles the deletion when the "Delete" button is clicked.
+   */
   const handleDelete = async () => {
     try {
       const response = await fetch(`/api/watchlist/${idImdb}`, {

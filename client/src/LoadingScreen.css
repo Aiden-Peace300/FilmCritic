@@ -1,0 +1,17 @@
+.containerStyle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+@media only screen and (width < 735px) {
+  .containerStyle {
+    width: 100%;
+  }
+
+  .loading-logo {
+    height: 15rem;
+  }
+}

@@ -8,6 +8,10 @@ export default function RegistrationForm() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
+  /**
+   * Handles the form submission to register a user.
+   * @param {FormEvent<HTMLFormElement>} event - The form submission event.
+   */
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     try {

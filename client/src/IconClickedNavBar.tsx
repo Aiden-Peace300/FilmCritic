@@ -1,5 +1,10 @@
 import { Link } from 'react-router-dom';
 
+/**
+ * IconClickedNavBar component for displaying navigation links in the navigation bar.
+ *
+ * This component provides links to navigate to the "Sign Up" and "Login" pages.
+ */
 export function IconClickedNavBar() {
   return (
     <>

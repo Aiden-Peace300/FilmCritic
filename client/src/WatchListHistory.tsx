@@ -8,6 +8,9 @@ interface FilmPoster {
   [idImdb: string]: string | null;
 }
 
+/**
+ * Component for displaying the user's watchlist history.
+ */
 export default function WatchListHistoryComponent() {
   const navigate = useNavigate();
   const [watchlist, setWatchlist] = useState<string[]>([]);
@@ -43,7 +46,6 @@ export default function WatchListHistoryComponent() {
 
         const data = await response.json();
         const { idImdbList } = data;
-        console.log('Watchlist data:', idImdbList); // Debugging line
         setWatchlist(idImdbList);
 
         // Fetch film posters for each idImdb and store in state
@@ -62,6 +64,11 @@ export default function WatchListHistoryComponent() {
     fetchData();
   }, []);
 
+  /**
+   * Fetches the film poster for a given idImdb.
+   * @param {string} id - The idImdb of the film.
+   * @returns {Promise<string | null>} - A promise that resolves to the film poster URL or null if not found.
+   */
   async function fetchFilmPoster(id: string): Promise<string | null> {
     try {
       const keyParts = ['k_e', 'i6r', 'uv', '0h'];
@@ -70,8 +77,6 @@ export default function WatchListHistoryComponent() {
       const response = await fetch(
         `https://imdb-api.com/en/API/Title/${key}/${id}/Trailer,Ratings,`
       );
-
-      console.log('IMDB API IN fetchFilmPoster');
 
       if (response.status === 404) {
         console.error('Resource not found (404)');

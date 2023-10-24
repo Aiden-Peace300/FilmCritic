@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import RatedStars from './RatedStars';
-// import { AiOutlineHeart } from 'react-icons/ai';
 import { FaHeart } from 'react-icons/fa';
 import { MdOutlineModeEdit } from 'react-icons/md';
 import { BsTrash3 } from 'react-icons/bs';
@@ -20,6 +19,10 @@ type FilmTitleAndPoster = {
   filmPosters: string;
 };
 
+/**
+ * RatedHistoryComponent displays a list of rated films along with various actions for each item, such as editing and deleting.
+ * @returns {JSX.Element} The RatedHistoryComponent JSX element.
+ */
 export default function RatedHistoryComponent() {
   const navigate = useNavigate();
   const [ratedFilms, setRatedFilms] = useState<
@@ -27,7 +30,6 @@ export default function RatedHistoryComponent() {
   >([]);
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [selectedIdImdb, setSelectedIdImdb] = useState<string | null>(null); // Add selectedIdImdb state
-  // const [isEditVisible, setEditVisible] = useState(false);
 
   // Function to show the popup
   const showPopup = (idImdb: string) => {
@@ -44,9 +46,11 @@ export default function RatedHistoryComponent() {
   const showEditComponent = (idImdb) => {
     console.log('Showing Edit Component for idImdb:', idImdb);
     navigate(`${idImdb}`);
-    // setEditVisible(true);
   };
 
+  /**
+   * Asynchronously fetches and sets the user's rated film data, including film titles and posters.
+   */
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -78,9 +82,15 @@ export default function RatedHistoryComponent() {
       }
     };
 
+    // Execute fetchData when the component mounts
     fetchData();
   }, []);
 
+  /**
+   * Fetches film title and poster data for a given IMDb ID.
+   * @param {string} id The IMDb ID of the film.
+   * @returns {Promise<FilmTitleAndPoster | null>} A Promise that resolves to the film's title and poster data or null if an error occurs.
+   */
   async function fetchFilmPosterAndTitle(
     id: string
   ): Promise<FilmTitleAndPoster | null> {

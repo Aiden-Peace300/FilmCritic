@@ -6,6 +6,11 @@ interface DeleteConfirmationPopupProps {
   idImdb: string | null; // Update the type to accept null
 }
 
+/**
+ * DeleteConfirmationPopup is a component for confirming the deletion of a post from FilmCritic.
+ * @param {Function} onClose - A function to close the popup.
+ * @param {string | null} idImdb - The ID of the post to be deleted or null if not available.
+ */
 const DeleteConfirmationPopup: React.FC<DeleteConfirmationPopupProps> = ({
   onClose,
   idImdb,
