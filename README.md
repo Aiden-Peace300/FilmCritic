@@ -1,147 +1,419 @@
-# final-project
+# [FilmCritic](http://filmcritic-dev.us-west-1.elasticbeanstalk.com/)
 
-A full stack JavaScript solo project.
 
-## Getting Started
+## Overview
+FilmCritic is a full-stack web application created for film enthusiasts who want to discover new movies and shows based on their preferences. It combines the power of AI-driven recommendations with real-time streaming availability data, creating a seamless experience for users to explore and enjoy their favorite films.
 
----
+## API Integration
+FilmCritic leverages the capabilities of several APIs to provide a rich user experience:
 
-### Use this template to create a new repo on your GitHub account
+- [OpenAI GPT Chat Completions API](https://platform.openai.com/docs/guides/gpt/chat-completions-api): To offer personalized film recommendations by understanding user preferences.
+- [Movie of the Night API](https://www.movieofthenight.com/about/api): Enhancing our recommendation engine with real-time streaming availability data.
+- [IMDb API](https://imdb-api.com/api): For fetching comprehensive information about movies and shows.
 
-1. Click the green `Use this template` button, select `Create a new repository`
-   1. Under `Owner` select your username
-   1. Give your repository a name
-   1. (Optional) Add a description
-   1. Leave repository as `Public`
-   1. **DO NOT** Include all branches
-   1. Click the green `Create repository from template` button
+## Key Features
+1. Personalized Film Recommendations
+- Utilizing the OpenAI GPT Chat Completions API, users can input a film they enjoy, and the application will generate a list of five movie recommendations based on their input. The AI-driven system formulates prompts and queries the database for closely resembling films, delivering a tailored watchlist to the user.
 
----
+```javascript
+/**
+ * Fetch film recommendations based on user input, fetch details from IMDb API,
+ * and update component state with the results.
+ * @param {string} filmFromUser - The user's input.
+ */
+async function getRecommendations(filmFromUser) {
+  setIsLoading(true);
+  const suggestion = await suggestionFromAI(
+    `GIVE ME A LIST OF 5 FILMS THAT WOULD CLOSELY RESEMBLE THIS FILM (ONLY THE NAMES OF THE FILMS, NO OTHER PROMPTS WITH NO NUMBERING): ${filmFromUser}?`
+  );
 
-### Clone Newly created repo into `lfz-code`
+  // Break the suggestion into individual show names
+  const showStrings = breakShowsFilmsStrings(suggestion);
 
-1. From your newly created repo on GitHub, click the green `<> Code` button, then copy **SSH** URL
-1. Open `lfz-code`, click on blue `><` button in bottom left of `lfz-code`
-   1. Select `Clone Repository in Container Volume...`
-   1. Paste **SSH** URL for your repo, click `Clone git repository from URL`
+  const fetchAllPromises: Promise<any>[] = [];
 
----
+  for (const showName of showStrings) {
+    // Remove digits and hyphens from the show name using regular expressions
+    const cleanShowName = showName
+      .trim()
+      .replace(/\d+/g, '')
+      .replace(/-/g, '');
 
-### Run and test full-stack project setup
+    if (cleanShowName.length !== 0) {
+      console.log('Suggestion From AI:', cleanShowName);
+      fetchAllPromises.push(findFilmInIMDB(cleanShowName));
+      fetchAllPromises.push(findTitleInFilmIMDB(cleanShowName));
+      fetchAllPromises.push(handleFilmDetails(cleanShowName));
+    }
+  }
 
-#### Getting Started
+  try {
+    const fetchAllPromiseResults = await Promise.all(fetchAllPromises);
+    const showImagesArray: (string | undefined)[] = [];
+    const showTitleArray: (string | undefined)[] = [];
+    const showImdbIdArray: any[] = [];
 
-1. Install all dependencies with `npm install`.
+    for (let i = 0; i < fetchAllPromiseResults.length; i += 3) {
+      showImagesArray.push(fetchAllPromiseResults[i]);
+      showTitleArray.push(fetchAllPromiseResults[i + 1]);
+      showImdbIdArray.push(fetchAllPromiseResults[i + 2]);
+    }
+    console.log('Show Images:', showImagesArray);
+    console.log('Show titles', showTitleArray);
+    console.log("show id's", showImdbIdArray);
 
-#### Create the database
+    setIsLoading(false);
 
-If your final project will be using a database, create it now.
+    // Set the show images in the state
+    setShowImages(showImagesArray.filter(Boolean) as string[]);
+    setShowTitle(showTitleArray.filter(Boolean) as string[]);
+    setShowId(showImdbIdArray);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+```
+- The system employs a combination of AI and data from the IMDb API to provide a unique film discovery experience, resulting in a highly personalized movie selection for the user.
+  
+2. Watchlist Management
+- Users have the ability to curate their personalized watchlist by saving movie recommendations. These films are then conveniently accessible from the user's profile, ensuring that users never miss a potential cinematic gem. Additionally, users can view detailed film information, including trailers and a list of available streaming platforms.
+  
+```javascript
+  /**
+   * Adds film details to the films table and watchlist.
+   * @param {FilmDetails} detailsObj - Details of the film.
+   */
+  const addToFilmsTableAndWatchlist = useCallback(
+    async (detailsObj) => {
+      try {
+        if (!detailsObj) {
+          console.error('detailsObj is null');
+          return;
+        }
 
-1. Start PostgreSQL
-   ```sh
-   sudo service postgresql start
-   ```
-1. Create database (replace `name-of-database` with a name of your choosing)
-   ```sh
-   createdb name-of-database
-   ```
-1. In the `server/.env` file, in the `DATABASE_URL` value, replace `changeMe` with the name of your database, from the last step
-1. While you are editing `server/.env`, also change the value of `TOKEN_SECRET` to a custom value, without spaces.
+        const idImdb = extractParameterFromCurrentUrl();
 
-If your final project will _not_ be using a database, edit `package.json` to remove the `dev:db` script.
+        if (!idImdb) {
+          console.error('idImdb is missing');
+          return;
+        }
 
-#### Start the development servers
+        const releaseYearNumber = parseInt(detailsObj.releaseYear, 10);
 
-1. Start all the development servers with the `"dev"` script:
-   ```sh
-   npm run dev
-   ```
-1. Later, when you wish to stop the development servers, type `Ctrl-C` in the terminal where the servers are running.
+        const responseFilms = await fetch('/api/films', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            idImdb: detailsObj.idImdb,
+            filmTitle: detailsObj.filmTitle,
+            genre: detailsObj.genre,
+            type: detailsObj.type,
+            releaseYear: releaseYearNumber,
+            creator: detailsObj.creator,
+            description: detailsObj.description,
+            generalRating: detailsObj.generalRating,
+            poster: detailsObj.poster,
+            trailer: detailsObj.trailer,
+          }),
+        });
 
-#### Verify the client
+        console.log(
+          'responseFilms after adding to films table: ',
+          responseFilms
+        );
 
-1. A React app has already been created for you.
-1. Take a minute to look over the code in `client/src/App.jsx` to get an idea of what it is doing.
-1. Go to the app in your browser. You should see the message from the server below the React logo, and in the browser console.
-   ![](md.assets/client-server.png)
-1. If you see the message from the server in your browser you are good to go, your client and server are communicating.
+        const responseWatchlist = await fetch('/api/watchlist', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+          },
+          body: JSON.stringify({ idImdb }),
+        });
 
-#### Set up the database
+        if (responseWatchlist.status === 201) {
+          console.log('Movie added to watchlist');
+          navigate(-1);
+        } else {
+          console.error('Failed to add movie to watchlist');
+          navigate(-1);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    },
+    [navigate]
+  );
 
-1. In your browser navigate to the site you used for your database design.
-1. Export your database as PostgreSQL, this should generate the SQL code for creating your database tables.
-   - Reach out to an instructor if you have any issues with this step
-1. Copy the generated SQL code and paste it into `database/schema.sql` below the preexisting sql code in the file. The end result should look something like: _(You will likely have more tables)_
+```
+- Behind the scenes, the application manages user-specific watchlists and stores relevant film information, allowing for easy access and exploration of saved films. Users can seamlessly access trailers and discover where to stream the film.
 
-   ```SQL
-   set client_min_messages to warning;
+3. User-Generated Movie Reviews and Ratings
+This feature empowers users to contribute to the film-loving community by creating and sharing their movie thoughts. Users can write detailed reviews, rate films, and add valuable insights to the community feed. When a user submits a review, the system collects and stores the relevant information.
 
-   -- DANGER: this is NOT how to do it in the real world.
-   -- `drop schema` INSTANTLY ERASES EVERYTHING.
-   drop schema "public" cascade;
+```javascript
+  /**
+   * Add film details to the films table and watchlist.
+   * @param {FilmDetails} detailsObj - Film details to add.
+   */
+  const addToFilmsTableAndWatchlist = useCallback(
+    async (detailsObj) => {
+      try {
+        if (!detailsObj) {
+          console.error('detailsObj is null');
+          return;
+        }
 
-   create schema "public";
+        const idImdb = detailsObj.idImdb;
 
-   create table "public"."todos" (
-       "todoId"      serial,
-       "task"        text           not null,
-       "isCompleted" boolean        not null,
-       "createdAt"   timestamptz(6) not null default now(),
-       "updatedAt"   timestamptz(6) not null default now(),
-       primary key ("todoId")
-   );
-   ```
+        if (!idImdb) {
+          console.error('idImdb is missing');
+          return;
+        }
 
-   - **NOTE:** Database design websites do not do a perfect job of generating SQL, so you may need to make some adjustments to your SQL for it to work correctly. In particular, if using DbDesigner, make sure the double quotes around `"public"."table"` are correct. Reach out to your instructor if you need assistance.
+        const releaseYearNumber = parseInt(detailsObj.releaseYear, 10);
 
-1. In a separate terminal, run `npm run db:import` to create your tables
-1. Use `pgweb` (at `localhost:8081`) to verify your tables were created successfully
-1. In `pgweb` you should see your database and tables; if you do not, stop here and reach out to an instructor for help
-1. At this point your database is setup and you are good to start using it. However there is no data in your database, which isn't necessarily a bad thing, but if you want some starting data in your database you need to add insert statements into the `database/data.sql` file. You can add whatever starting data you need/want. Here is an example:
-   ```SQL
-   insert into "todos" ("task", "isCompleted")
-   values
-       ('Learn to code', false),
-       ('Build projects', false),
-       ('Get a job', false);
-   ```
-1. After any changes to `database/schema.sql` or `database/data.sql` re-run the `npm run db:import` command to update your database. Use `pgweb` to verify your changes were successfully applied
-   ![](md.assets/pgweb-with-data.png)
+        const responseFilms = await fetch('/api/films', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            idImdb: detailsObj.idImdb,
+            filmTitle: detailsObj.filmTitle,
+            genre: detailsObj.genre,
+            type: detailsObj.type,
+            releaseYear: releaseYearNumber,
+            creator: detailsObj.creator,
+            description: detailsObj.description,
+            generalRating: detailsObj.generalRating,
+            poster: detailsObj.poster,
+            trailer: detailsObj.trailer,
+          }),
+        });
 
-**Happy coding!!!!**
+        const responseRatedFilms = await fetch('/api/rating', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+          },
+          body: JSON.stringify({ idImdb, rating, userNote: note }),
+        });
 
----
+        if (responseFilms.status === 201) {
+          console.log('Movie added to films table');
+          navigate('/movieApp/profile');
+        } else if (responseFilms.status === 200) {
+          console.log('Movie already in films table');
+          navigate('/movieApp/profile');
+        } else {
+          console.error('Failed to add movie to films table');
+          navigate('/movieApp/profile');
+        }
 
-### Available `npm` commands explained
+        if (responseRatedFilms.status === 201) {
+          console.log('Movie added to watchlist');
+        } else if (responseRatedFilms.status === 200) {
+          console.log('Movie already in watchlist');
+        } else {
+          console.error('Failed to add movie to watchlist');
+        }
+      } catch (error) {
+        console.error('Error submitting rating:', error);
+      }
+    },
+    [rating, note, navigate]
+  );
+```
+- Users can actively engage in discussions, contribute their opinions, and interact with the film community. The system records and displays these user-generated reviews and ratings, enhancing the film discovery experience.
 
-Below is an explanation of all included `npm` commands in the root `package.json`. Several are only used for deployment purposes and should not be necessary for development.
+4. Rated Films History
+Users can view a detailed history of movies they've rated, including their reviews and ratings. This information is conveniently accessible from their user profile.
 
-1. `start`
-   - The `start` script starts the Node server in `production` mode, without any file watchers.
-1. `build`
-   - The `build` script executes `npm run build` in the context of the `client` folder. This builds your React app for production. This is used during deployment, and not commonly needed during development.
-1. `db:import`
-   - The `db:import` script executes `database/import.sh`, which executes the `database/schema.sql` and `database/data.sql` files to build and populate your database.
-1. `dev`
-   - Starts all the development servers.
-1. `lint`
-   - Runs ESLint against all the client and server code.
-1. Not directly used by developer
-   1. `install:*`
-   - These scripts install dependencies in the `client` and `server` folders, and copy `.env.example` to `.env` if it doesn't already exist.
-   1. `dev:*`
-   - These scripts start the individual development servers.
-   1. `lint:*`
-   - These scripts run lint in the client and server directories.
-   1. `postinstall`
-      - The `postinstall` script is automatically run when you run `npm install`. It is executed after the dependencies are installed. Specifically for this project the `postinstall` script is used to install the `client` and `server` dependencies.
-   1. `prepare`
-      - The `prepare` script is similar to `postinstall` — it is executed before `install`. Specifically for this project it is used to install `husky`.
-   1. `deploy`
-      - The `deploy` script is used to deploy the project by pushing the `main` branch to the `pub` branch, which triggers the GitHub Action that deploys the project.
+```javascript
+  /**
+   * Asynchronously fetches and sets the user's rated film data, including film titles and posters.
+   */
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/api/idImdb/ratedFilms', {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+          },
+        });
 
----
+        if (!response.ok) {
+          console.error('Network response was not ok');
+          return;
+        }
 
-## Deployment
+        const data = await response.json();
+        console.log('rated history:', data);
 
-Once you are ready, deployment instructions can be found [HERE](https://github.com/Learning-Fuze/lfz-portfolios/tree/master/deploy-to-elastic-beanstalk)
+        const ratedFilmData = await Promise.all(
+          data.map(async (film) => {
+            const filmData = await fetchFilmPosterAndTitle(film.idImdb);
+            return { ...film, ...filmData };
+          })
+        );
+
+        setRatedFilms(ratedFilmData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    // Execute fetchData when the component mounts
+    fetchData();
+  }, []);
+```
+5. Edit Post Management
+Users have the ability to edit and update their posts with ease. If they change their opinion or want to add more insights, they have full control over their contributions. The system prepopulates the information with the user's previous ratings and notes.
+
+```javascript
+  /**
+   * Retrieves the user's past rating and note from the server and updates the state.
+   */
+  const gettingUsersPastRating = useCallback(async () => {
+    try {
+      const response = await fetch(`/api/Edit/ratedFilms/${idImdb}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        },
+      });
+
+      if (response.status === 404) {
+        console.error('Resource not found (404)');
+      } else if (response.ok) {
+        const data = await response.json();
+        if (data.length > 0) {
+          setRating(data[0].rating);
+          setNote(data[0].userNote);
+        }
+      } else {
+        console.error('Failed to fetch user rating and note from the server');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }, [idImdb]);
+```
+
+6. Social Interaction
+Users can interact with other users by liking their posts in the feed. They can engage in discussions, discover new films, and expand their film network.
+
+```javascript
+  /**
+   * Handles updating likes for a film.
+   * @param {string} idImdb The IMDb ID of the film.
+   * @param {number} newLikes The new likes count.
+   * @param {number} userId The user's ID.
+   */
+  const handleUpdateLikes = (idImdb, newLikes, userId) => {
+    setRatedFilms((prevFilms) => {
+      // Create a copy of the previous state
+      const updatedFilms = [...prevFilms];
+
+      // Find the index of the film in the array
+      const filmIndex = updatedFilms.findIndex(
+        (film) => film.idImdb === idImdb && film.userId === userId
+      );
+
+      if (filmIndex !== -1) {
+        // Update the likes count for the specific film with the newLikes and the correct idImdb
+        updatedFilms[filmIndex] = {
+          ...updatedFilms[filmIndex],
+          likes: newLikes,
+          idImdb: idImdb,
+          userId: userId,
+        };
+      }
+
+      return updatedFilms;
+    });
+  };
+```
+
+
+## Database 
+
+Here's an overview of the database schema used in FilmCritic:
+
+```javascript
+set client_min_messages to warning;
+
+-- DANGER: this is NOT how to do it in the real world.
+-- `drop schema` INSTANTLY ERASES EVERYTHING.
+drop schema "public" cascade;
+
+create schema "public";
+
+CREATE TABLE "public"."Users" (
+  "userId" serial PRIMARY KEY,
+  "username" text not null,
+  "hashedPassword" text not null,
+  "imageURL" text,
+  "profileBio" text,
+  "updatedAt" timestamptz(6) not null default now(),
+  "createdAt" timestamptz(6) not null default now()
+);
+
+CREATE TABLE "public"."RatedFilms" (
+  "userId" integer not null,
+  "idImdb" text not null,
+  "rating" float not null,
+  "userNote" text not null,
+  "likes" integer not null,
+  "updatedAt" timestamptz(6) not null default now(),
+  "createdAt" timestamptz(6) not null default now(),
+  PRIMARY KEY ("userId", "idImdb")
+);
+
+CREATE TABLE "public"."WatchList" (
+  "userId" integer not null,
+  "idImdb" text not null,
+  "createdAt" timestamptz(6) not null default now(),
+  PRIMARY KEY ("userId", "idImdb")
+);
+
+CREATE TABLE "public"."Films" (
+  "idImdb" text PRIMARY KEY,
+  "filmTitle" text not null,
+  "genre" text not null,
+  "type" text not null,
+  "releaseYear" integer not null,
+  "creator" text not null,
+  "description" text not null,
+  "generalRating" text not null,
+  "poster" text not null,
+  "trailer" text not null
+);
+
+ALTER TABLE "WatchList" ADD FOREIGN KEY ("idImdb") REFERENCES "Films" ("idImdb");
+
+ALTER TABLE "RatedFilms" ADD FOREIGN KEY ("userId") REFERENCES "Users" ("userId");
+
+ALTER TABLE "WatchList" ADD FOREIGN KEY ("userId") REFERENCES "Users" ("userId");
+
+ALTER TABLE "RatedFilms" ADD FOREIGN KEY ("idImdb") REFERENCES "Films" ("idImdb");
+```
+
+## Get Started
+FilmCritic is your gateway to a world of cinematic discovery. Here's how to begin your journey:
+
+1. Search for a film you love and receive tailored recommendations.
+2. Save the films you're interested in, and view the film in your watchlist.
+3. Share your film experiences through reviews and ratings.
+4. Interact with fellow film enthusiasts in the community feed by liking their posts.
+5. Explore and manage your rated film's history.
+
+## Contact
+If you have any suggestions or feedback, please feel free to reach out to me. Email: aidenpeacecodes@gmail.com
+
+Happy writing, and may your vocabulary always be expansive!
