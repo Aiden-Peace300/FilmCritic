@@ -44,6 +44,10 @@ input[type='radio'] {
   align-items: center;
 }
 
+.rated-prompt {
+  margin-left: 5rem;
+}
+
 @media only screen and (width < 735px) {
   .rateImageDetails {
     width: 300px;
@@ -82,6 +86,10 @@ input[type='radio'] {
     display: flex;
     flex-direction: column;
     align-items: center;
+  }
+
+  .rated-prompt {
+    margin-left: 0;
   }
 
   .rating-prompt {
