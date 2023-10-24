@@ -412,6 +412,6 @@ FilmCritic is your gateway to a world of cinematic discovery. Here's how to begi
 5. Explore and manage your rated film's history.
 
 ## Contact
-If you have any suggestions or feedback, please feel free to reach out to me. Email: aidenpeacecodes@gmail.com
+I am currently still making changes and updates to this project often! If you have any suggestions or feedback, please feel free to reach out to me. Email: aidenpeacecodes@gmail.com
 
 Happy writing, and may your vocabulary always be expansive!
