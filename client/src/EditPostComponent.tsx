@@ -12,11 +12,13 @@ interface FilmDetails {
   genre: string;
 }
 
+/**
+ * EditPostComponent for editing user ratings and notes for a film.
+ */
 export default function EditPostComponent() {
   const navigate = useNavigate();
   const [detailsObj, setDetailsObj] = useState<FilmDetails | null>(null);
   const [note, setNote] = useState('');
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [rating, setRating] = useState(0);
 
   const idImdb = extractParameterFromCurrentUrl();
@@ -25,6 +27,9 @@ export default function EditPostComponent() {
     setRating(newRating);
   };
 
+  /**
+   * Fetches film details and updates the state with the fetched data.
+   */
   const fetchFilmDetailsCallback = useCallback(async () => {
     if (idImdb) {
       try {
@@ -38,6 +43,9 @@ export default function EditPostComponent() {
     }
   }, [idImdb]);
 
+  /**
+   * Retrieves the user's past rating and note from the server and updates the state.
+   */
   const gettingUsersPastRating = useCallback(async () => {
     try {
       const response = await fetch(`/api/Edit/ratedFilms/${idImdb}`, {
@@ -46,14 +54,12 @@ export default function EditPostComponent() {
           Authorization: `Bearer ${sessionStorage.getItem('token')}`,
         },
       });
-      console.log('response', response);
 
       if (response.status === 404) {
         console.error('Resource not found (404)');
       } else if (response.ok) {
         const data = await response.json();
         if (data.length > 0) {
-          console.log('data[0].userNote', data[0].userNote);
           setRating(data[0].rating);
           setNote(data[0].userNote);
         }
@@ -65,6 +71,10 @@ export default function EditPostComponent() {
     }
   }, [idImdb]);
 
+  /**
+   * Extracts the IMDb ID from the current URL.
+   * @returns {string | null} - The extracted IMDb ID or null if not found.
+   */
   function extractParameterFromCurrentUrl() {
     const currentUrl = window.location.href;
     const regexPattern = /\/tt([0-9]+)/;
@@ -86,6 +96,11 @@ export default function EditPostComponent() {
     fetchData();
   }, [fetchFilmDetailsCallback, gettingUsersPastRating]);
 
+  /**
+   * Fetches film details from the IMDb API.
+   * @param {string} id - The IMDb ID of the film.
+   * @returns {Promise<FilmDetails | undefined>} - A Promise that resolves to film details or undefined if not found.
+   */
   async function fetchFilmDetails(id: string) {
     const key = 'k_ei6ruv0h';
 
@@ -129,6 +144,9 @@ export default function EditPostComponent() {
     }
   }
 
+  /**
+   * Handles the click event when the user wants to edit their rating and note.
+   */
   const handleEditClick = async () => {
     try {
       const response = await fetch(`/api/rated/${idImdb}`, {
@@ -139,8 +157,6 @@ export default function EditPostComponent() {
         },
         body: JSON.stringify({ rating, userNote: note }),
       });
-
-      console.log('response: ', response);
 
       if (response.ok) {
         // Update was successful, you can navigate to another page or show a success message here.
@@ -154,8 +170,6 @@ export default function EditPostComponent() {
       console.error('Error:', error);
     }
   };
-
-  console.log('NOTES', note);
 
   return (
     <>

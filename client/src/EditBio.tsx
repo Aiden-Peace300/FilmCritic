@@ -5,6 +5,10 @@ type EditBioTypes = {
   onClose: () => void;
 };
 
+/**
+ * EditProfileBio component for updating the user's bio.
+ * @param {function} onClose - Callback to close the component.
+ */
 const EditProfileBio: React.FC<EditBioTypes> = ({ onClose }) => {
   const [newBio, setNewBio] = useState(''); // State to store the new bio
 
@@ -13,6 +17,9 @@ const EditProfileBio: React.FC<EditBioTypes> = ({ onClose }) => {
     fetchUserBio();
   }, []);
 
+  /**
+   * Fetches the user's existing bio from the backend API.
+   */
   const fetchUserBio = async () => {
     try {
       const response = await fetch('/api/userBio', {
@@ -33,6 +40,10 @@ const EditProfileBio: React.FC<EditBioTypes> = ({ onClose }) => {
     }
   };
 
+  /**
+   * Handles changes in the bio text area.
+   * @param {React.ChangeEvent<HTMLTextAreaElement>} e - The event object.
+   */
   const handleBioChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const text = e.target.value;
     if (text.length <= 500) {
@@ -40,6 +51,9 @@ const EditProfileBio: React.FC<EditBioTypes> = ({ onClose }) => {
     }
   };
 
+  /**
+   * Saves the updated bio to the backend API.
+   */
   const saveBio = async () => {
     // Make an API request to save the updated bio
     try {
@@ -51,8 +65,6 @@ const EditProfileBio: React.FC<EditBioTypes> = ({ onClose }) => {
         },
         body: JSON.stringify({ profileBio: newBio }), // Send the updated bio
       });
-
-      console.log('response: ', response);
 
       if (response.ok) {
         // Bio updated successfully
