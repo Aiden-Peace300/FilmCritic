@@ -1,5 +1,14 @@
 import { Link } from 'react-router-dom';
 
+/**
+ * IconClicked component to display navigation links.
+ *
+ * This component displays a set of links for navigating to different sections of the application.
+ * - FEED
+ * - RECOMMENDATION
+ * - RATING
+ * - PROFILE
+ */
 export function IconClicked() {
   return (
     <>

@@ -7,6 +7,12 @@ type StarRatingProps = {
   rated: number;
 };
 
+/**
+ * StarRating component for selecting and displaying a star-based rating.
+ *
+ * This component allows users to choose a rating from 1 to 5 stars. It displays stars that can be clicked to select the rating,
+ * and the selected rating is shown with the appropriate number of filled stars. It also triggers a callback function when the rating is changed.
+ */
 const StarRating: React.FC<StarRatingProps> = ({
   onRatingChange,
   rated,

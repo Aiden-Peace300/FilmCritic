@@ -8,6 +8,7 @@ import HeartRating from './HeartLikes';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+// Defines TypeScript types for rated films
 type RatedFilm = {
   idImdb: string;
   userNote: string;
@@ -16,6 +17,7 @@ type RatedFilm = {
   likes: number;
 };
 
+// Defines TypeScript types for film titles/posters.
 type FilmTitleAndPoster = {
   title: string;
   filmPosters: string;
@@ -27,24 +29,37 @@ export default function FeedComponent() {
     (RatedFilm & FilmTitleAndPoster)[]
   >([]);
   const [isPopupVisible, setPopupVisible] = useState(false);
-  const [selectedIdImdb, setSelectedIdImdb] = useState<string | null>(null);
+  const [selectedIdImdb, setSelectedIdImdb] = useState<string>('');
   const [filmLikes, setFilmLikes] = useState<Map<string, number>>(new Map());
 
+  /**
+   * Shows the delete confirmation popup for a given IMDb ID.
+   * @param {string} idImdb The IMDb ID of the film to be deleted.
+   */
   const showPopup = (idImdb: string) => {
     setSelectedIdImdb(idImdb);
     setPopupVisible(true);
   };
 
+  /**
+   * Hides the delete confirmation popup.
+   */
   const hidePopup = () => {
-    setSelectedIdImdb(null);
+    setSelectedIdImdb('');
     setPopupVisible(false);
   };
 
+  /**
+   * Navigates to the edit component for a film with a given IMDb ID.
+   * @param {string} idImdb The IMDb ID of the film to be edited.
+   */
   const showEditComponent = (idImdb: string) => {
-    console.log('Showing Edit Component for idImdb:', idImdb);
     navigate(`profile/${idImdb}`);
   };
 
+  /**
+   * Use the useEffect hook to fetch data when the component mounts.
+   */
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -60,19 +75,17 @@ export default function FeedComponent() {
         }
 
         const data = await response.json();
-        console.log('rated history:', data);
 
         const localLikes = new Map();
 
         const ratedFilmData = await Promise.all(
           data.map(async (film) => {
             try {
-              console.log('film0', film);
               const filmData = await fetchFilmPosterAndTitle(film.idImdb);
-              const likesResponse = await fetchLikesCount(film.idImdb);
-              console.log('film', film);
-
-              console.log('likesResponse:', likesResponse);
+              const likesResponse = await fetchLikesCount(
+                film.idImdb,
+                film.userId
+              );
 
               // Create a copy of the film object with updated 'likes'
               const updatedFilm = {
@@ -84,11 +97,9 @@ export default function FeedComponent() {
               // Update the local likes count
               localLikes.set(film.idImdb, updatedFilm.likes);
 
-              console.log('updatedFilm : ', updatedFilm);
               return updatedFilm;
             } catch (error) {
               console.error('Error fetching film data:', error);
-              // Handle the error for this film data here, e.g., set a default value
               return { ...film, poster: '', title: '', likes: 0 };
             }
           })
@@ -104,16 +115,17 @@ export default function FeedComponent() {
     fetchData();
   }, []);
 
-  const fetchLikesCount = async (idImdb) => {
+  /**
+   * Fetches the likes count for a film.
+   * @param {string} idImdb The IMDb ID of the film.
+   * @param {number} userId The user's ID.
+   * @returns {Promise} A Promise that resolves to the likes count.
+   */
+  const fetchLikesCount = async (idImdb, userId) => {
     try {
-      const response = await fetch(`/api/likes/${idImdb}`, {
+      const response = await fetch(`/api/likes/${idImdb}/${userId}`, {
         method: 'GET',
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-        },
       });
-
-      console.log('response: ', response);
 
       if (!response.ok) {
         console.error('Failed to fetch likes count for', idImdb);
@@ -121,7 +133,6 @@ export default function FeedComponent() {
       }
 
       const likesData = await response.json();
-      console.log('likesData: ', likesData);
       if (likesData.likes !== undefined) {
         return { likes: likesData.likes }; // Extract the likes count from the API response
       } else {
@@ -133,11 +144,17 @@ export default function FeedComponent() {
     }
   };
 
+  // Get the user's ID from session storage
   const userId = Number(sessionStorage.getItem('userId'));
   if (!userId) {
     return <div>USER NOT FOUND</div>;
   }
 
+  /**
+   * Fetches film poster and title from an external API.
+   * @param {string} id The IMDb ID of the film.
+   * @returns {Promise} A Promise that resolves to film title and poster data.
+   */
   async function fetchFilmPosterAndTitle(
     id: string
   ): Promise<FilmTitleAndPoster | null> {
@@ -150,8 +167,6 @@ export default function FeedComponent() {
       const response = await fetch(
         `https://imdb-api.com/en/API/Title/${key}/${id}/Trailer,Ratings,`
       );
-
-      console.log('IMDB API IN fetchFilmPosterAndTitle');
 
       if (response.status === 404) {
         console.error('Resource not found (404)');
@@ -177,14 +192,20 @@ export default function FeedComponent() {
     }
   }
 
-  const handleUpdateLikes = (idImdb, newLikes) => {
+  /**
+   * Handles updating likes for a film.
+   * @param {string} idImdb The IMDb ID of the film.
+   * @param {number} newLikes The new likes count.
+   * @param {number} userId The user's ID.
+   */
+  const handleUpdateLikes = (idImdb, newLikes, userId) => {
     setRatedFilms((prevFilms) => {
       // Create a copy of the previous state
       const updatedFilms = [...prevFilms];
 
       // Find the index of the film in the array
       const filmIndex = updatedFilms.findIndex(
-        (film) => film.idImdb === idImdb
+        (film) => film.idImdb === idImdb && film.userId === userId
       );
 
       if (filmIndex !== -1) {
@@ -193,14 +214,13 @@ export default function FeedComponent() {
           ...updatedFilms[filmIndex],
           likes: newLikes,
           idImdb: idImdb,
+          userId: userId,
         };
       }
 
       return updatedFilms;
     });
   };
-
-  console.log('ratedFilms', ratedFilms);
 
   return (
     <div>
@@ -241,15 +261,14 @@ export default function FeedComponent() {
                           <HeartRating
                             idImdb={film.idImdb}
                             initialLikes={filmLikes.get(film.idImdb) || 0}
-                            onUpdateLikes={(newLikes) => {
-                              handleUpdateLikes(film.idImdb, newLikes);
+                            userId={film.userId}
+                            onUpdateLikes={(idImdb, newLikes, userId) => {
+                              handleUpdateLikes(idImdb, newLikes, userId);
                             }}
                           />
                         </span>
                         <div className="vertical-line margin-left"></div>
-                        <span
-                          className="like-prompt like-button-mobile"
-                          onClick={() => showEditComponent(film.idImdb)}>
+                        <span className="like-prompt like-button-mobile hidden-prompt">
                           Like
                         </span>
                         {/* <span>

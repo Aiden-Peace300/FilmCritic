@@ -12,11 +12,13 @@ import RatingComponent from './RatingComponent';
 import UsersRatingComponent from './UsersRatingComponent';
 import Profile from './Profile';
 import EditPostComponent from './EditPostComponent';
+import NotFound from './NotFound';
 
 export default function App() {
   const navigate = useNavigate();
   const isAuthenticated = !!sessionStorage.getItem('token');
 
+  // Function to handle navigation and sign-out
   function handleNavigate(page: PageType) {
     navigate(page);
     if (page === 'sign-out') {
@@ -56,13 +58,12 @@ export default function App() {
 
           <Route path="rating" element={<RatingComponent />} />
           <Route path="rating/:filmId" element={<UsersRatingComponent />} />
-          {/* <Route path="rating" element={<RatingComponent />} /> */}
           <Route path="profile" element={<Profile />} />
           <Route path="profile/:filmId" element={<EditPostComponent />} />
           <Route path="icon-clicked" element={<IconClicked />} />
         </Route>
 
-        {/* <Route path="*" element={<Navigate to="/sign-in" />} /> */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
   );
