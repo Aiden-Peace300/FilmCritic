@@ -112,6 +112,7 @@ const HeartRating: React.FC<HeartRatingProps> = ({
         style={{
           marginTop: '1rem',
           cursor: 'pointer',
+          transition: 'color 0s',
           color: isLiked ? '#DB3434' : 'grey',
         }}
         onClick={handleHeartClick}
