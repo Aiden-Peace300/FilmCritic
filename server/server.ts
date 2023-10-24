@@ -18,15 +18,25 @@ const db = new pg.Pool({
 });
 
 const app = express();
+
 // Create paths for static directories
 const reactStaticDir = new URL('../client/dist', import.meta.url).pathname;
 const uploadsStaticDir = new URL('public', import.meta.url).pathname;
 
 app.use(express.static(reactStaticDir));
+
 // Static directory for file uploads server/public/
 app.use(express.static(uploadsStaticDir));
 app.use(express.json());
 
+/**
+ * Handles user sign-up by adding a new user to the database.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Promise} A Promise that resolves to the newly created user.
+ * @throws {ClientError} if username or password are missing or if the username is already taken.
+ */
 app.post('/api/auth/sign-up', async (req, res, next) => {
   try {
     const { username, password } = req.body;
@@ -62,6 +72,14 @@ app.post('/api/auth/sign-up', async (req, res, next) => {
   }
 });
 
+/**
+ * Handles user sign-in by verifying credentials and generating a JWT token.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Promise} A Promise that resolves to a JWT token and user payload.
+ * @throws {ClientError} if credentials are invalid or if the TOKEN_SECRET environment variable is not defined.
+ */
 app.post('/api/auth/sign-in', async (req, res, next) => {
   try {
     const { username, password } = req.body;
@@ -107,6 +125,13 @@ app.post('/api/auth/sign-in', async (req, res, next) => {
   }
 });
 
+/**
+ * Deletes a user by their user ID.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {function} next - The next middleware function.
+ * @throws {ClientError} if userId is not an integer or if the user is not found.
+ */
 app.delete('/api/users/:userId', async (req, res, next) => {
   try {
     const { username } = req.body;
@@ -131,6 +156,14 @@ app.delete('/api/users/:userId', async (req, res, next) => {
   }
 });
 
+/**
+ * Updates a user's profile picture.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Promise} A Promise that resolves to the updated user with the new profile picture.
+ * @throws {ClientError} if there is no file in the request or if userId is undefined.
+ */
 app.post(
   '/api/updateProfilePicture',
   authMiddleware,
@@ -170,6 +203,13 @@ app.post(
   }
 );
 
+/**
+ * Gets a user's profile picture URL.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {function} next - The next middleware function.
+ * @throws {ClientError} if userId is undefined.
+ */
 app.get('/api/profilePicture', authMiddleware, async (req, res, next) => {
   try {
     if (req.user === undefined) {
@@ -195,6 +235,13 @@ app.get('/api/profilePicture', authMiddleware, async (req, res, next) => {
   }
 });
 
+/**
+ * Gets a user's username.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {function} next - The next middleware function.
+ * @throws {ClientError} if userId is undefined.
+ */
 app.get('/api/username', authMiddleware, async (req, res, next) => {
   try {
     if (req.user === undefined) {
@@ -220,6 +267,13 @@ app.get('/api/username', authMiddleware, async (req, res, next) => {
   }
 });
 
+/**
+ * Gets a user's profile bio.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {function} next - The next middleware function.
+ * @throws {ClientError} if userId is undefined.
+ */
 app.get('/api/userBio', authMiddleware, async (req, res, next) => {
   try {
     if (req.user === undefined) {
@@ -245,6 +299,14 @@ app.get('/api/userBio', authMiddleware, async (req, res, next) => {
   }
 });
 
+/**
+ * Updates a user's profile bio.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Promise} A Promise that resolves to the updated user with the new profile bio.
+ * @throws {ClientError} if profileBio is missing or if userId is undefined.
+ */
 app.post('/api/enter/userBio', authMiddleware, async (req, res, next) => {
   try {
     const { profileBio } = req.body;
@@ -255,10 +317,6 @@ app.post('/api/enter/userBio', authMiddleware, async (req, res, next) => {
 
     const { userId } = req.user;
 
-    // // Check if the requested user ID matches the authenticated user's ID
-    // if (userId !== parseInt(req.params.userId, 10)) {
-    //   throw new ClientError(403, 'Access denied');
-    // }
     console.log('profileBio ', profileBio);
     if (!profileBio) {
       throw new ClientError(400, 'profileBio is a required field');
@@ -286,7 +344,14 @@ app.post('/api/enter/userBio', authMiddleware, async (req, res, next) => {
   }
 });
 
-// Define an API endpoint to check if a user with the username "UnknownUser" exists
+/**
+ * Checks if a user with the username "UnknownUser" exists.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Promise} A Promise that resolves to a response indicating whether the user exists.
+ * @throws {ClientError} if userId is undefined.
+ */
 app.get('/api/check-unknown-user', authMiddleware, async (req, res, next) => {
   try {
     if (req.user === undefined) {
@@ -319,6 +384,14 @@ app.get('/api/check-unknown-user', authMiddleware, async (req, res, next) => {
   }
 });
 
+/**
+ * Handles guest sign-in using predefined guest credentials.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Promise} A Promise that resolves to a JWT token and user payload for the guest user.
+ * @throws {ClientError} if guest credentials are invalid or if the TOKEN_SECRET environment variable is not defined.
+ */
 app.post('/api/auth/sign-in-guest', async (req, res, next) => {
   try {
     const guestUsername = 'UnknownUser';
@@ -369,6 +442,14 @@ app.post('/api/auth/sign-in-guest', async (req, res, next) => {
   }
 });
 
+/**
+ * Handles adding a movie to the user's watchlist.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Promise} A Promise that resolves to the added watchlist item.
+ * @throws {ClientError} if userId is undefined or idImdb is not provided.
+ */
 app.post('/api/watchlist', authMiddleware, async (req, res, next) => {
   try {
     const { idImdb } = req.body;
@@ -413,6 +494,14 @@ app.post('/api/watchlist', authMiddleware, async (req, res, next) => {
   }
 });
 
+/**
+ * Handles getting the user's watchlist.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Promise} A Promise that resolves to the user's watchlist.
+ * @throws {ClientError} if userId is undefined or if the user has no films in their watchlist.
+ */
 app.get('/api/watchlist', authMiddleware, async (req, res, next) => {
   try {
     if (req.user === undefined) {
@@ -448,6 +537,14 @@ app.get('/api/watchlist', authMiddleware, async (req, res, next) => {
   }
 });
 
+/**
+ * Handles getting rated films by the user.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Promise} A Promise that resolves to the user's rated films.
+ * @throws {ClientError} if userId is undefined or if the user hasn't rated any films.
+ */
 app.get('/api/idImdb/ratedFilms', authMiddleware, async (req, res, next) => {
   try {
     if (req.user === undefined) {
@@ -479,17 +576,17 @@ app.get('/api/idImdb/ratedFilms', authMiddleware, async (req, res, next) => {
   }
 });
 
+/**
+ * Handles getting the number of likes for a film.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Promise} A Promise that resolves to the number of likes for the film.
+ * @throws {ClientError} if userId is undefined or if the film doesn't exist in the database.
+ */
 app.get('/api/likes/:idImdb/:userId', async (req, res, next) => {
   try {
     const { idImdb, userId } = req.params;
-
-    console.log(idImdb);
-
-    // if (!req.user) {
-    //   throw new ClientError(401, 'userId is undefined');
-    // }
-
-    // const { userId } = req.user;
 
     // Query the database to count the likes for the given post
     const countLikesSql = `
@@ -499,8 +596,6 @@ app.get('/api/likes/:idImdb/:userId', async (req, res, next) => {
     const countLikesParams = [userId, idImdb];
     const result = await db.query(countLikesSql, countLikesParams);
 
-    console.log(result);
-
     if (result.rows.length === 0) {
       // No rows found, handle the case where the movie doesn't exist in 0 for likeCount
       res.status(200).json(0);
@@ -508,22 +603,23 @@ app.get('/api/likes/:idImdb/:userId', async (req, res, next) => {
       // Rows found, get the likeCount from the first row
       const likes = result.rows[0].likes;
       res.status(200).json(likes);
-      console.log('WORKING CORRECTLY');
     }
   } catch (err) {
     next(err);
   }
 });
 
+/**
+ * Handles incrementing the number of likes for a film.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Promise} A Promise that resolves to the updated number of likes for the film.
+ * @throws {ClientError} if userId is undefined or if the film doesn't exist in the database.
+ */
 app.post('/api/likes/:idImdb/:userId', async (req, res, next) => {
   try {
     const { idImdb, userId } = req.params;
-
-    // if (!req.user) {
-    //   throw new ClientError(401, 'userId is undefined');
-    // }
-
-    // const { userId } = req.user;
 
     // Check if the movie exists in the RatedFilms table
     const checkRatedFilmSql = `
@@ -568,6 +664,14 @@ app.post('/api/likes/:idImdb/:userId', async (req, res, next) => {
   }
 });
 
+/**
+ * Handles getting the user's rated films.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Promise} A Promise that resolves to the user's rated films.
+ * @throws {ClientError} if userId is undefined or if the user hasn't rated any films.
+ */
 app.get('/api/Edit/ratedFilms', authMiddleware, async (req, res, next) => {
   try {
     if (req.user === undefined) {
@@ -599,6 +703,13 @@ app.get('/api/Edit/ratedFilms', authMiddleware, async (req, res, next) => {
   }
 });
 
+/**
+ * Handles getting rated films from all users.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Promise} A Promise that resolves to all rated films from all users.
+ */
 app.get('/api/Feed/ratedFilms', async (req, res, next) => {
   try {
     const getRatedFilmsSql = `
@@ -619,6 +730,14 @@ app.get('/api/Feed/ratedFilms', async (req, res, next) => {
   }
 });
 
+/**
+ * Handles getting a user's rated film by idImdb.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Promise} A Promise that resolves to the user's rated film by idImdb.
+ * @throws {ClientError} if userId is undefined or if the film doesn't exist in the user's rated films.
+ */
 app.get(
   '/api/Edit/ratedFilms/:idImdb',
   authMiddleware,
@@ -659,6 +778,14 @@ app.get(
   }
 );
 
+/**
+ * Handles adding or updating the rating and user note for a film.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Promise} A Promise that resolves to the updated rated film.
+ * @throws {ClientError} if userId is undefined or if the film doesn't exist in the database.
+ */
 app.post('/api/rating', authMiddleware, async (req, res, next) => {
   try {
     const { idImdb, rating, userNote } = req.body;
@@ -706,6 +833,13 @@ app.post('/api/rating', authMiddleware, async (req, res, next) => {
   }
 });
 
+/**
+ * Handles removing a film from the user's watchlist.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {function} next - The next middleware function.
+ * @throws {ClientError} if userId is undefined or if the film doesn't exist in the watchlist.
+ */
 app.delete('/api/watchlist/:idImdb', authMiddleware, async (req, res, next) => {
   try {
     const { idImdb } = req.params;
@@ -727,6 +861,13 @@ app.delete('/api/watchlist/:idImdb', authMiddleware, async (req, res, next) => {
   }
 });
 
+/**
+ * Handles removing a film from the user's ratedFilms table.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {function} next - The next middleware function.
+ * @throws {ClientError} if userId is undefined or if the film doesn't exist in the ratedFilms table.
+ */
 app.delete('/api/rated/:idImdb', authMiddleware, async (req, res, next) => {
   try {
     const { idImdb } = req.params;
@@ -748,6 +889,14 @@ app.delete('/api/rated/:idImdb', authMiddleware, async (req, res, next) => {
   }
 });
 
+/**
+ * Handles updating the rating and user note for a film.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Promise} A Promise that resolves to the updated rated film.
+ * @throws {ClientError} if userId is undefined or if the film doesn't exist in the rated films.
+ */
 app.put('/api/rated/:idImdb', authMiddleware, async (req, res, next) => {
   try {
     const { idImdb } = req.params;
@@ -792,6 +941,14 @@ app.put('/api/rated/:idImdb', authMiddleware, async (req, res, next) => {
   }
 });
 
+/**
+ * Handles getting film details by idImdb.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Promise} A Promise that resolves to the film details.
+ * @throws {ClientError} if the film with the given idImdb is not found.
+ */
 app.get('/api/films/by-id/:idImdb', async (req, res, next) => {
   try {
     const { idImdb } = req.params;
@@ -815,6 +972,13 @@ app.get('/api/films/by-id/:idImdb', async (req, res, next) => {
   }
 });
 
+/**
+ * Handles adding a new film to the database.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Promise} A Promise that resolves to the added film details.
+ */
 app.post('/api/films', async (req, res, next) => {
   try {
     const {
@@ -859,6 +1023,12 @@ app.post('/api/films', async (req, res, next) => {
   }
 });
 
+/**
+ * Handles deleting a film from the database by idImdb.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {function} next - The next middleware function.
+ */
 app.delete('/api/films/:idImdb', async (req, res, next) => {
   try {
     const idImdb = req.params.idImdb; // Get the idImdb from the URL parameter
@@ -875,10 +1045,23 @@ app.delete('/api/films/:idImdb', async (req, res, next) => {
   }
 });
 
+/**
+ * A catch-all route to serve the React application's index.html.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ */
 app.get('*', (req, res) => res.sendFile(`${reactStaticDir}/index.html`));
 
+/**
+ * Error handling middleware.
+ * @param {Error} err - The error object.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {function} next - The next middleware function.
+ */
 app.use(errorMiddleware);
 
+// Start the server
 app.listen(process.env.PORT, () => {
   process.stdout.write(`\n\napp listening on port ${process.env.PORT}\n\n`);
 });
