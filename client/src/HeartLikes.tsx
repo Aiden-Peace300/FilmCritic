@@ -8,6 +8,14 @@ type HeartRatingProps = {
   onUpdateLikes: (idImdb: string, newLikes: number, userId: number) => void;
 };
 
+/**
+ * HeartRating component for liking and unliking posts.
+ *
+ * @param {string} idImdb - The ID of the post to like or unlike.
+ * @param {number} initialLikes - The initial number of likes.
+ * @param {number} userId - The user's ID.
+ * @param {Function} onUpdateLikes - Function to update the likes count.
+ */
 const HeartRating: React.FC<HeartRatingProps> = ({
   idImdb,
   initialLikes,
@@ -16,13 +24,18 @@ const HeartRating: React.FC<HeartRatingProps> = ({
 }) => {
   const [isLiked, setIsLiked] = useState(false);
 
+  // check if the post is liked when the component mounts
   useEffect(() => {
+    // Retrieve liked posts from sessionStorage and check if this post is liked
     const likedPosts = JSON.parse(
       sessionStorage.getItem('likedPosts') || '[]'
     ) as string[];
     setIsLiked(idImdb ? likedPosts.includes(idImdb) : false);
   }, [idImdb]);
 
+  /**
+   * Handles the click event on the heart icon to like or unlike a post.
+   */
   const handleHeartClick = async () => {
     try {
       if (!isLiked) {

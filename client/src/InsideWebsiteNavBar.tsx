@@ -10,9 +10,14 @@ export type PageTypeInsideApp =
   | 'RECOMMENDATION'
   | 'RATING'
   | 'Profile'
-  // | 'Logout'
   | 'icon-clicked';
 
+/**
+ * InsideWebsiteNavBar component for the navigation bar within the website.
+ *
+ * This component provides navigation links to the "FEED," "RECOMMENDATION," "RATING," and "PROFILE" pages.
+ * It also includes a mobile navigation menu with the "Bars" icon to toggle visibility.
+ */
 export function InsideWebsiteNavBar() {
   const [isListVisible, setListVisible] = useState(false);
 

@@ -1,7 +1,6 @@
 import React from 'react';
 import './WatchlistDeletePopup.css';
 import { useNavigate } from 'react-router-dom';
-// import { useNavigate } from 'react-router-dom';
 export type PageTypeInsideApp = 'Logout';
 
 interface DeleteConfirmationPopupProps {
@@ -9,12 +8,21 @@ interface DeleteConfirmationPopupProps {
   onClose: () => void;
 }
 
+/**
+ * GuestPopup component for displaying information to a guest user and allowing them to sign up.
+ *
+ * @param {Function} onClose - Function to close the popup.
+ * @param {Function} onNavigate - Function to handle navigation to the 'Logout' page.
+ */
 const GuestPopup: React.FC<DeleteConfirmationPopupProps> = ({
   onClose,
   onNavigate,
 }) => {
   const navigate = useNavigate();
 
+  /**
+   * Handles the logout and navigation to the registration page.
+   */
   const handleLogoutAndNavigate = () => {
     onNavigate('Logout'); // Log out
     navigate('/register');
