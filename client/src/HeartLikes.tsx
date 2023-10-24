@@ -62,7 +62,7 @@ const HeartRating: React.FC<HeartRatingProps> = ({
         // If already liked, the user clicks to unlike
 
         // Calculate the new like count immediately
-        const newLikes = initialLikes - 1;
+        const newLikes = initialLikes + 1 - 1;
 
         // Update the UI with the new like count
         onUpdateLikes(idImdb, newLikes, userId);
