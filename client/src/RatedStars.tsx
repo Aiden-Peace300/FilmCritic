@@ -5,6 +5,11 @@ type StarRatingProps = {
   rating: number;
 };
 
+/**
+ * RatedStars displays a set of star icons to represent a given rating.
+ * @param {number} rating - The rating value to display using stars.
+ * @returns {JSX.Element} - The RatedStars component.
+ */
 const RatedStars: React.FC<StarRatingProps> = ({ rating }) => {
   return (
     <div className="rated-stars-container">

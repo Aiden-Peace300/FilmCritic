@@ -37,7 +37,7 @@ export function RecProvider() {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [showImages, setShowImages] = useState<string[]>([]);
   const [showId, setShowId] = useState<string[]>([]);
-  const [showTitle, setShowTitle] = useState<string[]>([]); // State to store show titles of the images in showImage
+  const [showTitle, setShowTitle] = useState<string[]>([]);
 
   // Create the value object to be provided by the context
   const value = {

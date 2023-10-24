@@ -6,6 +6,11 @@ import { FormEvent, useState } from 'react';
 type Props = {
   onSignIn: () => void;
 };
+
+/**
+ * Form that signs in a user.
+ * @param {Props} onSignIn - A function to be called when the user signs in.
+ */
 export default function SignInForm({ onSignIn }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const guestCredentials = {
@@ -13,6 +18,9 @@ export default function SignInForm({ onSignIn }: Props) {
     password: 'UnknownUserPassword',
   };
 
+  /**
+   * Handles signing in as a guest user.
+   */
   async function handleGuestSignIn() {
     setIsLoading(true);
     try {
@@ -37,6 +45,10 @@ export default function SignInForm({ onSignIn }: Props) {
     }
   }
 
+  /**
+   * Handles the form submission for regular user sign-in.
+   * @param {FormEvent<HTMLFormElement>} event - The form submission event.
+   */
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     try {

@@ -17,6 +17,9 @@ interface FilmDetails {
   trailer: string;
 }
 
+/**
+ * This component allows users to rate and review a film.
+ */
 export default function UsersRatingComponent() {
   const navigate = useNavigate();
   const [detailsObj, setDetailsObj] = useState<FilmDetails | null>(null);
@@ -62,6 +65,11 @@ export default function UsersRatingComponent() {
     setRating(newRating);
   };
 
+  /**
+   * Fetch film details from the IMDb API.
+   * @param {string} id - IMDb ID of the film.
+   * @returns {Promise<FilmDetails | void>} - The film details or void if there's an error.
+   */
   async function fetchFilmDetails(id: string) {
     const key = 'k_ei6ruv0h';
 
@@ -102,13 +110,16 @@ export default function UsersRatingComponent() {
       };
 
       setDetailsObj(newDetailsObj);
-      console.log('newDetailsObj', newDetailsObj);
       return newDetailsObj;
     } catch (error) {
       console.error('Error:', error);
     }
   }
 
+  /**
+   * Add film details to the films table and watchlist.
+   * @param {FilmDetails} detailsObj - Film details to add.
+   */
   const addToFilmsTableAndWatchlist = useCallback(
     async (detailsObj) => {
       try {
@@ -119,18 +130,10 @@ export default function UsersRatingComponent() {
 
         const idImdb = detailsObj.idImdb;
 
-        console.log(idImdb);
-
         if (!idImdb) {
           console.error('idImdb is missing');
           return;
         }
-
-        console.log(
-          'Adding movie to films table and RatedFilms:',
-          idImdb,
-          detailsObj
-        );
 
         const releaseYearNumber = parseInt(detailsObj.releaseYear, 10);
 
@@ -187,12 +190,9 @@ export default function UsersRatingComponent() {
     [rating, note, navigate]
   );
 
-  console.log(detailsObj);
-
   return (
     <>
       <h1>RATING</h1>
-
       {detailsObj && (
         <div className="body">
           <div className="rowDetails">
