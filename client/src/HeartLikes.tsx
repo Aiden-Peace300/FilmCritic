@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FaHeart } from 'react-icons/fa';
 
 type HeartRatingProps = {
-  idImdb: string;
+  idImdb: string; // Expect idImdb to be a string
   initialLikes: number;
   userId: number;
   onUpdateLikes: (idImdb: string, newLikes: number, userId: number) => void;
@@ -14,7 +14,14 @@ const HeartRating: React.FC<HeartRatingProps> = ({
   userId,
   onUpdateLikes,
 }) => {
-  const [isLiked, setIsLiked] = useState(false); // Track whether the user has liked the post
+  const [isLiked, setIsLiked] = useState(false);
+
+  useEffect(() => {
+    const likedPosts = JSON.parse(
+      sessionStorage.getItem('likedPosts') || '[]'
+    ) as string[];
+    setIsLiked(idImdb ? likedPosts.includes(idImdb) : false);
+  }, [idImdb]);
 
   const handleHeartClick = async () => {
     try {
@@ -38,21 +45,24 @@ const HeartRating: React.FC<HeartRatingProps> = ({
         });
 
         if (!response.ok) {
-          // Handle API request error here
           console.error('Failed to update likes');
-          // You can display an error message to the user
-
-          // Revert the optimistic update
           onUpdateLikes(idImdb, initialLikes, userId);
         } else {
           // User has liked the post
           setIsLiked(true);
+
+          // Update likedPosts in sessionStorage
+          const likedPosts = JSON.parse(
+            sessionStorage.getItem('likedPosts') || '[]'
+          ) as string[];
+          likedPosts.push(idImdb);
+          sessionStorage.setItem('likedPosts', JSON.stringify(likedPosts));
         }
       } else {
         // If already liked, the user clicks to unlike
 
         // Calculate the new like count immediately
-        const newLikes = initialLikes + 1 - 1;
+        const newLikes = initialLikes - 1;
 
         // Update the UI with the new like count
         onUpdateLikes(idImdb, newLikes, userId);
@@ -77,14 +87,20 @@ const HeartRating: React.FC<HeartRatingProps> = ({
         } else {
           // User has unliked the post
           setIsLiked(false);
+
+          // Update likedPosts in sessionStorage
+          const likedPosts = JSON.parse(
+            sessionStorage.getItem('likedPosts') || '[]'
+          ) as string[];
+          const index = likedPosts.indexOf(idImdb);
+          if (index !== -1) {
+            likedPosts.splice(index, 1);
+            sessionStorage.setItem('likedPosts', JSON.stringify(likedPosts));
+          }
         }
       }
     } catch (error) {
-      // Handle other errors
       console.error('Error:', error);
-      // You can display an error message to the user
-
-      // Revert the optimistic update
       onUpdateLikes(idImdb, initialLikes, userId);
     }
   };
@@ -96,8 +112,7 @@ const HeartRating: React.FC<HeartRatingProps> = ({
         style={{
           marginTop: '1rem',
           cursor: 'pointer',
-          transition: 'color 200ms',
-          color: isLiked ? '#DB3434' : 'grey', // Change color based on liking
+          color: isLiked ? '#DB3434' : 'grey',
         }}
         onClick={handleHeartClick}
       />

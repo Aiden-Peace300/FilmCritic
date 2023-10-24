@@ -27,7 +27,7 @@ export default function FeedComponent() {
     (RatedFilm & FilmTitleAndPoster)[]
   >([]);
   const [isPopupVisible, setPopupVisible] = useState(false);
-  const [selectedIdImdb, setSelectedIdImdb] = useState<string | null>(null);
+  const [selectedIdImdb, setSelectedIdImdb] = useState<string>(''); // Set the default value to an empty string
   const [filmLikes, setFilmLikes] = useState<Map<string, number>>(new Map());
 
   const showPopup = (idImdb: string) => {
@@ -36,7 +36,7 @@ export default function FeedComponent() {
   };
 
   const hidePopup = () => {
-    setSelectedIdImdb(null);
+    setSelectedIdImdb(''); // Set it to an empty string to hide the popup
     setPopupVisible(false);
   };
 
