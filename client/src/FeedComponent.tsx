@@ -54,7 +54,6 @@ export default function FeedComponent() {
    * @param {string} idImdb The IMDb ID of the film to be edited.
    */
   const showEditComponent = (idImdb: string) => {
-    console.log('Showing Edit Component for idImdb:', idImdb);
     navigate(`profile/${idImdb}`);
   };
 

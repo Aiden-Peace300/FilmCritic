@@ -8,6 +8,12 @@ type InsideWebsiteNavBarProps = {
   onNavigate: (pageNew: PageTypeInsideApp) => void;
 };
 
+/**
+ * ProfileComponent displays the user's profile including profile picture, username, bio,
+ * and provides the ability to edit the bio and profile picture.
+ * @param {InsideWebsiteNavBarProps} onNavigate - Function for handling navigation within the app.
+ * @returns {JSX.Element} The ProfileComponent JSX element.
+ */
 export default function ProfileComponent({
   onNavigate,
 }: InsideWebsiteNavBarProps) {
@@ -16,10 +22,16 @@ export default function ProfileComponent({
   const [profileBio, setProfileBio] = useState<string | null>(null);
   const [isEditBioVisible, setIsEditBioVisible] = useState(false);
 
+  /**
+   * Shows the edit bio form.
+   */
   const showEditBio = () => {
     setIsEditBioVisible(true);
   };
 
+  /**
+   * Hides the edit bio form.
+   */
   const hideEditBio = () => {
     setIsEditBioVisible(false);
   };
@@ -59,8 +71,6 @@ export default function ProfileComponent({
         const imageUrl = data.imageUrl;
 
         setImageUrl(imageUrl);
-        console.log('data1', data);
-        console.log('imageUrl', imageUrl);
       } else {
         console.error('Failed to fetch user profile picture');
       }
@@ -69,6 +79,10 @@ export default function ProfileComponent({
     }
   };
 
+  /**
+   * Fetches the user's profile bio from the backend API.
+   * @returns {Promise<string | null>} A Promise that resolves to the user's profile bio or null if there was an error.
+   */
   const fetchUserBio = async () => {
     try {
       const response = await fetch('/api/userBio', {
@@ -93,6 +107,10 @@ export default function ProfileComponent({
     }
   };
 
+  /**
+   * Fetches and returns the user's username.
+   * @returns {Promise<string | null>} The user's username.
+   */
   async function fetchUsername() {
     try {
       const response = await fetch('/api/username', {
@@ -116,6 +134,10 @@ export default function ProfileComponent({
     }
   }
 
+  /**
+   * Handles the file change event when a new profile picture is selected.
+   * @param {React.ChangeEvent<HTMLInputElement>} event - The change event.
+   */
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
 
@@ -126,6 +148,10 @@ export default function ProfileComponent({
     }
   };
 
+  /**
+   * Uploads the selected file as the user's new profile picture.
+   * @param {File} file - The file to upload.
+   */
   const uploadFile = async (file: File) => {
     const formData = new FormData();
     formData.append('image', file);
@@ -150,8 +176,6 @@ export default function ProfileComponent({
       console.error('Error uploading file:', error);
     }
   };
-
-  console.log(imageUrl);
 
   return (
     <div className="profile-container">
