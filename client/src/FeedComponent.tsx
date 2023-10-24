@@ -269,9 +269,7 @@ export default function FeedComponent() {
                           />
                         </span>
                         <div className="vertical-line margin-left"></div>
-                        <span
-                          className="like-prompt like-button-mobile"
-                          onClick={() => showEditComponent(film.idImdb)}>
+                        <span className="like-prompt like-button-mobile hidden-prompt">
                           Like
                         </span>
                         {/* <span>
