@@ -48,7 +48,9 @@ const StarRating: React.FC<StarRatingProps> = ({ onRatingChange }) => {
           </label>
         );
       })}
-      <p className="rated-prompt">{rating} STARS</p>
+      <div>
+        <span className="rated-prompt">{rating} STARS</span>
+      </div>
     </div>
   );
 };
