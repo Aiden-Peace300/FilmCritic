@@ -1,10 +1,12 @@
 import { DebounceInput } from 'react-debounce-input';
 import './ShowDetailsOfSuggestedFilm.css';
-// import './RecommendationComponent.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import { Link } from 'react-router-dom';
 
+/**
+ * RatingComponent allows users to search for a show to rate and provides suggestions based on user input.
+ * @returns {JSX.Element} The RatingComponent JSX element.
+ */
 export default function RatingComponent() {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
@@ -13,6 +15,11 @@ export default function RatingComponent() {
   >([]);
   const [showSuggestions, setShowSuggestions] = useState<boolean>(true);
 
+  /**
+   * handleSearchChange is called when the search input value changes.
+   * It updates the search term and fetches suggestions from the IMDb API.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - The input change event.
+   */
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value;
     console.log('Input:', input);
@@ -22,11 +29,21 @@ export default function RatingComponent() {
     fetchSuggestions(input);
   };
 
+  /**
+   * handleSearchSubmit is called when the search form is submitted.
+   * It logs the start of the search.
+   * @param {React.FormEvent} e - The form submit event.
+   */
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Start searching:', searchTerm);
   };
 
+  /**
+   * handleSuggestionClick is called when a suggestion is clicked.
+   * It populates the input field with the suggestion and triggers fetching film details.
+   * @param {Object} suggestion - The clicked suggestion with id and title.
+   */
   const handleSuggestionClick = async (suggestion: {
     id: string;
     title: string;
@@ -49,6 +66,11 @@ export default function RatingComponent() {
     getFilm(suggestion.id);
   };
 
+  /**
+   * fetchSuggestions is an asynchronous function that fetches film suggestions from the IMDb API.
+   * It updates the state with the fetched suggestions.
+   * @param {string} input - The user's input for searching films.
+   */
   const fetchSuggestions = async (input: string) => {
     try {
       console.log('fetchSuggestions Input', input);
@@ -94,12 +116,21 @@ export default function RatingComponent() {
     }
   };
 
+  /**
+   * getFilm is called when a suggestion is clicked to get film details.
+   * @param {string} id - The IMDb ID of the selected film.
+   */
   async function getFilm(id: string) {
     // call api for film title, release year, and creator
     console.log(id);
     fetchFilmDetails(id);
   }
 
+  /**
+   * fetchFilmDetails is an asynchronous function that fetches film details from the IMDb API based on the IMDb ID.
+   * It updates the state with the film details and navigates to the film's page.
+   * @param {string} id - The IMDb ID of the film to fetch details for.
+   */
   async function fetchFilmDetails(id: string) {
     const key = 'k_ei6ruv0h';
 

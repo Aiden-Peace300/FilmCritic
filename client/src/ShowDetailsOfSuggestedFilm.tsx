@@ -25,6 +25,9 @@ type FilmDetails = {
   trailer: string;
 };
 
+/**
+ * Component that displays details of a suggested film, along with streaming platforms and an option to add to the watchlist.
+ */
 export default function ShowDetailsOfSuggestedFilm() {
   const navigate = useNavigate();
   const [detailsObj, setDetailsObj] = useState<FilmDetails | null>(null);
@@ -34,6 +37,10 @@ export default function ShowDetailsOfSuggestedFilm() {
   const [isLoading, setIsLoading] = useState(true);
   const displayedPlatforms = new Set<string>();
 
+  /**
+   * Adds film details to the films table and watchlist.
+   * @param {FilmDetails} detailsObj - Details of the film.
+   */
   const addToFilmsTableAndWatchlist = useCallback(
     async (detailsObj) => {
       try {
@@ -48,8 +55,6 @@ export default function ShowDetailsOfSuggestedFilm() {
           console.error('idImdb is missing');
           return;
         }
-
-        console.log('Before adding to films table', idImdb, detailsObj);
 
         const releaseYearNumber = parseInt(detailsObj.releaseYear, 10);
 
@@ -86,16 +91,6 @@ export default function ShowDetailsOfSuggestedFilm() {
           body: JSON.stringify({ idImdb }),
         });
 
-        console.log('responseWatchlist:', responseWatchlist);
-
-        // if (responseFilms.status === 201) {
-        //   console.log('Movie added to films table');
-        // } else if (responseFilms.status === 200) {
-        //   console.log('Movie already in films table');
-        // } else {
-        //   console.error('Failed to add movie to films table');
-        // }
-
         if (responseWatchlist.status === 201) {
           console.log('Movie added to watchlist');
           navigate(-1);
@@ -103,8 +98,6 @@ export default function ShowDetailsOfSuggestedFilm() {
           console.error('Failed to add movie to watchlist');
           navigate(-1);
         }
-
-        console.log();
       } catch (error) {
         console.error('Error:', error);
       }
@@ -112,6 +105,10 @@ export default function ShowDetailsOfSuggestedFilm() {
     [navigate]
   );
 
+  /**
+   * Extracts IMDB ID from the current URL.
+   * @returns {string | null} - The IMDB ID or null if not found.
+   */
   function extractParameterFromCurrentUrl() {
     const currentUrl = window.location.href;
     const regexPattern = /\/tt([0-9]+)/;
@@ -183,6 +180,10 @@ export default function ShowDetailsOfSuggestedFilm() {
   );
 
   useEffect(() => {
+    /**
+     * Fetches film details from the API based on the IMDB ID.
+     * @param {string} id - The IMDB ID of the film.
+     */
     async function fetchFilmDetails(id: string) {
       const keyParts = ['k_e', 'i6r', 'uv', '0h'];
       const key = keyParts.join('');
@@ -347,6 +348,11 @@ export default function ShowDetailsOfSuggestedFilm() {
   );
 }
 
+/**
+ * Gets the platform logo based on the platform name.
+ * @param {string} platformName - The name of the streaming platform.
+ * @returns {string} - The URL of the platform's logo.
+ */
 function getPlatformLogo(platformName: string) {
   switch (platformName) {
     case 'netflix':

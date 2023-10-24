@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import RatedStars from './RatedStars';
-// import { AiOutlineHeart } from 'react-icons/ai';
 import { FaHeart } from 'react-icons/fa';
 import { MdOutlineModeEdit } from 'react-icons/md';
 import { BsTrash3 } from 'react-icons/bs';
