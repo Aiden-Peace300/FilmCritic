@@ -225,7 +225,7 @@ async function getRecommendations(filmFromUser) {
     [rating, note, navigate]
   );
 ```
-*Users can actively engage in discussions, contribute their opinions, and interact with the film community. The system records and displays these user-generated reviews and ratings, enhancing the film discovery experience.*
+*Users can actively engage and interact with the film community. The system records and displays these user-generated reviews and ratings, enhancing the film discovery experience.*
 
 4. Rated Films History: Users can view a detailed history of movies they've rated, including their reviews and ratings. This information is conveniently accessible from their user profile.
 
