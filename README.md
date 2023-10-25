@@ -12,8 +12,7 @@ FilmCritic leverages the capabilities of several APIs to provide a rich user exp
 - [IMDb API](https://imdb-api.com/api): For fetching comprehensive information about movies and shows.
 
 ## Key Features
-1. Personalized Film Recommendations
-- Utilizing the OpenAI GPT Chat Completions API, users can input a film they enjoy, and the application will generate a list of five movie recommendations based on their input. The AI-driven system formulates prompts and queries the database for closely resembling films, delivering a tailored watchlist to the user.
+1. Personalized Film Recommendations: Utilizing the OpenAI GPT Chat Completions API, users can input a film they enjoy, and the application will generate a list of five movie recommendations based on their input. The AI-driven system formulates prompts and queries the database for closely resembling films, delivering a tailored watchlist to the user.
 
 ```javascript
 /**
@@ -75,8 +74,7 @@ async function getRecommendations(filmFromUser) {
 ```
 - The system employs a combination of AI and data from the IMDb API to provide a unique film discovery experience, resulting in a highly personalized movie selection for the user.
   
-2. Watchlist Management
-- Users have the ability to curate their personalized watchlist by saving movie recommendations. These films are then conveniently accessible from the user's profile, ensuring that users never miss a potential cinematic gem. Additionally, users can view detailed film information, including trailers and a list of available streaming platforms.
+2. Watchlist Management: Users have the ability to curate their personalized watchlist by saving movie recommendations. These films are then conveniently accessible from the user's profile, ensuring that users never miss a potential cinematic gem. Additionally, users can view detailed film information, including trailers and a list of available streaming platforms.
   
 ```javascript
   /**
@@ -150,8 +148,7 @@ async function getRecommendations(filmFromUser) {
 ```
 - Behind the scenes, the application manages user-specific watchlists and stores relevant film information, allowing for easy access and exploration of saved films. Users can seamlessly access trailers and discover where to stream the film.
 
-3. User-Generated Movie Reviews and Ratings
-This feature empowers users to contribute to the film-loving community by creating and sharing their movie thoughts. Users can write detailed reviews, rate films, and add valuable insights to the community feed. When a user submits a review, the system collects and stores the relevant information.
+3. User-Generated Movie Reviews and Ratings: This feature empowers users to contribute to the film-loving community by creating and sharing their movie thoughts. Users can write detailed reviews, rate films, and add valuable insights to the community feed. When a user submits a review, the system collects and stores the relevant information.
 
 ```javascript
   /**
@@ -230,8 +227,7 @@ This feature empowers users to contribute to the film-loving community by creati
 ```
 - Users can actively engage in discussions, contribute their opinions, and interact with the film community. The system records and displays these user-generated reviews and ratings, enhancing the film discovery experience.
 
-4. Rated Films History
-Users can view a detailed history of movies they've rated, including their reviews and ratings. This information is conveniently accessible from their user profile.
+4. Rated Films History: Users can view a detailed history of movies they've rated, including their reviews and ratings. This information is conveniently accessible from their user profile.
 
 ```javascript
   /**
@@ -272,8 +268,7 @@ Users can view a detailed history of movies they've rated, including their revie
     fetchData();
   }, []);
 ```
-5. Edit Post Management
-Users have the ability to edit and update their posts with ease. If they change their opinion or want to add more insights, they have full control over their contributions. The system prepopulates the information with the user's previous ratings and notes.
+5. Edit Post Management: Users have the ability to edit and update their posts with ease. If they change their opinion or want to add more insights, they have full control over their contributions. The system prepopulates the information with the user's previous ratings and notes.
 
 ```javascript
   /**
@@ -305,8 +300,7 @@ Users have the ability to edit and update their posts with ease. If they change 
   }, [idImdb]);
 ```
 
-6. Social Interaction
-Users can interact with other users by liking their posts in the feed. They can engage in discussions, discover new films, and expand their film network.
+6. Social Interaction: Users can interact with other users by liking their posts in the feed. They can engage in discussions, discover new films, and expand their film network.
 
 ```javascript
   /**
