@@ -72,7 +72,7 @@ async function getRecommendations(filmFromUser) {
   }
 }
 ```
-- The system employs a combination of AI and data from the IMDb API to provide a unique film discovery experience, resulting in a highly personalized movie selection for the user.
+*The system employs a combination of AI and data from the IMDb API to provide a unique film discovery experience, resulting in a highly personalized movie selection for the user.*
   
 2. Watchlist Management: Users have the ability to curate their personalized watchlist by saving movie recommendations. These films are then conveniently accessible from the user's profile, ensuring that users never miss a potential cinematic gem. Additionally, users can view detailed film information, including trailers and a list of available streaming platforms.
   
@@ -146,7 +146,7 @@ async function getRecommendations(filmFromUser) {
   );
 
 ```
-- Behind the scenes, the application manages user-specific watchlists and stores relevant film information, allowing for easy access and exploration of saved films. Users can seamlessly access trailers and discover where to stream the film.
+*Behind the scenes, the application manages user-specific watchlists and stores relevant film information, allowing for easy access and exploration of saved films. Users can seamlessly access trailers and discover where to stream the film.*
 
 3. User-Generated Movie Reviews and Ratings: This feature empowers users to contribute to the film-loving community by creating and sharing their movie thoughts. Users can write detailed reviews, rate films, and add valuable insights to the community feed. When a user submits a review, the system collects and stores the relevant information.
 
@@ -225,7 +225,7 @@ async function getRecommendations(filmFromUser) {
     [rating, note, navigate]
   );
 ```
-- Users can actively engage in discussions, contribute their opinions, and interact with the film community. The system records and displays these user-generated reviews and ratings, enhancing the film discovery experience.
+*Users can actively engage in discussions, contribute their opinions, and interact with the film community. The system records and displays these user-generated reviews and ratings, enhancing the film discovery experience.*
 
 4. Rated Films History: Users can view a detailed history of movies they've rated, including their reviews and ratings. This information is conveniently accessible from their user profile.
 
