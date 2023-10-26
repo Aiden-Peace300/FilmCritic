@@ -16,6 +16,10 @@ h1 {
   flex-basis: 1;
 }
 
+.loading-screen-prompt {
+  color: white;
+}
+
 .columnSug {
   flex-direction: row;
   flex-basis: 20%;
