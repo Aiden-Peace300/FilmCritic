@@ -456,7 +456,12 @@ export function RecommendationComponent() {
           </div>
         )}
         {isLoading ? (
-          <LoadingScreen />
+          <>
+            <LoadingScreen />
+            <div className="loading-screen-prompt">
+              <h1>CLICK ONE OF THE SUGGESTION FOR DETAILS!</h1>
+            </div>
+          </>
         ) : (
           <div className="row">
             {showImages.map((imageSrc, index) => (
