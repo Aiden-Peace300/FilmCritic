@@ -1,6 +1,6 @@
 .note {
   width: 20rem;
-  height: 20rem;
+  height: 17rem;
   padding: 10px 15px;
   border-radius: 1rem;
 }
@@ -10,9 +10,15 @@ input[type='radio'] {
 }
 
 .rateImageDetails {
-  width: 730px;
-  height: 60rem;
+  width: 670px;
+  height: 50rem;
   margin: 2rem;
+}
+
+.col-half-space {
+  display: flex;
+  flex-direction: column; /* Makes items stack vertically */
+  align-content: space-between; /* Adds space between items */
 }
 
 .disclamer-Msg {
@@ -29,7 +35,7 @@ input[type='radio'] {
   padding: 0.5rem 1.5rem;
   cursor: pointer;
   margin-bottom: 3rem;
-  margin-top: 5rem;
+  margin-top: 1.5rem;
   margin-left: 21rem;
   justify-content: center;
 }
@@ -97,9 +103,9 @@ input[type='radio'] {
     padding: 0;
   }
 
-  .font-size {
+  /* .font-size {
     font-size: 2rem;
-  }
+  } */
 
   .cancel {
     margin-left: 1rem;

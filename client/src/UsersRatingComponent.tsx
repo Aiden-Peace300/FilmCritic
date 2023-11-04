@@ -203,26 +203,42 @@ export default function UsersRatingComponent() {
               />
             </div>
             <div className="column-half">
-              <div className="center-mobile space">
-                <p className="red-text center-mobile inline">FILM: </p>
-                <p className="white-text center-mobile inline font-size">
-                  {detailsObj.filmTitle}
-                </p>
+              <div className="center-mobile space col-half-space">
+                <div>
+                  <p className="red-text center-mobile inline">FILM: </p>
+                  <p className="white-text center-mobile inline font-size">
+                    {detailsObj.filmTitle}
+                  </p>
+                </div>
                 <br />
-                <p className="red-text center-mobile inline">RELEASE YEAR: </p>
-                <p className="white-text center-mobile inline font-size">
-                  {detailsObj.releaseYear}
-                </p>
+                <div>
+                  <p className="red-text center-mobile inline">
+                    RELEASE YEAR:{' '}
+                  </p>
+                  <p className="white-text center-mobile inline font-size">
+                    {detailsObj.releaseYear}
+                  </p>
+                </div>
                 <br />
-                <p className="red-text center-mobile inline">TYPE: </p>
-                <p className="white-text center-mobile inline font-size">
-                  {detailsObj.type}
-                </p>
+                <div>
+                  <p className="red-text center-mobile inline">TYPE: </p>
+                  <p className="white-text center-mobile inline font-size">
+                    {detailsObj.type}
+                  </p>
+                </div>
                 <br />
-                <p className="red-text center-mobile inline">CREATOR: </p>
-                <p className="white-text center-mobile inline font-size">
-                  {detailsObj.creator}
-                </p>
+                <div>
+                  <p className="red-text center-mobile inline">CREATOR: </p>
+                  <p className="white-text center-mobile inline font-size">
+                    {detailsObj.creator}
+                  </p>
+                </div>
+                <br />
+                <div>
+                  <p className="red-text center-mobile inline">
+                    FILL OUT THE FOLLOWING:{' '}
+                  </p>
+                </div>
                 <br />
                 <div className="grid-container">
                   <textarea

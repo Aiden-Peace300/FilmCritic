@@ -16,6 +16,10 @@ ul {
 }
 
 @media only screen and (width < 735px) {
+  .margin-top {
+    margin-top: 1rem;
+  }
+
   .profile-image {
     width: 320px;
     height: 420px;
