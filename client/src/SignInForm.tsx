@@ -110,12 +110,12 @@ export default function SignInForm({ onSignIn }: Props) {
           <div className="column-full d-flex justify-between">
             <button
               disabled={isLoading}
-              className="input-b-radius text-padding purple-background white-text">
+              className="input-b-radius text-padding purple-background white-text-guest">
               Sign In
             </button>
             <button
               disabled={isLoading}
-              className="input-b-radius text-padding purple-background white-text"
+              className="input-b-radius text-padding purple-background white-text-guest"
               onClick={handleGuestSignIn}>
               Sign-in As Guest
             </button>
