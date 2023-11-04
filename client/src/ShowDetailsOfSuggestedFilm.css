@@ -106,6 +106,7 @@ h1 {
   text-align: center;
 }
 
+.prime-size,
 .netflix-size,
 .hulu-size,
 .apple-size,
@@ -114,14 +115,11 @@ h1 {
   height: 5rem;
 }
 
+.prime-size,
+.netflix-size,
 .apple-size {
-  margin-left: 1rem;
-  margin-right: 1rem;
-}
-
-.prime-size {
-  width: 9rem;
-  height: 5rem;
+  margin-left: 1.2rem;
+  margin-right: 1.2rem;
 }
 
 .disney-size {
@@ -194,12 +192,12 @@ h1 {
   }
 
   .red-text {
-    font-size: 1rem;
+    font-size: 1.3rem;
     color: red;
   }
 
   .white-text {
-    font-size: 1rem;
+    font-size: 1.3rem;
   }
 
   .rowDetails {
