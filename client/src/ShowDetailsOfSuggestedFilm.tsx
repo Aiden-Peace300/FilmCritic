@@ -252,39 +252,53 @@ export default function ShowDetailsOfSuggestedFilm() {
                 />
               </div>
               <div className="col-half">
-                <div className="center-mobile space">
-                  <p className="red-text center-mobile inline">FILM: </p>
-                  <p className="white-text center-mobile inline">
-                    {detailsObj.filmTitle}
-                  </p>
+                <div className="center-mobile space col-half-space">
+                  <div>
+                    <p className="red-text center-mobile inline">FILM: </p>
+                    <p className="white-text center-mobile inline">
+                      {detailsObj.filmTitle}
+                    </p>
+                  </div>
                   <br />
-                  <p className="red-text center-mobile inline">
-                    RELEASE YEAR:{' '}
-                  </p>
-                  <p className="white-text center-mobile inline">
-                    {detailsObj.releaseYear}
-                  </p>
+                  <div>
+                    <p className="red-text center-mobile inline">
+                      RELEASE YEAR:{' '}
+                    </p>
+                    <p className="white-text center-mobile inline">
+                      {detailsObj.releaseYear}
+                    </p>
+                  </div>
                   <br />
-                  <p className="red-text center-mobile inline">TYPE: </p>
-                  <p className="white-text center-mobile inline">
-                    {detailsObj.type}
-                  </p>
+                  <div>
+                    <p className="red-text center-mobile inline">TYPE: </p>
+                    <p className="white-text center-mobile inline">
+                      {detailsObj.type}
+                    </p>
+                  </div>
+                  <div>
+                    <br />
+                    <p className="red-text center-mobile inline">
+                      GENERAL RATING:
+                    </p>
+                    <p className="white-text center-mobile inline">{` ${detailsObj.generalRating} / 10`}</p>
+                  </div>
                   <br />
-                  <p className="red-text center-mobile inline">
-                    GENERAL RATING:
-                  </p>
-                  <p className="white-text center-mobile inline">{` ${detailsObj.generalRating} / 10`}</p>
+                  <div>
+                    <p className="red-text center-mobile inline">CREATOR: </p>
+                    <p className="white-text center-mobile inline">
+                      {detailsObj.creator}
+                    </p>
+                  </div>
                   <br />
-                  <p className="red-text center-mobile inline">CREATOR: </p>
-                  <p className="white-text center-mobile inline">
-                    {detailsObj.creator}
-                  </p>
+                  <div>
+                    <p className="red-text center-mobile inline">
+                      DESCRIPTION:{' '}
+                    </p>
+                    <p className="white-text center-mobile">
+                      {detailsObj.description}
+                    </p>
+                  </div>
                 </div>
-                <br />
-                <p className="red-text pad space-top">DESCRIPTION: </p>
-                <p className="white-text pad space-top">
-                  {detailsObj.description}
-                </p>
               </div>
             </div>
           </div>

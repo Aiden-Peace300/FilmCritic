@@ -10,9 +10,15 @@ input[type='radio'] {
 }
 
 .rateImageDetails {
-  width: 730px;
-  height: 60rem;
+  width: 670px;
+  height: 50rem;
   margin: 2rem;
+}
+
+.col-half-space {
+  display: flex;
+  flex-direction: column; /* Makes items stack vertically */
+  align-content: space-between; /* Adds space between items */
 }
 
 .disclamer-Msg {
