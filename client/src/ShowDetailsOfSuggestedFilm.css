@@ -22,6 +22,12 @@
   width: 100%;
 }
 
+.col-half-space {
+  display: flex;
+  flex-direction: column; /* Makes items stack vertically */
+  align-content: space-between; /* Adds space between items */
+}
+
 .col-half-img {
   display: flex;
   justify-content: center;
@@ -34,8 +40,8 @@ p {
 .imageDetails {
   display: flex;
   justify-content: center;
-  width: 730px;
-  height: 60rem;
+  width: 670px;
+  height: 50rem;
   margin: 2rem;
   padding-bottom: 2rem;
 }
@@ -47,7 +53,8 @@ p {
 } */
 
 .space {
-  margin: 2rem;
+  margin-top: 2rem;
+  margin-right: 2rem;
 }
 
 .space-top {
@@ -59,6 +66,8 @@ h1 {
 }
 
 .red-text {
+  align-content: space-between;
+  margin: 1rem 0;
   font-size: 2rem;
   color: red;
 }
@@ -159,7 +168,11 @@ h1 {
   .imageDetails {
     width: 280px;
     height: 400px;
-    padding: 4rem 3rem;
+    padding: 0.5rem 3rem;
+  }
+
+  .space {
+    margin: 2rem 0;
   }
 
   .inline {
@@ -181,8 +194,12 @@ h1 {
   }
 
   .red-text {
-    font-size: 2rem;
+    font-size: 1rem;
     color: red;
+  }
+
+  .white-text {
+    font-size: 1rem;
   }
 
   .rowDetails {
