@@ -457,10 +457,10 @@ export function RecommendationComponent() {
         )}
         {isLoading ? (
           <>
-            <LoadingScreen />
             <div className="loading-screen-prompt">
               <h1>CLICK ONE OF THE SUGGESTION FOR DETAILS!</h1>
             </div>
+            <LoadingScreen />
           </>
         ) : (
           <div className="row">

@@ -3,7 +3,12 @@
 }
 
 .containerDetails {
-  max-width: 900px;
+  max-width: 1000%;
+  margin: 0 auto;
+}
+
+.containerStreamingDetails {
+  max-width: 90%;
   margin: 0 auto;
 }
 
@@ -17,16 +22,29 @@
   width: 100%;
 }
 
+.col-half-img {
+  display: flex;
+  justify-content: center;
+}
+
 p {
   margin: 0;
 }
 
 .imageDetails {
-  padding: 2rem 0;
-  width: 32.5rem;
-  height: 50rem;
+  display: flex;
+  justify-content: center;
+  width: 730px;
+  height: 60rem;
+  margin: 2rem;
   padding-bottom: 2rem;
 }
+
+/* .rateImageDetails {
+  width: 730px;
+  height: 60rem;
+  margin: 2rem;
+} */
 
 .space {
   margin: 2rem;
@@ -48,7 +66,7 @@ h1 {
 .white-text {
   text-transform: uppercase;
   color: white;
-  font-size: 1rem;
+  font-size: 2rem;
 }
 
 .add-watchlist-button {
@@ -130,6 +148,11 @@ h1 {
 
 .clickMe {
   cursor: pointer;
+}
+
+.inline {
+  display: inline;
+  text-align: center;
 }
 
 @media screen and (width <= 768px) {
