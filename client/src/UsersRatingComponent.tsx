@@ -192,7 +192,6 @@ export default function UsersRatingComponent() {
 
   return (
     <>
-      <h1>RATING</h1>
       {detailsObj && (
         <div className="body">
           <div className="rowDetails">
@@ -210,7 +209,7 @@ export default function UsersRatingComponent() {
                   {detailsObj.filmTitle}
                 </p>
                 <br />
-                <p className="red-text center-mobile inline">RELEASE YEAR:</p>
+                <p className="red-text center-mobile inline">RELEASE YEAR: </p>
                 <p className="white-text center-mobile inline font-size">
                   {detailsObj.releaseYear}
                 </p>

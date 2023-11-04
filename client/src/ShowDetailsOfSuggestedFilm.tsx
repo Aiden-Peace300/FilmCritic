@@ -244,7 +244,7 @@ export default function ShowDetailsOfSuggestedFilm() {
         <div className="body">
           <div className="containerDetails">
             <div className="rowDetails">
-              <div className="col-half">
+              <div className="col-half col-half-img">
                 <img
                   className="imageDetails"
                   src={detailsObj.poster}
@@ -258,7 +258,9 @@ export default function ShowDetailsOfSuggestedFilm() {
                     {detailsObj.filmTitle}
                   </p>
                   <br />
-                  <p className="red-text center-mobile inline">RELEASE YEAR:</p>
+                  <p className="red-text center-mobile inline">
+                    RELEASE YEAR:{' '}
+                  </p>
                   <p className="white-text center-mobile inline">
                     {detailsObj.releaseYear}
                   </p>
@@ -293,7 +295,7 @@ export default function ShowDetailsOfSuggestedFilm() {
             src={detailsObj.trailer}
             frameBorder="0"
             allowFullScreen></iframe>
-          <div className="containerDetails">
+          <div className="containerStreamingDetails">
             <p className="red-text center-mobile center">ADD TO WATCHLIST:</p>
             <div className="center-mobile center">
               <button

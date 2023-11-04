@@ -192,7 +192,7 @@ export default function EditPostComponent() {
                   {detailsObj.film}
                 </p>
                 <br />
-                <p className="red-text center-mobile inline">RELEASE YEAR:</p>
+                <p className="red-text center-mobile inline">RELEASE YEAR: </p>
                 <p className="white-text center-mobile inline font-size">
                   {detailsObj.releaseYear}
                 </p>
