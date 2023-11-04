@@ -71,7 +71,7 @@ export default function RegistrationForm() {
           <div className="column-full d-flex justify-between">
             <button
               disabled={isLoading}
-              className="input-b-radius text-padding purple-background white-text">
+              className="input-b-radius text-padding purple-background white-text-guest">
               Register
             </button>
           </div>
