@@ -250,7 +250,7 @@ export default function UsersRatingComponent() {
                     <StarRating onRatingChange={handleRatingChange} />
                   </div>
                 </div>
-                <div>
+                <div className="postAndCancel">
                   <button
                     onClick={() => addToFilmsTableAndWatchlist(detailsObj)}
                     className="ratedFilm">
