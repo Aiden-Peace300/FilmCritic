@@ -26,6 +26,11 @@ input[type='radio'] {
   text-align: center;
 }
 
+.postAndCancel {
+  display: flex;
+  justify-content: space-around;
+}
+
 .ratedFilm {
   font-size: 1rem;
   color: white !important;
@@ -35,8 +40,7 @@ input[type='radio'] {
   padding: 0.5rem 1.5rem;
   cursor: pointer;
   margin-bottom: 3rem;
-  margin-top: 1.5rem;
-  margin-left: 21rem;
+  margin-top: 3rem;
   justify-content: center;
 }
 
