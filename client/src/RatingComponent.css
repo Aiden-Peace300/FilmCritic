@@ -74,7 +74,7 @@ input[type='radio'] {
   }
 
   .note {
-    margin-top: 4rem;
+    margin-top: 0;
     width: 18rem;
     height: 20rem;
   }

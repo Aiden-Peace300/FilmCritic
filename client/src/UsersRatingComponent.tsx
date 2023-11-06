@@ -210,6 +210,7 @@ export default function UsersRatingComponent() {
                     {detailsObj.filmTitle}
                   </p>
                 </div>
+                <br className="br" />
                 <div>
                   <p className="red-text center-mobile inline">
                     RELEASE YEAR:{' '}
@@ -218,14 +219,14 @@ export default function UsersRatingComponent() {
                     {detailsObj.releaseYear}
                   </p>
                 </div>
-                <br />
+                <br className="br" />
                 <div>
                   <p className="red-text center-mobile inline">TYPE: </p>
                   <p className="white-text center-mobile inline font-size">
                     {detailsObj.type}
                   </p>
                 </div>
-                <br />
+                <br className="br" />
                 <div>
                   <p className="red-text center-mobile inline">CREATOR: </p>
                   <p className="white-text center-mobile inline font-size">
