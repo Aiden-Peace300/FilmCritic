@@ -35,6 +35,10 @@ ul {
   .mobile-top-margin {
     margin-top: 10rem;
   }
+
+  .details-button {
+    margin-top: 1rem;
+  }
 }
 
 .details-button {
