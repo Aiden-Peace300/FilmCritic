@@ -168,6 +168,10 @@ h1 {
 }
 
 @media screen and (width <= 768px) {
+  .br {
+    display: none;
+  }
+
   .imageDetails {
     width: 280px;
     height: 400px;
