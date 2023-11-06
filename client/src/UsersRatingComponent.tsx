@@ -210,7 +210,6 @@ export default function UsersRatingComponent() {
                     {detailsObj.filmTitle}
                   </p>
                 </div>
-                <br />
                 <div>
                   <p className="red-text center-mobile inline">
                     RELEASE YEAR:{' '}

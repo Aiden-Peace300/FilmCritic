@@ -173,8 +173,6 @@ export default function EditPostComponent() {
 
   return (
     <>
-      <h1>RATING</h1>
-
       {detailsObj && (
         <div className="body">
           <div className="rowDetails">
