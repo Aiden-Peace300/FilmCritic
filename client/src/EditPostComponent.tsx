@@ -173,8 +173,6 @@ export default function EditPostComponent() {
 
   return (
     <>
-      <h1>RATING</h1>
-
       {detailsObj && (
         <div className="body">
           <div className="rowDetails">
@@ -187,25 +185,41 @@ export default function EditPostComponent() {
             </div>
             <div className="column-half">
               <div className="center-mobile space">
-                <p className="red-text center-mobile inline">FILM: </p>
-                <p className="white-text center-mobile inline font-size">
-                  {detailsObj.film}
-                </p>
+                <div>
+                  <p className="red-text center-mobile inline">FILM: </p>
+                  <p className="white-text center-mobile inline font-size">
+                    {detailsObj.film}
+                  </p>
+                </div>
+                <br className="br" />
+                <div>
+                  <p className="red-text center-mobile inline">
+                    RELEASE YEAR:{' '}
+                  </p>
+                  <p className="white-text center-mobile inline font-size">
+                    {detailsObj.releaseYear}
+                  </p>
+                </div>
+                <br className="br" />
+                <div>
+                  <p className="red-text center-mobile inline">TYPE: </p>
+                  <p className="white-text center-mobile inline font-size">
+                    {detailsObj.type}
+                  </p>
+                </div>
+                <br className="br" />
+                <div>
+                  <p className="red-text center-mobile inline">CREATOR: </p>
+                  <p className="white-text center-mobile inline font-size">
+                    {detailsObj.creator}
+                  </p>
+                </div>
                 <br />
-                <p className="red-text center-mobile inline">RELEASE YEAR: </p>
-                <p className="white-text center-mobile inline font-size">
-                  {detailsObj.releaseYear}
-                </p>
-                <br />
-                <p className="red-text center-mobile inline">TYPE: </p>
-                <p className="white-text center-mobile inline font-size">
-                  {detailsObj.type}
-                </p>
-                <br />
-                <p className="red-text center-mobile inline">CREATOR: </p>
-                <p className="white-text center-mobile inline font-size">
-                  {detailsObj.creator}
-                </p>
+                <div>
+                  <p className="red-text center-mobile inline">
+                    EDIT THE FOLLOWING:
+                  </p>
+                </div>
                 <br />
                 <div className="grid-container">
                   <textarea
@@ -220,16 +234,16 @@ export default function EditPostComponent() {
                     />
                   </div>
                 </div>
-                <div>
+                <div className="postAndCancel">
                   {detailsObj && (
                     <Fragment>
-                      <button onClick={handleEditClick} className="ratedFilm">
-                        POST
-                      </button>
                       <button
                         onClick={() => navigate('/movieApp')}
                         className="ratedFilm cancel">
                         CANCEL
+                      </button>
+                      <button onClick={handleEditClick} className="ratedFilm">
+                        POST
                       </button>
                     </Fragment>
                   )}

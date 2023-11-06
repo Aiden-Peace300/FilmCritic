@@ -259,8 +259,8 @@ export default function ShowDetailsOfSuggestedFilm() {
                       {detailsObj.filmTitle}
                     </p>
                   </div>
-                  <br />
-                  <div>
+                  <br className="br" />
+                  <div className="inline2">
                     <p className="red-text center-mobile inline">
                       RELEASE YEAR:{' '}
                     </p>
@@ -268,7 +268,7 @@ export default function ShowDetailsOfSuggestedFilm() {
                       {detailsObj.releaseYear}
                     </p>
                   </div>
-                  <br />
+                  <br className="br" />
                   <div>
                     <p className="red-text center-mobile inline">TYPE: </p>
                     <p className="white-text center-mobile inline">
@@ -276,13 +276,13 @@ export default function ShowDetailsOfSuggestedFilm() {
                     </p>
                   </div>
                   <div>
-                    <br />
+                    <br className="br" />
                     <p className="red-text center-mobile inline">
                       GENERAL RATING:
                     </p>
                     <p className="white-text center-mobile inline">{` ${detailsObj.generalRating} / 10`}</p>
                   </div>
-                  <br />
+                  <br className="br" />
                   <div>
                     <p className="red-text center-mobile inline">CREATOR: </p>
                     <p className="white-text center-mobile inline">
