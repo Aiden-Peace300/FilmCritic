@@ -68,8 +68,10 @@ const FilmBanner: React.FC = () => {
 
   const startSlideshow = useCallback(() => {
     if (imageIndex < filmDataArray.length) {
-      loadImage(filmDataArray[imageIndex].id);
-      // Increment imageIndex here, before loading the next image
+      // Load the current image
+      loadImage(filmDataArray[imageIndex + 1].id);
+
+      // Increment imageIndex after loading the current image
       setImageIndex((prevIndex) => prevIndex + 1);
     }
   }, [imageIndex, filmDataArray, loadImage]);
@@ -88,13 +90,17 @@ const FilmBanner: React.FC = () => {
     };
   }, [startSlideshow]);
 
+  // Create a variable to hold the title of the current image
+  const currentImageTitle = filmDataArray[imageIndex]?.title;
+
   return (
     <div style={{ textAlign: 'center' }}>
       {currentImage && (
         <img
           style={{ marginTop: '2rem', cursor: 'pointer' }}
           src={currentImage}
-          alt={filmDataArray[imageIndex]?.title || 'Slideshow'}
+          alt={currentImageTitle || 'Slideshow'}
+          title={currentImageTitle || 'Slideshow'}
           height="auto"
           width="1200"
         />
