@@ -99,13 +99,17 @@ const FilmBanner: React.FC = () => {
     <div style={{ textAlign: 'center' }}>
       {currentImage && (
         <img
-          style={{ marginTop: '2rem', marginBottom: '2rem', cursor: 'pointer' }}
+          style={{
+            marginTop: '2rem',
+            marginBottom: '2rem',
+            cursor: 'pointer',
+            width: '90%', // Set the width to 100% for responsiveness
+            height: 'auto', // Maintain the aspect ratio
+          }}
           src={currentImage}
           alt={currentImageTitle || 'Slideshow'}
           title={currentImageTitle || 'Slideshow'}
           onClick={() => navigate(`${filmDataArray[imageIndex].id}`)}
-          height="700"
-          width="1600"
         />
       )}
     </div>
