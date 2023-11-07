@@ -470,7 +470,7 @@ export function RecommendationComponent() {
                 <div>
                   <Link to={`${showId[index]}`}>
                     <img
-                      className="image"
+                      className="hoverImg image"
                       src={imageSrc}
                       alt={showTitle[index]}
                     />

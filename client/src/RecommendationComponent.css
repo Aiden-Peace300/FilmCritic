@@ -65,6 +65,11 @@ h1 {
   cursor: pointer;
 }
 
+.hoverImg:hover {
+  opacity: 1;
+  border: 0.3rem solid red;
+}
+
 .margin-top {
   margin-top: 1rem;
 }
