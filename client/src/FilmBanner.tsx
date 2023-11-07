@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const FilmBanner: React.FC = () => {
+  const navigate = useNavigate();
   const [currentImage, setCurrentImage] = useState<string | null>(null);
   const [imageIndex, setImageIndex] = useState<number>(0);
   const [filmDataArray, setFilmDataArray] = useState<
@@ -97,12 +99,13 @@ const FilmBanner: React.FC = () => {
     <div style={{ textAlign: 'center' }}>
       {currentImage && (
         <img
-          style={{ marginTop: '2rem', cursor: 'pointer' }}
+          style={{ marginTop: '2rem', marginBottom: '2rem', cursor: 'pointer' }}
           src={currentImage}
           alt={currentImageTitle || 'Slideshow'}
           title={currentImageTitle || 'Slideshow'}
-          height="auto"
-          width="1200"
+          onClick={() => navigate(`${filmDataArray[imageIndex].id}`)}
+          height="700"
+          width="1600"
         />
       )}
     </div>
