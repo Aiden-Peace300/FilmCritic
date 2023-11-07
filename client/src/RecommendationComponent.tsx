@@ -4,6 +4,7 @@ import { DebounceInput } from 'react-debounce-input';
 import './RecommendationComponent.css';
 import { useRecommendations } from './useRecommendations';
 import LoadingScreen from './LoadingScreen';
+import FilmBanner from './FilmBanner';
 
 /**
  * React component for managing and displaying recommendations.
@@ -432,6 +433,8 @@ export function RecommendationComponent() {
           </div>
         </div>
       </form>
+
+      <FilmBanner />
 
       <>
         {showSuggestions && suggestions.length > 0 && (
