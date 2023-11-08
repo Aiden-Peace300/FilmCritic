@@ -3,6 +3,7 @@ import './ShowDetailsOfSuggestedFilm.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FilmBanner from './FilmBanner';
+import Footer from './Footer';
 
 /**
  * RatingComponent allows users to search for a show to rate and provides suggestions based on user input.
@@ -208,6 +209,7 @@ export default function RatingComponent() {
         </div>
       )}
       <FilmBanner />
+      <Footer />
     </>
   );
 }
