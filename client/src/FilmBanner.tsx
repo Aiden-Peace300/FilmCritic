@@ -69,12 +69,18 @@ const FilmBanner: React.FC = () => {
   }, []);
 
   const startSlideshow = useCallback(() => {
-    if (imageIndex < filmDataArray.length) {
+    if (imageIndex < filmDataArray.length - 1) {
       // Load the current image
       loadImage(filmDataArray[imageIndex + 1].id);
 
       // Increment imageIndex after loading the current image
       setImageIndex((prevIndex) => prevIndex + 1);
+    } else {
+      // If we've reached the end, go back to the beginning
+      setImageIndex(0);
+
+      // Load the first image again
+      loadImage(filmDataArray[0].id);
     }
   }, [imageIndex, filmDataArray, loadImage]);
 
