@@ -17,9 +17,14 @@
   cursor: pointer;
 }
 
+.margin-right {
+  margin-right: 9rem;
+}
+
 .nav-links {
   display: flex;
-  align-items: center;
+
+  /* justify-content: flex-start; */
 }
 
 .entries-link {
@@ -45,6 +50,7 @@
 .bars-icon {
   display: none;
   padding-left: 1.8rem;
+  padding-right: 2rem;
   font-size: 1.5rem;
   color: white;
 }
@@ -60,6 +66,10 @@
 
   .bars-icon {
     display: block;
+  }
+
+  .margin-right {
+    display: none;
   }
 }
 

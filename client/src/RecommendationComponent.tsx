@@ -5,6 +5,7 @@ import './RecommendationComponent.css';
 import { useRecommendations } from './useRecommendations';
 import LoadingScreen from './LoadingScreen';
 import FilmBanner from './FilmBanner';
+import Footer from './Footer';
 
 /**
  * React component for managing and displaying recommendations.
@@ -411,7 +412,7 @@ export function RecommendationComponent() {
     <div>
       {/* <h1 style={{ marginBottom: '0rem' }}>RECOMMENDATION</h1> */}
       <h2 style={{ color: 'white', marginBottom: '.5rem', marginLeft: '2rem' }}>
-        TYPE IN A SHOW THAT YOU WOULD LIKE TO GET FIVE SUGGESTIONS FOR:{' '}
+        TYPE IN A FILM THAT YOU WOULD LIKE TO GET FIVE SUGGESTIONS FOR:{' '}
       </h2>
       <p className="disclamer-Msg">
         DISCLAIMER: PLEASE ALLOW A FEW SECONDS FOR THE SEARCH BAR; WE ARE
@@ -456,6 +457,7 @@ export function RecommendationComponent() {
           </div>
         )}
         {isLoading || showImages.length > 0 ? null : <FilmBanner />}
+        <Footer />
         {isLoading ? (
           <>
             <div className="loading-screen-prompt">
