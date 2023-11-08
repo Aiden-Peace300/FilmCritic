@@ -1,6 +1,7 @@
 import { Fragment, useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PrepopulatedStars from './PrepopulatedStars.tsx';
+import Footer from './Footer';
 
 interface FilmDetails {
   idImdb: string;
@@ -251,6 +252,7 @@ export default function EditPostComponent() {
               </div>
             </div>
           </div>
+          <Footer />
         </div>
       )}
     </>

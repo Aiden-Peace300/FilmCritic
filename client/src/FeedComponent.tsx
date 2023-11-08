@@ -7,6 +7,7 @@ import './RatedHistoryComponent.css';
 import HeartRating from './HeartLikes';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Footer from './Footer';
 
 // Defines TypeScript types for rated films
 type RatedFilm = {
@@ -310,6 +311,7 @@ export default function FeedComponent() {
       {isPopupVisible && (
         <DeleteConfirmationPopup onClose={hidePopup} idImdb={selectedIdImdb} />
       )}
+      <Footer />
     </div>
   );
 }

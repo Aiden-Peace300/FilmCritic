@@ -5,6 +5,7 @@ import ProfilePicture from './ProfileDetails';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import GuestPopup from './GuestPopup';
+import Footer from './Footer';
 
 /**
  * ProfileComponent displays the user's profile, watchlist history, and rated history.
@@ -77,6 +78,7 @@ export default function ProfileComponent() {
           onNavigate={handleNavigateInsideApp}
         />
       )}
+      <Footer />
     </>
   );
 }
