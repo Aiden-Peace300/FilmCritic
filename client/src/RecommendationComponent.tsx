@@ -4,6 +4,7 @@ import { DebounceInput } from 'react-debounce-input';
 import './RecommendationComponent.css';
 import { useRecommendations } from './useRecommendations';
 import LoadingScreen from './LoadingScreen';
+import FilmBanner from './FilmBanner';
 
 /**
  * React component for managing and displaying recommendations.
@@ -408,15 +409,15 @@ export function RecommendationComponent() {
 
   return (
     <div>
-      <h1 style={{ marginBottom: '0rem' }}>RECOMMENDATION</h1>
+      {/* <h1 style={{ marginBottom: '0rem' }}>RECOMMENDATION</h1> */}
+      <h2 style={{ color: 'white', marginBottom: '.5rem', marginLeft: '2rem' }}>
+        TYPE IN A SHOW THAT YOU WOULD LIKE TO GET FIVE SUGGESTIONS FOR:{' '}
+      </h2>
       <p className="disclamer-Msg">
         DISCLAIMER: PLEASE ALLOW A FEW SECONDS FOR THE SEARCH BAR; WE ARE
         LOOKING THROUGH THOUSANDS OF FILMS TO FIND THE PERFECT ONE FOR YOU.
         PLEASE BE PATIENCE WITH US
       </p>
-      <h2 style={{ color: 'white', marginBottom: '.5rem', marginLeft: '2rem' }}>
-        TYPE IN A SHOW THAT YOU WOULD LIKE TO GET FIVE SUGGESTIONS FOR:{' '}
-      </h2>
       <form onSubmit={handleSearchSubmit}>
         <div className="row">
           <div className="column">
@@ -432,7 +433,6 @@ export function RecommendationComponent() {
           </div>
         </div>
       </form>
-
       <>
         {showSuggestions && suggestions.length > 0 && (
           <div className="row">
@@ -455,6 +455,7 @@ export function RecommendationComponent() {
             </div>
           </div>
         )}
+        {isLoading || showImages.length > 0 ? null : <FilmBanner />}
         {isLoading ? (
           <>
             <div className="loading-screen-prompt">
@@ -469,7 +470,7 @@ export function RecommendationComponent() {
                 <div>
                   <Link to={`${showId[index]}`}>
                     <img
-                      className="image"
+                      className="hoverImg image"
                       src={imageSrc}
                       alt={showTitle[index]}
                     />
