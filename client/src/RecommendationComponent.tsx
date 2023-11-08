@@ -457,7 +457,6 @@ export function RecommendationComponent() {
           </div>
         )}
         {isLoading || showImages.length > 0 ? null : <FilmBanner />}
-        <Footer />
         {isLoading ? (
           <>
             <div className="loading-screen-prompt">
@@ -482,6 +481,7 @@ export function RecommendationComponent() {
             ))}
           </div>
         )}
+        <Footer />
       </>
     </div>
   );
