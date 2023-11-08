@@ -2,6 +2,7 @@ import { DebounceInput } from 'react-debounce-input';
 import './ShowDetailsOfSuggestedFilm.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import FilmBanner from './FilmBanner';
 
 /**
  * RatingComponent allows users to search for a show to rate and provides suggestions based on user input.
@@ -160,15 +161,15 @@ export default function RatingComponent() {
 
   return (
     <>
-      <h1 style={{ marginBottom: '0rem' }}>RATING</h1>
+      {/* <h1 style={{ marginBottom: '0rem' }}>RATING</h1> */}
+      <h2 style={{ color: 'white', marginBottom: '.5rem', marginLeft: '2rem' }}>
+        TYPE IN A SHOW THAT YOU WOULD LIKE TO RATE:{' '}
+      </h2>
       <p className="disclamer-Msg">
         DISCLAIMER: PLEASE ALLOW A FEW SECONDS FOR THE SEARCH BAR; WE ARE
         LOOKING THROUGH THOUSANDS OF FILMS TO FIND THE PERFECT ONE FOR YOU.
         PLEASE BE PATIENCE WITH US
       </p>
-      <h2 style={{ color: 'white', marginBottom: '.5rem', marginLeft: '2rem' }}>
-        TYPE IN A SHOW THAT YOU WOULD LIKE TO RATE:{' '}
-      </h2>
       <form onSubmit={handleSearchSubmit}>
         <div className="row">
           <div className="column">
@@ -206,6 +207,7 @@ export default function RatingComponent() {
           </div>
         </div>
       )}
+      <FilmBanner />
     </>
   );
 }
