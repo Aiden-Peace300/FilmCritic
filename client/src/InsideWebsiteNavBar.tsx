@@ -28,33 +28,34 @@ export function InsideWebsiteNavBar() {
   return (
     <>
       <header className="header gray-background">
-        <div className="row">
-          <div className="d-flex align-center">
-            <img
-              src={logo}
-              height="70"
-              alt="Film critic logo"
-              className="logo"
-            />
-            <nav className="nav-links">
+        <div className="navbar">
+          <img src={logo} height="70" alt="Film critic logo" className="logo" />
+          <div className="nav-links">
+            <div className="margin-right nav-links">
               <Link to="/movieApp" className="entries-link white-text">
                 FEED
               </Link>
+            </div>
+            <div className="margin-right">
               <Link
                 to="/movieApp/recommendation"
                 className="entries-link white-text">
                 RECOMMENDATION
               </Link>
+            </div>
+            <div className="margin-right">
               <Link to="/movieApp/rating" className="entries-link white-text">
                 RATING
               </Link>
+            </div>
+            <div className="margin-right">
               <Link to="/movieApp/Profile" className="entries-link white-text">
                 PROFILE
               </Link>
-            </nav>
-            <div className="bars-icon" onClick={toggleListVisibility}>
-              <FontAwesomeIcon icon={faBars} />
             </div>
+          </div>
+          <div className="bars-icon" onClick={toggleListVisibility}>
+            <FontAwesomeIcon icon={faBars} />
           </div>
         </div>
       </header>

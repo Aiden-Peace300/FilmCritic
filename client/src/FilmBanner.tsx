@@ -3,11 +3,30 @@ import { useNavigate } from 'react-router-dom';
 
 const FilmBanner: React.FC = () => {
   const navigate = useNavigate();
-  const [currentImage, setCurrentImage] = useState<string | null>(null);
+  const [currentImage, setCurrentImage] = useState<string | null>(
+    'https://image.tmdb.org/t/p/original/w52lT0ySMshZBu4ggIf0RMNS9hC.jpg'
+  ); // Initialize with the desired image URL
   const [imageIndex, setImageIndex] = useState<number>(0);
   const [filmDataArray, setFilmDataArray] = useState<
     { id: string; title: string }[]
-  >([]);
+  >([
+    {
+      id: 'tt6741278', // ID of the initial film
+      title: 'Invincible', // Title of the initial film
+    },
+  ]);
+
+  useEffect(() => {
+    if (
+      currentImage ===
+        'https://image.tmdb.org/t/p/original/w52lT0ySMshZBu4ggIf0RMNS9hC.jpg' &&
+      filmDataArray[0].title === 'The Shawshank Redemption' &&
+      filmDataArray[0].id === 'tt0111161'
+    ) {
+      filmDataArray[0].title = 'Invincible';
+      filmDataArray[0].id = 'tt6741278';
+    }
+  }, [currentImage, filmDataArray]);
 
   const loadImage = useCallback(async (id: string) => {
     try {
@@ -99,7 +118,7 @@ const FilmBanner: React.FC = () => {
   }, [startSlideshow]);
 
   // Create a variable to hold the title of the current image
-  const currentImageTitle = filmDataArray[imageIndex]?.title;
+  const currentImageTitle = filmDataArray[imageIndex].title;
 
   return (
     <div style={{ textAlign: 'center' }}>
@@ -113,8 +132,16 @@ const FilmBanner: React.FC = () => {
             height: 'auto', // Maintain the aspect ratio
           }}
           src={currentImage}
-          alt={currentImageTitle || 'Slideshow'}
-          title={currentImageTitle || 'Slideshow'}
+          alt={
+            currentImageTitle === 'The Shawshank Redemption'
+              ? 'Invincible'
+              : currentImageTitle || 'Slideshow'
+          }
+          title={
+            currentImageTitle === 'The Shawshank Redemption'
+              ? 'Invincible'
+              : currentImageTitle || 'Slideshow'
+          }
           onClick={() => navigate(`${filmDataArray[imageIndex].id}`)}
         />
       )}
