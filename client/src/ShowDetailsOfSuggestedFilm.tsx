@@ -11,6 +11,7 @@ import starzLogo from './images/Starz-logo.png';
 import showtimeLogo from './images/showtime-logo.png';
 import { useNavigate } from 'react-router-dom';
 import LoadingScreen from './LoadingScreen';
+import Footer from './Footer';
 
 type FilmDetails = {
   idImdb: string;
@@ -360,6 +361,7 @@ export default function ShowDetailsOfSuggestedFilm() {
       ) : (
         <LoadingScreen />
       )}
+      <Footer />
     </div>
   );
 }
