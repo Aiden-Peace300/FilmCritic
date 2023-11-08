@@ -3,6 +3,7 @@ import { useState, useCallback, useEffect } from 'react';
 import StarRating from './StarRating';
 import './RatingComponent.css';
 import './ShowDetailsOfSuggestedFilm.css';
+import Footer from './Footer';
 
 interface FilmDetails {
   idImdb: string;
@@ -260,6 +261,7 @@ export default function UsersRatingComponent() {
               </div>
             </div>
           </div>
+          <Footer />
         </div>
       )}
     </>
