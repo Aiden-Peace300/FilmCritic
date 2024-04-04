@@ -33,7 +33,7 @@ const FilmBanner: React.FC = () => {
       const keyParts = ['k_e', 'i6r', 'uv', '0h'];
       const key = keyParts.join('');
       const response = await fetch(
-        `https://imdb-api.com/en/API/Posters/${key}/${id}`
+        `https://tv-api.com/en/API/Posters/${key}/${id}`
       );
       if (response.ok) {
         const data: {
@@ -64,7 +64,7 @@ const FilmBanner: React.FC = () => {
 
     try {
       const response = await fetch(
-        `https://imdb-api.com/en/API/Top250Movies/${key}`
+        `https://tv-api.com/en/API/Top250Movies/${key}`
       );
       if (response.ok) {
         const data = await response.json();

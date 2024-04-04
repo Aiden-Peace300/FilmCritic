@@ -76,7 +76,7 @@ export default function RatingComponent() {
   const fetchSuggestions = async (input: string) => {
     try {
       console.log('fetchSuggestions Input', input);
-      const url = `https://imdb-api.com/en/API/SearchSeries/k_ei6ruv0h/${input}`;
+      const url = `https://tv-api.com/en/API/SearchSeries/k_ei6ruv0h/${input}`;
 
       const response = await fetch(url, {
         method: 'GET',
@@ -138,7 +138,7 @@ export default function RatingComponent() {
 
     try {
       const response = await fetch(
-        `https://imdb-api.com/en/API/Title/${key}/${id}/Trailer,Ratings,`
+        `https://tv-api.com/en/API/Title/${key}/${id}/Trailer,Ratings,`
       );
 
       if (response.status === 404) {
