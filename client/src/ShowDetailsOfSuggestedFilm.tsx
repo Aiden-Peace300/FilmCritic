@@ -191,7 +191,7 @@ export default function ShowDetailsOfSuggestedFilm() {
 
       try {
         const response = await fetch(
-          `https://imdb-api.com/en/API/Title/${key}/${id}/Trailer,Ratings,`
+          `https://tv-api.com/en/API/Title/${key}/${id}/Trailer,Ratings,`
         );
 
         console.log('response: ', response);
