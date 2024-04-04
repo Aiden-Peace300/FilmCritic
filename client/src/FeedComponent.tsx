@@ -166,7 +166,7 @@ export default function FeedComponent() {
       const key = keyParts.join('');
 
       const response = await fetch(
-        `https://imdb-api.com/en/API/Title/${key}/${id}/Trailer,Ratings,`
+        `https://tv-api.com/en/API/Title/${key}/${id}/Trailer,Ratings,`
       );
 
       if (response.status === 404) {

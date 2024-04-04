@@ -212,7 +212,7 @@ export function RecommendationComponent() {
 
     try {
       const response = await fetch(
-        `https://imdb-api.com/en/API/SearchSeries/${key}/${nameOfFilm}`
+        `https://tv-api.com/en/API/SearchSeries/${key}/${nameOfFilm}`
       );
 
       console.log('IMDB API IN findTitleInFilmIMDB');
@@ -253,7 +253,7 @@ export function RecommendationComponent() {
 
     try {
       const response = await fetch(
-        `https://imdb-api.com/en/API/SearchSeries/${key}/${nameOfFilm}`
+        `https://tv-api.com/en/API/SearchSeries/${key}/${nameOfFilm}`
       );
 
       console.log('IMDB API IN findFilmInIMDB');
@@ -292,7 +292,7 @@ export function RecommendationComponent() {
     const key = keyParts.join('');
     try {
       const response = await fetch(
-        `https://imdb-api.com/en/API/Title/${key}/${idImdb}/Images,Trailer,`
+        `https://tv-api.com/en/API/Title/${key}/${idImdb}/Images,Trailer,`
       );
 
       console.log('IMDB API IN getPosterOfRecommendation');
@@ -329,7 +329,7 @@ export function RecommendationComponent() {
     try {
       const keyParts = ['k_e', 'i6r', 'uv', '0h'];
       const key = keyParts.join('');
-      const url = `https://imdb-api.com/en/API/SearchSeries/${key}/${input}`;
+      const url = `https://tv-api.com/en/API/SearchSeries/${key}/${input}`;
 
       const response = await fetch(url, {
         method: 'GET',
@@ -374,7 +374,7 @@ export function RecommendationComponent() {
 
     try {
       const response = await fetch(
-        `https://imdb-api.com/en/API/SearchSeries/${key}/${title}`
+        `https://tv-api.com/en/API/SearchSeries/${key}/${title}`
       );
 
       console.log('IMDB API IN handleFilmDetails');
