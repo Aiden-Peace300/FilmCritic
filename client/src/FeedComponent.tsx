@@ -244,7 +244,7 @@ export default function FeedComponent() {
                 <div className="text-details">
                   <p className="rated-title">
                     <span className="red-text">FILM: </span>
-                    {film.title.toUpperCase()}
+                    {film.title ? film.title.toUpperCase() : 'Unknown Title'}
                   </p>
                   <p className="rated-note">{film.userNote}</p>
                   <div className="space1">
