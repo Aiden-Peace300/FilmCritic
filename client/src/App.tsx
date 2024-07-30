@@ -1,5 +1,5 @@
 import { Routes, Route, useNavigate } from 'react-router-dom';
-import { NavBar } from './NavBar'; // Import without PageType
+import { NavBar } from './NavBar'; // Import from the updated file
 import { InsideWebsiteNavBar } from './InsideWebsiteNavBar';
 import { IconClicked } from './IconClicked';
 import { RecProvider } from './RecContext';
@@ -13,19 +13,7 @@ import UsersRatingComponent from './UsersRatingComponent';
 import Profile from './Profile';
 import EditPostComponent from './EditPostComponent';
 import NotFound from './NotFound';
-
-// Define or import PageType here
-type PageType =
-  | 'sign-out'
-  | '/sign-in'
-  | '/movieApp'
-  | '/recommendation'
-  | '/recommendation/:filmTitle'
-  | '/rating'
-  | '/rating/:filmId'
-  | '/profile'
-  | '/profile/:filmId'
-  | '/icon-clicked';
+import { PageType } from './types'; // Import from the new types file
 
 export default function App() {
   const navigate = useNavigate();
