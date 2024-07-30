@@ -29,7 +29,7 @@ export function NavBar() {
     <>
       <header className="header gray-background">
         <div className="navbar">
-          <img src={logo} height="55" alt="Film critic logo" className="logo" />
+          <img src={logo} height="50" alt="Film critic logo" className="logo" />
           <div className="nav-links">
             <div className="signup-container">
               <Link to="/register" className="entries-link white-text">
