@@ -1,3 +1,4 @@
+/* layout.css */
 .hidden {
   display: none !important;
 }
@@ -6,8 +7,16 @@
   visibility: hidden;
 }
 
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* height: 90vh;  */
+}
+
 .container {
-  max-width: 30%;
+  max-width: 100%;
   margin: 0 auto;
 }
 
@@ -18,8 +27,6 @@
 
 .red-backdrop {
   background-color: #db3434;
-  border-radius: 20px;
-  padding-top: 15px;
 }
 
 .column-full,
@@ -27,9 +34,22 @@
   width: 100%;
 }
 
+.column-half2 {
+  display: flex;
+  justify-content: space-around;
+}
+
 .d-block {
   display: block;
   margin-left: 30px;
+}
+
+.no-margin {
+  margin: 0;
+}
+
+.no-margin:focus {
+  color: red;
 }
 
 .d-flex {
@@ -113,24 +133,67 @@
   width: 100%;
 }
 
-input {
+.inputclass {
   background-color: transparent; /* Make input box transparent */
   color: white; /* Set text color to white */
   border: none; /* Remove border from input box */
   flex-grow: 1;
+  height: 30px;
 }
 
-input:focus {
+.inputclass:focus {
   outline: none; /* Remove focus outline */
   background-color: transparent; /* Ensure background color stays transparent */
 }
 
-input::placeholder {
+.inputclass::placeholder {
   color: white; /* Set placeholder text color to white */
 }
 
 .username-icon {
   color: white;
+}
+
+.space {
+  text-align: center;
+}
+
+.center {
+  text-align: center;
+}
+
+.size {
+  width: 150px;
+  border-radius: 13.5px;
+  margin: 5px 12px;
+  font-size: 13px;
+}
+
+.size2 {
+  width: 500px;
+}
+
+.selected-login {
+  background-color: gray;
+}
+
+.link-no-underline {
+  text-decoration: none;
+}
+
+.white {
+  color: white;
+}
+
+.boarder-radius-1 {
+  border-radius: 12.5px;
+  margin: 12px 0;
+  height: 50px;
+}
+
+.boarder-radius-2 {
+  border-radius: 12.5px;
+  margin: 12px 0;
 }
 
 @media screen and (width <= 768px) {
