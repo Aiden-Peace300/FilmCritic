@@ -1,6 +1,7 @@
 import { FormEvent, useState } from 'react';
 import { IoMdPerson } from 'react-icons/io';
 import { FaLock } from 'react-icons/fa6';
+import { Link } from 'react-router-dom';
 
 /**
  * Form that signs in a user.
@@ -80,14 +81,19 @@ export default function SignInForm({ onSignIn }: Props) {
 
   return (
     <div className="container">
-      <div className="row">
-        <div className="column-full d-flex justify-between">
-          <h1>Sign In</h1>
+      <div className="">
+        <div className="d-flex red-backdrop justify-center boarder-radius-1">
+          <Link to="/sign-in" className="selected-login size link-no-underline">
+            <h1 className="no-margin white">LOGIN</h1>
+          </Link>
+          <Link to="/register" className=" size link-no-underline">
+            <h1 className="no-margin justify-end">REGISTER</h1>
+          </Link>
         </div>
       </div>
       <form onSubmit={handleSubmit}>
         <div className="row margin-bottom-1">
-          <div className="column-half red-backdrop">
+          <div className="column-half red-backdrop boarder-radius-2">
             <label className="margin-bottom-1 d-block input-container">
               <IoMdPerson className="username-icon" size={25} />
               <input
@@ -121,7 +127,7 @@ export default function SignInForm({ onSignIn }: Props) {
               disabled={isLoading}
               className="input-b-radius text-padding purple-background white-text-guest"
               onClick={handleGuestSignIn}>
-              Sign-in As Guest
+              Login As Guest
             </button>
           </div>
         </div>
