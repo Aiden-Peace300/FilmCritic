@@ -185,51 +185,55 @@ export default function ShowDetailsOfSuggestedFilm() {
      * Fetches film details from the API based on the IMDB ID.
      * @param {string} id - The IMDB ID of the film.
      */
-    async function fetchFilmDetails(id: string) {
+    async function fetchFilmDetails(id) {
       const keyParts = ['k_e', 'i6r', 'uv', '0h'];
       const key = keyParts.join('');
 
-      try {
-        const response = await fetch(
-          `https://tv-api.com/en/API/Title/${key}/${id}/Trailer,Ratings,`
-        );
+      let success = false;
+      let responseData;
 
-        console.log('response: ', response);
+      while (!success) {
+        try {
+          const response = await fetch(
+            `https://tv-api.com/en/API/Title/${key}/${id}/Trailer,Ratings,`
+          );
 
-        if (response.status === 404) {
-          console.error('Resource not found (404)');
-          return;
+          console.log('response: ', response);
+
+          if (response.status === 404) {
+            console.error('Resource not found (404)');
+            return;
+          }
+
+          if (response.ok) {
+            responseData = await response.json();
+            success = true;
+          } else {
+            console.error('Failed to fetch data from IMDb API, retrying...');
+          }
+        } catch (error) {
+          console.error('Error:', error);
         }
+      }
 
-        if (!response.ok) {
-          console.error('Failed to fetch data from IMDb API');
-          return;
-        }
-
-        const responseData = await response.json();
-
-        if (responseData) {
-          const newDetailsObj = {
-            idImdb: responseData.id ?? '',
-            poster: responseData.image ?? '',
-            filmTitle: responseData.title ?? '',
-            releaseYear: responseData.year ?? '',
-            creator:
-              (responseData.tvSeriesInfo?.creators || responseData.writers) ??
-              '',
-            description: responseData.plot ?? '',
-            trailer: responseData.trailer?.linkEmbed ?? '',
-            type: responseData.ratings.type ?? '',
-            generalRating: responseData.ratings.imDb ?? '',
-            genre: responseData.genres ?? '',
-          };
-          setDetailsObj(newDetailsObj);
-          getStreamingPlatforms(idImdb);
-        } else {
-          console.error('responseData is undefined');
-        }
-      } catch (error) {
-        console.error('Error:', error);
+      if (responseData) {
+        const newDetailsObj = {
+          idImdb: responseData.id ?? '',
+          poster: responseData.image ?? '',
+          filmTitle: responseData.title ?? '',
+          releaseYear: responseData.year ?? '',
+          creator:
+            (responseData.tvSeriesInfo?.creators || responseData.writers) ?? '',
+          description: responseData.plot ?? '',
+          trailer: responseData.trailer?.linkEmbed ?? '',
+          type: responseData.ratings.type ?? '',
+          generalRating: responseData.ratings.imDb ?? '',
+          genre: responseData.genres ?? '',
+        };
+        setDetailsObj(newDetailsObj);
+        getStreamingPlatforms(newDetailsObj.idImdb);
+      } else {
+        console.error('responseData is undefined');
       }
     }
 
