@@ -20,16 +20,21 @@ export default function App() {
 
   // Function to handle navigation and sign-out
   function handleNavigate(page: PageType) {
-    navigate(page);
     if (page === 'sign-out') {
       sessionStorage.removeItem('token');
-      navigate('sign-in');
+      navigate('/sign-in');
+    } else {
+      navigate(page);
     }
   }
 
   return (
     <div>
-      {isAuthenticated ? <InsideWebsiteNavBar /> : <NavBar />}
+      {isAuthenticated ? (
+        <InsideWebsiteNavBar />
+      ) : (
+        <NavBar onNavigate={handleNavigate} />
+      )}
 
       <Routes>
         <Route
