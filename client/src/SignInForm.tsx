@@ -34,7 +34,7 @@ export default function AuthForm() {
       };
       const res = await fetch('/api/auth/sign-up', req);
       if (!res.ok) {
-        throw new Error(`fetch Error ${res.status}`);
+        throw new Error(`Fetch Error ${res.status}`);
       }
       const user = await res.json();
       console.log('Registered', user);
@@ -64,7 +64,7 @@ export default function AuthForm() {
       };
       const res = await fetch('/api/auth/sign-in', req);
       if (!res.ok) {
-        throw new Error(`fetch Error ${res.status}`);
+        throw new Error(`Fetch Error ${res.status}`);
       }
       const { payload, token } = await res.json();
       sessionStorage.setItem('token', token);
@@ -91,7 +91,7 @@ export default function AuthForm() {
       };
       const res = await fetch('/api/auth/sign-in', req);
       if (!res.ok) {
-        throw new Error(`fetch Error ${res.status}`);
+        throw new Error(`Fetch Error ${res.status}`);
       }
       const { payload, token } = await res.json();
       sessionStorage.setItem('token', token);

@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import logo from './images/Logo.jpg';
 import { PageType } from './NavBar';
-import { useNavigate } from 'react-router-dom';
 
 /**
  * Type for different page types in the NavBar.
@@ -11,26 +10,21 @@ import { useNavigate } from 'react-router-dom';
 export type PageType = 'movieApp' | 'register' | 'sign-in' | 'sign-out';
 
 /**
- * Functional component representing the website's navigation bar.
- * @returns {JSX} JSX links for for Nav bar
+ * Props for the NavBar component.
  */
-export function NavBar() {
-  // State variable to track whether the mobile icon is clicked
-  const [isIconClicked, setIconClicked] = useState(false);
-  const navigate = useNavigate();
+interface NavBarProps {
+  onNavigate: (page: PageType) => void;
+}
 
-  /**
-   * Function to toggle the mobile icon click state.
-   */
+/**
+ * Functional component representing the website's navigation bar.
+ * @returns {JSX} JSX links for Nav bar
+ */
+export function NavBar({ onNavigate }: NavBarProps) {
+  const [isIconClicked, setIconClicked] = useState(false);
+
   const toggleIconClicked = () => {
     setIconClicked(!isIconClicked);
-  };
-
-  const handleNavigate = (page: PageType) => {
-    if (page === 'sign-out') {
-      sessionStorage.removeItem('token');
-    }
-    navigate(page);
   };
 
   return (
@@ -47,20 +41,16 @@ export function NavBar() {
         <nav className="list-container">
           <ul>
             <li>
-              <button onClick={() => handleNavigate('movieApp')}>Home</button>
+              <button onClick={() => onNavigate('movieApp')}>Home</button>
             </li>
             <li>
-              <button onClick={() => handleNavigate('register')}>
-                Register
-              </button>
+              <button onClick={() => onNavigate('register')}>Register</button>
             </li>
             <li>
-              <button onClick={() => handleNavigate('sign-in')}>Sign In</button>
+              <button onClick={() => onNavigate('sign-in')}>Sign In</button>
             </li>
             <li>
-              <button onClick={() => handleNavigate('sign-out')}>
-                Sign Out
-              </button>
+              <button onClick={() => onNavigate('sign-out')}>Sign Out</button>
             </li>
           </ul>
         </nav>

@@ -1,5 +1,5 @@
 import { Routes, Route, useNavigate } from 'react-router-dom';
-import { NavBar, PageType } from './NavBar';
+import { NavBar } from './NavBar'; // Import without PageType
 import { InsideWebsiteNavBar } from './InsideWebsiteNavBar';
 import { IconClicked } from './IconClicked';
 import { RecProvider } from './RecContext';
@@ -18,7 +18,6 @@ export default function App() {
   const navigate = useNavigate();
   const isAuthenticated = !!sessionStorage.getItem('token');
 
-  // Function to handle navigation and sign-out
   function handleNavigate(page: PageType) {
     if (page === 'sign-out') {
       sessionStorage.removeItem('token');
