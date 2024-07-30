@@ -1,15 +1,16 @@
 import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoMdPerson } from 'react-icons/io';
-import { FaLock } from 'react-icons/fa6';
+import { FaLock } from 'react-icons/fa';
 import PosterBanner from './PosterBanner';
 
-/**
- * Combined Form for Registering and Signing In a user.
- */
-export default function AuthForm() {
+interface SignInFormProps {
+  onSignIn?: () => void; // Add this prop type definition
+}
+
+export default function SignInForm({ onSignIn }: SignInFormProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [isRegistering, setIsRegistering] = useState(false); // Toggle between Register and Sign In
+  const [isRegistering, setIsRegistering] = useState(false);
   const navigate = useNavigate();
 
   const guestCredentials = {
@@ -17,10 +18,6 @@ export default function AuthForm() {
     password: 'UnknownUserPassword',
   };
 
-  /**
-   * Handles the form submission to register a user.
-   * @param {FormEvent<HTMLFormElement>} event - The form submission event.
-   */
   async function handleRegister(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     try {
@@ -47,10 +44,6 @@ export default function AuthForm() {
     }
   }
 
-  /**
-   * Handles the form submission for regular user sign-in.
-   * @param {FormEvent<HTMLFormElement>} event - The form submission event.
-   */
   async function handleSignIn(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     try {
@@ -70,7 +63,7 @@ export default function AuthForm() {
       sessionStorage.setItem('token', token);
       sessionStorage.setItem('userId', String(payload.userId));
       console.log('Signed In', payload, '; received token:', token);
-      navigate('/movieApp');
+      if (onSignIn) onSignIn(); // Call the onSignIn prop
     } catch (err) {
       alert(`Error signing in: ${err}`);
     } finally {
@@ -78,9 +71,6 @@ export default function AuthForm() {
     }
   }
 
-  /**
-   * Handles signing in as a guest user.
-   */
   async function handleGuestSignIn() {
     setIsLoading(true);
     try {
@@ -97,7 +87,7 @@ export default function AuthForm() {
       sessionStorage.setItem('token', token);
       sessionStorage.setItem('userId', String(payload.userId));
       console.log('Signed In as Guest', payload, '; received token:', token);
-      navigate('/movieApp');
+      if (onSignIn) onSignIn(); // Call the onSignIn prop
     } catch (err) {
       alert(`Error signing in as guest: ${err}`);
     } finally {
