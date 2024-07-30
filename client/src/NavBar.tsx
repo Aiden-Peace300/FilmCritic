@@ -7,7 +7,17 @@ import { PageType } from './NavBar';
 /**
  * Type for different page types in the NavBar.
  */
-export type PageType = 'movieApp' | 'register' | 'sign-in' | 'sign-out';
+type PageType =
+  | 'sign-out'
+  | '/sign-in'
+  | '/movieApp'
+  | '/recommendation'
+  | '/recommendation/:filmTitle'
+  | '/rating'
+  | '/rating/:filmId'
+  | '/profile'
+  | '/profile/:filmId'
+  | '/icon-clicked';
 
 /**
  * Props for the NavBar component.
