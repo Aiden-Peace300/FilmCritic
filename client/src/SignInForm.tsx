@@ -1,25 +1,58 @@
 import { FormEvent, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { IoMdPerson } from 'react-icons/io';
 import { FaLock } from 'react-icons/fa6';
-import { Link } from 'react-router-dom';
+import PosterBanner from './PosterBanner';
 
 /**
- * Form that signs in a user.
+ * Combined Form for Registering and Signing In a user.
  */
-type Props = {
-  onSignIn: () => void;
-};
-
-/**
- * Form that signs in a user.
- * @param {Props} onSignIn - A function to be called when the user signs in.
- */
-export default function SignInForm({ onSignIn }: Props) {
+export default function AuthForm() {
   const [isLoading, setIsLoading] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(true); // Toggle between Register and Sign In
+  const navigate = useNavigate();
+
   const guestCredentials = {
     username: 'UnknownUser',
     password: 'UnknownUserPassword',
   };
+
+  /**
+   * Handles the form submission to register a user.
+   * @param {FormEvent<HTMLFormElement>} event - The form submission event.
+   */
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    try {
+      setIsLoading(true);
+      const formData = new FormData(event.currentTarget);
+      const userData = Object.fromEntries(formData.entries());
+      const url = isRegistering ? '/api/auth/sign-up' : '/api/auth/sign-in';
+      const req = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData),
+      };
+      const res = await fetch(url, req);
+      if (!res.ok) {
+        throw new Error(`fetch Error ${res.status}`);
+      }
+      const { payload, token } = await res.json();
+      sessionStorage.setItem('token', token);
+      sessionStorage.setItem('userId', String(payload.userId));
+      console.log(
+        `${isRegistering ? 'Registered' : 'Signed In'}`,
+        payload,
+        '; received token:',
+        token
+      );
+      navigate('/movieApp'); // Redirect to a common page or update based on the flow
+    } catch (err) {
+      alert(`Error ${isRegistering ? 'registering' : 'signing in'}: ${err}`);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   /**
    * Handles signing in as a guest user.
@@ -40,7 +73,7 @@ export default function SignInForm({ onSignIn }: Props) {
       sessionStorage.setItem('token', token);
       sessionStorage.setItem('userId', String(payload.userId));
       console.log('Signed In as Guest', payload, '; received token:', token);
-      onSignIn();
+      navigate('/movieApp'); // Redirect to a common page or update based on the flow
     } catch (err) {
       alert(`Error signing in as guest: ${err}`);
     } finally {
@@ -48,90 +81,90 @@ export default function SignInForm({ onSignIn }: Props) {
     }
   }
 
-  /**
-   * Handles the form submission for regular user sign-in.
-   * @param {FormEvent<HTMLFormElement>} event - The form submission event.
-   */
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    try {
-      setIsLoading(true);
-      const formData = new FormData(event.currentTarget);
-      const userData = Object.fromEntries(formData.entries());
-      const req = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(userData),
-      };
-      const res = await fetch('/api/auth/sign-in', req);
-      if (!res.ok) {
-        throw new Error(`fetch Error ${res.status}`);
-      }
-      const { payload, token } = await res.json();
-      sessionStorage.setItem('token', token);
-      sessionStorage.setItem('userId', String(payload.userId));
-      console.log('Signed In', payload, '; received token:', token);
-      onSignIn();
-    } catch (err) {
-      alert(`Error signing in: ${err}`);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
   return (
-    <div className="container">
-      <div className="">
-        <div className="d-flex red-backdrop justify-center boarder-radius-1">
-          <Link to="/sign-in" className="selected-login size link-no-underline">
-            <h1 className="no-margin white">LOGIN</h1>
-          </Link>
-          <Link to="/register" className=" size link-no-underline">
-            <h1 className="no-margin justify-end">REGISTER</h1>
-          </Link>
+    <div className="column-half2">
+      <PosterBanner />
+      <div className="wrapper">
+        <div className="container">
+          <div className="">
+            <div className="d-flex red-backdrop justify-center boarder-radius-1">
+              <button
+                className={`size link-no-underline ${
+                  isRegistering ? 'selected-login white' : ''
+                }`}
+                onClick={() => setIsRegistering(true)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  padding: 0,
+                  margin: 0,
+                  cursor: 'pointer',
+                }}>
+                <h1 className="no-margin">REGISTER</h1>
+              </button>
+              <button
+                className={`size link-no-underline ${
+                  !isRegistering ? 'selected-login white' : ''
+                }`}
+                onClick={() => setIsRegistering(false)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  padding: 0,
+                  margin: 0,
+                  cursor: 'pointer',
+                }}>
+                <h1 className="no-margin">LOGIN</h1>
+              </button>
+            </div>
+          </div>
+          <form onSubmit={handleSubmit}>
+            <div className="row margin-bottom-1">
+              <div className="column-half red-backdrop boarder-radius-2">
+                <label className="margin-bottom-1 d-block input-container">
+                  <IoMdPerson className="username-icon" size={25} />
+                  <input
+                    required
+                    name="username"
+                    type="text"
+                    className="input-b-color text-padding input-b-radius purple-outline input-height width-100 inputclass"
+                    placeholder="USERNAME"
+                  />
+                </label>
+                <label className="margin-bottom-1 d-block input-container">
+                  <FaLock className="username-icon" size={20} />
+                  <input
+                    required
+                    name="password"
+                    type="password"
+                    className="input-b-color text-padding input-b-radius purple-outline input-height width-100 inputclass"
+                    placeholder="PASSWORD"
+                  />
+                </label>
+              </div>
+            </div>
+            <div className="row">
+              <div className="column-full d-flex justify-between">
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="input-b-radius text-padding purple-background white-text-guest">
+                  {isRegistering ? 'Register' : 'Sign In'}
+                </button>
+                {!isRegistering && (
+                  <button
+                    type="button"
+                    disabled={isLoading}
+                    className="input-b-radius text-padding purple-background white-text-guest"
+                    onClick={handleGuestSignIn}>
+                    Login As Guest
+                  </button>
+                )}
+              </div>
+            </div>
+          </form>
         </div>
       </div>
-      <form onSubmit={handleSubmit}>
-        <div className="row margin-bottom-1">
-          <div className="column-half red-backdrop boarder-radius-2">
-            <label className="margin-bottom-1 d-block input-container">
-              <IoMdPerson className="username-icon" size={25} />
-              <input
-                required
-                name="username"
-                type="text"
-                className="input-b-color text-padding input-b-radius purple-outline input-height width-100"
-                placeholder="USERNAME"
-              />
-            </label>
-            <label className="margin-bottom-1 d-block input-container">
-              <FaLock className="username-icon" size={20} />
-              <input
-                required
-                name="password"
-                type="password"
-                className="input-b-color text-padding input-b-radius purple-outline input-height width-100"
-                placeholder="PASSWORD"
-              />
-            </label>
-          </div>
-        </div>
-        <div className="row">
-          <div className="column-full d-flex justify-between">
-            <button
-              disabled={isLoading}
-              className="input-b-radius text-padding purple-background white-text-guest">
-              Sign In
-            </button>
-            <button
-              disabled={isLoading}
-              className="input-b-radius text-padding purple-background white-text-guest"
-              onClick={handleGuestSignIn}>
-              Login As Guest
-            </button>
-          </div>
-        </div>
-      </form>
     </div>
   );
 }
