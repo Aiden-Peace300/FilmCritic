@@ -2,22 +2,7 @@ import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import logo from './images/Logo.jpg';
-import { PageType } from './NavBar';
-
-/**
- * Type for different page types in the NavBar.
- */
-type PageType =
-  | 'sign-out'
-  | '/sign-in'
-  | '/movieApp'
-  | '/recommendation'
-  | '/recommendation/:filmTitle'
-  | '/rating'
-  | '/rating/:filmId'
-  | '/profile'
-  | '/profile/:filmId'
-  | '/icon-clicked';
+import { PageType } from './types'; // Import from the new types file
 
 /**
  * Props for the NavBar component.
@@ -51,13 +36,13 @@ export function NavBar({ onNavigate }: NavBarProps) {
         <nav className="list-container">
           <ul>
             <li>
-              <button onClick={() => onNavigate('movieApp')}>Home</button>
+              <button onClick={() => onNavigate('/movieApp')}>Home</button>
             </li>
             <li>
-              <button onClick={() => onNavigate('register')}>Register</button>
+              <button onClick={() => onNavigate('/register')}>Register</button>
             </li>
             <li>
-              <button onClick={() => onNavigate('sign-in')}>Sign In</button>
+              <button onClick={() => onNavigate('/sign-in')}>Sign In</button>
             </li>
             <li>
               <button onClick={() => onNavigate('sign-out')}>Sign Out</button>
