@@ -9,7 +9,7 @@ import PosterBanner from './PosterBanner';
  */
 export default function AuthForm() {
   const [isLoading, setIsLoading] = useState(false);
-  const [isRegistering, setIsRegistering] = useState(true); // Toggle between Register and Sign In
+  const [isRegistering, setIsRegistering] = useState(false); // Toggle between Register and Sign In
   const navigate = useNavigate();
 
   const guestCredentials = {
@@ -21,34 +21,57 @@ export default function AuthForm() {
    * Handles the form submission to register a user.
    * @param {FormEvent<HTMLFormElement>} event - The form submission event.
    */
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleRegister(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     try {
       setIsLoading(true);
       const formData = new FormData(event.currentTarget);
       const userData = Object.fromEntries(formData.entries());
-      const url = isRegistering ? '/api/auth/sign-up' : '/api/auth/sign-in';
       const req = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData),
       };
-      const res = await fetch(url, req);
+      const res = await fetch('/api/auth/sign-up', req);
+      if (!res.ok) {
+        throw new Error(`fetch Error ${res.status}`);
+      }
+      const user = await res.json();
+      console.log('Registered', user);
+      navigate('/sign-in');
+    } catch (err) {
+      alert(`Error registering user: ${err}`);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  /**
+   * Handles the form submission for regular user sign-in.
+   * @param {FormEvent<HTMLFormElement>} event - The form submission event.
+   */
+  async function handleSignIn(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    try {
+      setIsLoading(true);
+      const formData = new FormData(event.currentTarget);
+      const userData = Object.fromEntries(formData.entries());
+      const req = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData),
+      };
+      const res = await fetch('/api/auth/sign-in', req);
       if (!res.ok) {
         throw new Error(`fetch Error ${res.status}`);
       }
       const { payload, token } = await res.json();
       sessionStorage.setItem('token', token);
       sessionStorage.setItem('userId', String(payload.userId));
-      console.log(
-        `${isRegistering ? 'Registered' : 'Signed In'}`,
-        payload,
-        '; received token:',
-        token
-      );
-      navigate('/movieApp'); // Redirect to a common page or update based on the flow
+      console.log('Signed In', payload, '; received token:', token);
+      navigate('/movieApp');
     } catch (err) {
-      alert(`Error ${isRegistering ? 'registering' : 'signing in'}: ${err}`);
+      alert(`Error signing in: ${err}`);
     } finally {
       setIsLoading(false);
     }
@@ -73,7 +96,7 @@ export default function AuthForm() {
       sessionStorage.setItem('token', token);
       sessionStorage.setItem('userId', String(payload.userId));
       console.log('Signed In as Guest', payload, '; received token:', token);
-      navigate('/movieApp'); // Redirect to a common page or update based on the flow
+      navigate('/movieApp');
     } catch (err) {
       alert(`Error signing in as guest: ${err}`);
     } finally {
@@ -118,7 +141,7 @@ export default function AuthForm() {
               </button>
             </div>
           </div>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={isRegistering ? handleRegister : handleSignIn}>
             <div className="row margin-bottom-1">
               <div className="column-half red-backdrop boarder-radius-2">
                 <label className="margin-bottom-1 d-block input-container">
