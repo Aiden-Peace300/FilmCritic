@@ -8,4 +8,5 @@ export type PageType =
   | '/rating/:filmId'
   | '/profile'
   | '/profile/:filmId'
-  | '/icon-clicked';
+  | '/icon-clicked'
+  | '/register';
