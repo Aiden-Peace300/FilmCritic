@@ -14,6 +14,19 @@ import Profile from './Profile';
 import EditPostComponent from './EditPostComponent';
 import NotFound from './NotFound';
 
+// Define or import PageType here
+type PageType =
+  | 'sign-out'
+  | '/sign-in'
+  | '/movieApp'
+  | '/recommendation'
+  | '/recommendation/:filmTitle'
+  | '/rating'
+  | '/rating/:filmId'
+  | '/profile'
+  | '/profile/:filmId'
+  | '/icon-clicked';
+
 export default function App() {
   const navigate = useNavigate();
   const isAuthenticated = !!sessionStorage.getItem('token');
@@ -38,12 +51,12 @@ export default function App() {
       <Routes>
         <Route
           path="/"
-          element={<SignInForm onSignIn={() => handleNavigate('movieApp')} />}
+          element={<SignInForm onSignIn={() => handleNavigate('/movieApp')} />}
         />
         <Route path="/register" element={<RegistrationForm />} />
         <Route
           path="/sign-in"
-          element={<SignInForm onSignIn={() => handleNavigate('movieApp')} />}
+          element={<SignInForm onSignIn={() => handleNavigate('/movieApp')} />}
         />
 
         <Route path="/movieApp">
