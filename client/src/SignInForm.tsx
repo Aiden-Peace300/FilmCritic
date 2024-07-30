@@ -38,6 +38,7 @@ export default function AuthForm() {
       }
       const user = await res.json();
       console.log('Registered', user);
+      setIsRegistering(false); // Switch to Login view
       navigate('/sign-in');
     } catch (err) {
       alert(`Error registering user: ${err}`);
@@ -172,7 +173,7 @@ export default function AuthForm() {
                   type="submit"
                   disabled={isLoading}
                   className="input-b-radius text-padding purple-background white-text-guest">
-                  {isRegistering ? 'Register' : 'Sign In'}
+                  {isRegistering ? 'Register' : 'Login'}
                 </button>
                 {!isRegistering && (
                   <button
