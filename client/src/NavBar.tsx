@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import logo from './images/Logo.jpg';
-import { IconClickedNavBar } from './IconClickedNavBar';
+import { PageType } from './NavBar';
+import { useNavigate } from 'react-router-dom';
 
 /**
  * Type for different page types in the NavBar.
@@ -16,12 +17,20 @@ export type PageType = 'movieApp' | 'register' | 'sign-in' | 'sign-out';
 export function NavBar() {
   // State variable to track whether the mobile icon is clicked
   const [isIconClicked, setIconClicked] = useState(false);
+  const navigate = useNavigate();
 
   /**
    * Function to toggle the mobile icon click state.
    */
   const toggleIconClicked = () => {
     setIconClicked(!isIconClicked);
+  };
+
+  const handleNavigate = (page: PageType) => {
+    if (page === 'sign-out') {
+      sessionStorage.removeItem('token');
+    }
+    navigate(page);
   };
 
   return (
@@ -35,9 +44,26 @@ export function NavBar() {
         </div>
       </header>
       {isIconClicked && (
-        <div className="list-container">
-          <IconClickedNavBar />
-        </div>
+        <nav className="list-container">
+          <ul>
+            <li>
+              <button onClick={() => handleNavigate('movieApp')}>Home</button>
+            </li>
+            <li>
+              <button onClick={() => handleNavigate('register')}>
+                Register
+              </button>
+            </li>
+            <li>
+              <button onClick={() => handleNavigate('sign-in')}>Sign In</button>
+            </li>
+            <li>
+              <button onClick={() => handleNavigate('sign-out')}>
+                Sign Out
+              </button>
+            </li>
+          </ul>
+        </nav>
       )}
     </>
   );
