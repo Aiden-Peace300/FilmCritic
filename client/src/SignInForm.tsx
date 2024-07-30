@@ -1,4 +1,6 @@
 import { FormEvent, useState } from 'react';
+import { IoMdPerson } from 'react-icons/io';
+import { FaLock } from 'react-icons/fa6';
 
 /**
  * Form that signs in a user.
@@ -85,23 +87,25 @@ export default function SignInForm({ onSignIn }: Props) {
       </div>
       <form onSubmit={handleSubmit}>
         <div className="row margin-bottom-1">
-          <div className="column-half">
-            <label className="margin-bottom-1 d-block">
-              Username
+          <div className="column-half red-backdrop">
+            <label className="margin-bottom-1 d-block input-container">
+              <IoMdPerson className="username-icon" size={25} />
               <input
                 required
                 name="username"
                 type="text"
-                className="input-b-color text-padding input-b-radius purple-outline input-height margin-bottom-2 d-block width-100"
+                className="input-b-color text-padding input-b-radius purple-outline input-height width-100"
+                placeholder="USERNAME"
               />
             </label>
-            <label className="margin-bottom-1 d-block">
-              Password
+            <label className="margin-bottom-1 d-block input-container">
+              <FaLock className="username-icon" size={20} />
               <input
                 required
                 name="password"
                 type="password"
-                className="input-b-color text-padding input-b-radius purple-outline input-height margin-bottom-2 d-block width-100"
+                className="input-b-color text-padding input-b-radius purple-outline input-height width-100"
+                placeholder="PASSWORD"
               />
             </label>
           </div>
