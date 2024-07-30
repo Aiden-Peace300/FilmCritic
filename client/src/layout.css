@@ -7,13 +7,19 @@
 }
 
 .container {
-  max-width: 700px;
+  max-width: 30%;
   margin: 0 auto;
 }
 
 .row {
   display: flex;
   flex-wrap: wrap;
+}
+
+.red-backdrop {
+  background-color: #db3434;
+  border-radius: 20px;
+  padding-top: 15px;
 }
 
 .column-full,
@@ -23,6 +29,7 @@
 
 .d-block {
   display: block;
+  margin-left: 30px;
 }
 
 .d-flex {
@@ -54,7 +61,7 @@
 }
 
 .width-100 {
-  width: 95%;
+  width: 100%;
 }
 
 .margin-bottom-1 {
@@ -99,6 +106,33 @@
   background-color: #f0f0f0;
 }
 
+.input-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+input {
+  background-color: transparent; /* Make input box transparent */
+  color: white; /* Set text color to white */
+  border: none; /* Remove border from input box */
+  flex-grow: 1;
+}
+
+input:focus {
+  outline: none; /* Remove focus outline */
+  background-color: transparent; /* Ensure background color stays transparent */
+}
+
+input::placeholder {
+  color: white; /* Set placeholder text color to white */
+}
+
+.username-icon {
+  color: white;
+}
+
 @media screen and (width <= 768px) {
   .container {
     max-width: 900px;
@@ -111,8 +145,6 @@
 
   .column-half {
     width: 100%;
-
-    /* padding-left: 0.75rem; */
   }
 
   .width-100 {
