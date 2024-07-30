@@ -27,7 +27,7 @@ export function InsideWebsiteNavBar() {
 
   return (
     <>
-      <header className="header gray-background">
+      <header className="header red-background">
         <div className="navbar">
           <img src={logo} height="70" alt="Film critic logo" className="logo" />
           <div className="nav-links">
