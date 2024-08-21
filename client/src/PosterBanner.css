@@ -1,0 +1,6 @@
+@media only screen and (width < 735px) {
+  .signup-poster {
+    display: none;
+    visibility: hidden;
+  }
+}
