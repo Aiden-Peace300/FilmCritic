@@ -115,7 +115,7 @@ export default function SignInForm({ onSignIn }: SignInFormProps) {
                   margin: 0,
                   cursor: 'pointer',
                 }}>
-                <h1 className="no-margin">REGISTER</h1>
+                <h1 className="no-margin black">REGISTER</h1>
               </button>
               <button
                 className={`size link-no-underline ${
