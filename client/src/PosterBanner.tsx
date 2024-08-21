@@ -124,7 +124,7 @@ const PosterBanner: React.FC = () => {
             currentImage ===
             'https://m.media-amazon.com/images/M/MV5BOWVkOWIwM2QtMmRhNi00ZDcxLWI3NjUtYTBhN2VhZmU0MDQwXkEyXkFqcGc@._V1_FMjpg_UX1080_.jpg'
               ? {
-                  width: '580px',
+                  width: '570px',
                   height: 'auto',
                   marginTop: '2rem',
                   marginBottom: '2rem',
