@@ -129,7 +129,7 @@ export default function SignInForm({ onSignIn }: SignInFormProps) {
                   margin: 0,
                   cursor: 'pointer',
                 }}>
-                <h1 className="no-margin">LOGIN</h1>
+                <h1 className="no-margin white">LOGIN</h1>
               </button>
             </div>
           </div>
