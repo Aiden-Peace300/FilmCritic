@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import './PosterBanner.css';
 
 const PosterBanner: React.FC = () => {
   const [currentImage, setCurrentImage] = useState<string | null>(
@@ -120,6 +121,7 @@ const PosterBanner: React.FC = () => {
     <div style={{ textAlign: 'center' }}>
       {currentImage && (
         <img
+          class="signup-poster"
           style={
             currentImage ===
             'https://m.media-amazon.com/images/M/MV5BOWVkOWIwM2QtMmRhNi00ZDcxLWI3NjUtYTBhN2VhZmU0MDQwXkEyXkFqcGc@._V1_FMjpg_UX1080_.jpg'

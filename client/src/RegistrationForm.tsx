@@ -4,6 +4,7 @@ import { IoMdPerson } from 'react-icons/io';
 import { FaLock } from 'react-icons/fa6';
 import { Link } from 'react-router-dom';
 import PosterBanner from './PosterBanner';
+import './RegistrationForm.css';
 
 /**
  * Form that registers a user.

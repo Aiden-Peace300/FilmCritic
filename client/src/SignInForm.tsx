@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { IoMdPerson } from 'react-icons/io';
 import { FaLock } from 'react-icons/fa';
 import PosterBanner from './PosterBanner';
+import './RegistrationForm.css';
 
 interface SignInFormProps {
   onSignIn?: () => void; // Add this prop type definition
