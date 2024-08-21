@@ -19,7 +19,7 @@
   }
 
   .black {
-    color: black;
+    color: black !important;
   }
 
   .white {
