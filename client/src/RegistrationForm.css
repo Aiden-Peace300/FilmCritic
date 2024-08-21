@@ -7,6 +7,10 @@
   color: black;
 }
 
+.white {
+  color: white;
+}
+
 @media only screen and (width <= 735px) {
   .column-half2 {
     justify-content: center;
@@ -16,5 +20,9 @@
 
   .black {
     color: black;
+  }
+
+  .white {
+    color: white;
   }
 }
