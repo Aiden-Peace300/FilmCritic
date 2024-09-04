@@ -252,7 +252,7 @@ const PosterBanner: React.FC = () => {
             alt="Film poster"
             className="poster-image"
             style={{
-              width: '510px',
+              width: '520px',
               height: 'auto',
               marginTop: '2rem',
               marginBottom: '2rem',

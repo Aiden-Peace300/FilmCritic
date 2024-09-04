@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { IoMdPerson } from 'react-icons/io';
 import { FaLock } from 'react-icons/fa';
 import PosterBanner from './PosterBanner';
+import Footer from './Footer';
 import './RegistrationForm.css';
 
 interface SignInFormProps {
@@ -97,89 +98,94 @@ export default function SignInForm({ onSignIn }: SignInFormProps) {
   }
 
   return (
-    <div className="column-half2">
-      <PosterBanner />
-      <div className="wrapper">
-        <div className="container">
-          <div className="">
-            <div className="d-flex red-backdrop justify-center boarder-radius-1">
-              <button
-                className={`size link-no-underline ${
-                  isRegistering ? 'selected-login white' : ''
-                }`}
-                onClick={() => setIsRegistering(true)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  padding: 0,
-                  margin: 0,
-                  cursor: 'pointer',
-                }}>
-                <h1 className="no-margin">REGISTER</h1>
-              </button>
-              <button
-                className={`size link-no-underline ${
-                  !isRegistering ? 'selected-login white' : ''
-                }`}
-                onClick={() => setIsRegistering(false)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  padding: 0,
-                  margin: 0,
-                  cursor: 'pointer',
-                }}>
-                <h1 className="no-margin">LOGIN</h1>
-              </button>
-            </div>
-          </div>
-          <form onSubmit={isRegistering ? handleRegister : handleSignIn}>
-            <div className="row margin-bottom-1">
-              <div className="column-half red-backdrop boarder-radius-2">
-                <label className="margin-bottom-1 d-block input-container">
-                  <IoMdPerson className="username-icon" size={25} />
-                  <input
-                    required
-                    name="username"
-                    type="text"
-                    className="input-b-color text-padding input-b-radius purple-outline input-height width-100 inputclass"
-                    placeholder="USERNAME"
-                  />
-                </label>
-                <label className="margin-bottom-1 d-block input-container">
-                  <FaLock className="username-icon" size={20} />
-                  <input
-                    required
-                    name="password"
-                    type="password"
-                    className="input-b-color text-padding input-b-radius purple-outline input-height width-100 inputclass"
-                    placeholder="PASSWORD"
-                  />
-                </label>
-              </div>
-            </div>
-            <div className="row">
-              <div className="column-full d-flex justify-between">
+    <>
+      <div className="column-half2">
+        <PosterBanner />
+        <div className="wrapper">
+          <div className="container">
+            <div className="">
+              <div className="d-flex red-backdrop justify-center boarder-radius-1">
                 <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="input-b-radius text-padding purple-background white-text-guest">
-                  {isRegistering ? 'Register' : 'Login'}
+                  className={`size link-no-underline ${
+                    isRegistering ? 'selected-login white' : ''
+                  }`}
+                  onClick={() => setIsRegistering(true)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    padding: 0,
+                    margin: 0,
+                    cursor: 'pointer',
+                  }}>
+                  <h1 className="no-margin">REGISTER</h1>
                 </button>
-                {!isRegistering && (
-                  <button
-                    type="button"
-                    disabled={isLoading}
-                    className="input-b-radius text-padding purple-background white-text-guest"
-                    onClick={handleGuestSignIn}>
-                    Login As Guest
-                  </button>
-                )}
+                <button
+                  className={`size link-no-underline ${
+                    !isRegistering ? 'selected-login white' : ''
+                  }`}
+                  onClick={() => setIsRegistering(false)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    padding: 0,
+                    margin: 0,
+                    cursor: 'pointer',
+                  }}>
+                  <h1 className="no-margin">LOGIN</h1>
+                </button>
               </div>
             </div>
-          </form>
+            <form onSubmit={isRegistering ? handleRegister : handleSignIn}>
+              <div className="row margin-bottom-1">
+                <div className="column-half red-backdrop boarder-radius-2">
+                  <label className="margin-bottom-1 d-block input-container">
+                    <IoMdPerson className="username-icon" size={25} />
+                    <input
+                      required
+                      name="username"
+                      type="text"
+                      className="input-b-color text-padding input-b-radius purple-outline input-height width-100 inputclass"
+                      placeholder="USERNAME"
+                    />
+                  </label>
+                  <label className="margin-bottom-1 d-block input-container">
+                    <FaLock className="username-icon" size={20} />
+                    <input
+                      required
+                      name="password"
+                      type="password"
+                      className="input-b-color text-padding input-b-radius purple-outline input-height width-100 inputclass"
+                      placeholder="PASSWORD"
+                    />
+                  </label>
+                </div>
+              </div>
+              <div className="row">
+                <div className="column-full d-flex justify-between">
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="input-b-radius text-padding purple-background white-text-guest">
+                    {isRegistering ? 'Register' : 'Login'}
+                  </button>
+                  {!isRegistering && (
+                    <button
+                      type="button"
+                      disabled={isLoading}
+                      className="input-b-radius text-padding purple-background white-text-guest"
+                      onClick={handleGuestSignIn}>
+                      Login As Guest
+                    </button>
+                  )}
+                </div>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Footer Component */}
+      <Footer />
+    </>
   );
 }

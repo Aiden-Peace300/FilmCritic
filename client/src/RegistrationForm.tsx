@@ -4,6 +4,7 @@ import { IoMdPerson } from 'react-icons/io';
 import { FaLock } from 'react-icons/fa6';
 import { Link } from 'react-router-dom';
 import PosterBanner from './PosterBanner';
+import Footer from './Footer';
 import './RegistrationForm.css';
 
 /**
@@ -43,59 +44,64 @@ export default function RegistrationForm() {
   }
 
   return (
-    <div className="column-half2">
-      <PosterBanner />
-      <div className="wrapper" style={{ transform: 'translateY(-100px)' }}>
-        <div className="container">
-          <div className="">
-            <div className="d-flex red-backdrop justify-center boarder-radius-1">
-              <Link to="/sign-in" className="size link-no-underline">
-                <h1 className="no-margin">LOGIN</h1>
-              </Link>
-              <Link
-                to="/register"
-                className="selected-login size link-no-underline">
-                <h1 className="no-margin">REGISTER</h1>
-              </Link>
+    <>
+      <div className="column-half2">
+        <PosterBanner />
+        <div className="wrapper" style={{ transform: 'translateY(-100px)' }}>
+          <div className="container">
+            <div className="">
+              <div className="d-flex red-backdrop justify-center boarder-radius-1">
+                <Link to="/sign-in" className="size link-no-underline">
+                  <h1 className="no-margin">LOGIN</h1>
+                </Link>
+                <Link
+                  to="/register"
+                  className="selected-login size link-no-underline">
+                  <h1 className="no-margin">REGISTER</h1>
+                </Link>
+              </div>
             </div>
+            <form onSubmit={handleSubmit}>
+              <div className="row margin-bottom-1">
+                <div className="column-half red-backdrop boarder-radius-2">
+                  <label className="margin-bottom-1 d-block input-container">
+                    <IoMdPerson className="username-icon" size={25} />
+                    <input
+                      required
+                      name="username"
+                      type="text"
+                      className="input-b-color text-padding input-b-radius purple-outline input-height width-100 inputclass"
+                      placeholder="USERNAME"
+                    />
+                  </label>
+                  <label className="margin-bottom-1 d-block input-container">
+                    <FaLock className="username-icon" size={20} />
+                    <input
+                      required
+                      name="password"
+                      type="password"
+                      className="input-b-color text-padding input-b-radius purple-outline input-height width-100 inputclass"
+                      placeholder="PASSWORD"
+                    />
+                  </label>
+                </div>
+              </div>
+              <div className="row">
+                <div className="column-full d-flex justify-between">
+                  <button
+                    disabled={isLoading}
+                    className="input-b-radius text-padding purple-background white-text-guest">
+                    Register
+                  </button>
+                </div>
+              </div>
+            </form>
           </div>
-          <form onSubmit={handleSubmit}>
-            <div className="row margin-bottom-1">
-              <div className="column-half red-backdrop boarder-radius-2">
-                <label className="margin-bottom-1 d-block input-container">
-                  <IoMdPerson className="username-icon" size={25} />
-                  <input
-                    required
-                    name="username"
-                    type="text"
-                    className="input-b-color text-padding input-b-radius purple-outline input-height width-100 inputclass"
-                    placeholder="USERNAME"
-                  />
-                </label>
-                <label className="margin-bottom-1 d-block input-container">
-                  <FaLock className="username-icon" size={20} />
-                  <input
-                    required
-                    name="password"
-                    type="password"
-                    className="input-b-color text-padding input-b-radius purple-outline input-height width-100 inputclass"
-                    placeholder="PASSWORD"
-                  />
-                </label>
-              </div>
-            </div>
-            <div className="row">
-              <div className="column-full d-flex justify-between">
-                <button
-                  disabled={isLoading}
-                  className="input-b-radius text-padding purple-background white-text-guest">
-                  Register
-                </button>
-              </div>
-            </div>
-          </form>
         </div>
       </div>
-    </div>
+
+      {/* Footer Component */}
+      <Footer />
+    </>
   );
 }
