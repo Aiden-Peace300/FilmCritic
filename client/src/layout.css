@@ -105,12 +105,12 @@
   padding-right: 1rem;
 }
 
-.entries-link:hover {
+/* .entries-link:hover {
   text-decoration: underline;
-}
+} */
 
 .entries-link:focus {
-  text-decoration: underline;
+  color: white;
 }
 
 .red-background {
