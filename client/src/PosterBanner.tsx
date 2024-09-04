@@ -107,7 +107,7 @@ const PosterBanner: React.FC = () => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       startSlideshow();
-    }, 4000);
+    }, 200000); // CHANGE ME BACK TO 4000
 
     return () => {
       clearInterval(intervalId);
