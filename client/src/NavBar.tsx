@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { faBars } from '@fortawesome/free-solid-svg-icons';
 import logo from './images/Logo.jpg';
 import { PageType } from './types'; // Import from the new types file
 
@@ -28,7 +28,7 @@ export function NavBar({ onNavigate }: NavBarProps) {
         <div className="navbar">
           <img src={logo} height="50" alt="Film critic logo" className="logo" />
           <div className="bars-icon icon-padding" onClick={toggleIconClicked}>
-            <FontAwesomeIcon icon={faBars} />
+            {/* <FontAwesomeIcon icon={faBars} /> */}
           </div>
         </div>
       </header>
