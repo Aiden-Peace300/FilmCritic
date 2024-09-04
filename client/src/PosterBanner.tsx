@@ -244,7 +244,7 @@ const PosterBanner: React.FC = () => {
   }, [cycleImage]);
 
   return (
-    <div className="poster-banner">
+    <div className="poster-banner signup-poster">
       {currentImage && (
         <div className="poster-container">
           <img
@@ -252,7 +252,7 @@ const PosterBanner: React.FC = () => {
             alt="Film poster"
             className="poster-image"
             style={{
-              width: '520px',
+              width: '510px',
               height: 'auto',
               marginTop: '2rem',
               marginBottom: '2rem',

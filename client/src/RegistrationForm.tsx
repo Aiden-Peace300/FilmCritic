@@ -45,7 +45,7 @@ export default function RegistrationForm() {
   return (
     <div className="column-half2">
       <PosterBanner />
-      <div className="wrapper">
+      <div className="wrapper" style={{ transform: 'translateY(-100px)' }}>
         <div className="container">
           <div className="">
             <div className="d-flex red-backdrop justify-center boarder-radius-1">
