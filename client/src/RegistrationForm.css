@@ -19,10 +19,10 @@
   }
 
   .black {
-    color: black !important;
+    color: black;
   }
 
   .white {
-    color: white !important;
+    color: white;
   }
 }
