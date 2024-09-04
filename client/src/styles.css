@@ -34,12 +34,12 @@
   color: black;
 }
 
-.entries-link:hover {
+/* .entries-link:hover {
   text-decoration: underline;
-}
+} */
 
 .entries-link:focus {
-  text-decoration: underline;
+  color: white;
 }
 
 .input-b-radius {
