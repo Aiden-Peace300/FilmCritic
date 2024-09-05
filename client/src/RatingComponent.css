@@ -56,7 +56,12 @@ input[type='radio'] {
 }
 
 .rated-prompt {
-  margin-left: 5rem;
+  text-align: center; /* Center the text horizontally */
+  font-size: 1.2rem;
+  margin-top: 10px; /* Optional: Add some spacing if needed */
+  width: 100%; /* Ensure it takes the full width of the container */
+  display: flex;
+  justify-content: center;
 }
 
 @media only screen and (width < 735px) {

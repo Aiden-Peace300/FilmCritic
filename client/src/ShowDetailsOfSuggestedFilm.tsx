@@ -9,6 +9,8 @@ import huluLogo from './images/hulu-logo.png';
 import paramountLogo from './images/paramount-logo.png';
 import starzLogo from './images/Starz-logo.png';
 import showtimeLogo from './images/showtime-logo.png';
+import plutotvLogo from './images/plutoTv.png';
+import tubiLogo from './images/tubi.png';
 import { useNavigate } from 'react-router-dom';
 import LoadingScreen from './LoadingScreen';
 import Footer from './Footer';
@@ -397,6 +399,10 @@ function getPlatformLogo(platformName: string) {
       return starzLogo;
     case 'showtime':
       return showtimeLogo;
+    case 'plutotv':
+      return plutotvLogo;
+    case 'tubi':
+      return tubiLogo;
     default:
       return '';
   }

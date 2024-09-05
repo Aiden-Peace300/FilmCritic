@@ -115,7 +115,9 @@ h1 {
 .netflix-size,
 .hulu-size,
 .apple-size,
-.paramount-size {
+.paramount-size,
+.plutotv-size,
+.tubi-size {
   width: 5rem;
   height: 5rem;
 }
