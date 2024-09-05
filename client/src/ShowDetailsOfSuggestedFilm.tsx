@@ -328,15 +328,17 @@ export default function ShowDetailsOfSuggestedFilm() {
             <p className="red-text pad">STREAMING: </p>
             {isLoading ? (
               <h1>Loading Streaming Apps...</h1>
+            ) : platforms.length === 0 ? (
+              <p style={{ color: 'white', marginBottom: '2rem' }}>
+                No Streaming Applications Available
+              </p>
             ) : (
               <>
                 <p style={{ color: 'white', marginBottom: '2rem' }}>
-                  Click to Icon(s) below to start Streaming:{' '}
+                  Click the Icon(s) below to start Streaming:
                 </p>
                 {platforms.map((platform) => {
-                  // Check if the platform name is not already displayed
                   if (!displayedPlatforms.has(platform.name)) {
-                    // If not displayed, add it to the set
                     displayedPlatforms.add(platform.name);
                     return (
                       <a
@@ -352,7 +354,7 @@ export default function ShowDetailsOfSuggestedFilm() {
                       </a>
                     );
                   }
-                  return null; // Don't render the platform icon if it's already displayed
+                  return null;
                 })}
               </>
             )}
