@@ -4,11 +4,11 @@
 }
 
 .black {
-  color: black;
+  color: black !important;
 }
 
 .white_text {
-  color: white;
+  color: white !important;
 }
 
 @media only screen and (width <= 735px) {
