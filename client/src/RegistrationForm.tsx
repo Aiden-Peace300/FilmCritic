@@ -51,12 +51,12 @@ export default function RegistrationForm() {
           <div className="container">
             <div className="">
               <div className="d-flex red-backdrop justify-center boarder-radius-1">
-                <Link to="/sign-in" className="size link-no-underline">
+                <Link to="/sign-in" className="size link-no-underline black">
                   <h1 className="no-margin black">LOGIN</h1>
                 </Link>
                 <Link
                   to="/register"
-                  className="selected-login size link-no-underline">
+                  className="selected-login size link-no-underline white">
                   <h1 className="no-margin white">REGISTER</h1>
                 </Link>
               </div>
