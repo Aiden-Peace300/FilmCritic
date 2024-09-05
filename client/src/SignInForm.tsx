@@ -107,7 +107,7 @@ export default function SignInForm({ onSignIn }: SignInFormProps) {
               <div className="d-flex red-backdrop justify-center boarder-radius-1">
                 <button
                   className={`size link-no-underline ${
-                    isRegistering ? 'selected-login white' : ''
+                    isRegistering ? 'selected-login white' : 'black'
                   }`}
                   onClick={() => setIsRegistering(true)}
                   style={{
@@ -121,7 +121,7 @@ export default function SignInForm({ onSignIn }: SignInFormProps) {
                 </button>
                 <button
                   className={`size link-no-underline ${
-                    !isRegistering ? 'selected-login white' : ''
+                    !isRegistering ? 'selected-login white' : 'black'
                   }`}
                   onClick={() => setIsRegistering(false)}
                   style={{
