@@ -334,7 +334,8 @@ const filmDataArray = [
   },
 ];
 
-function shuffleArray(array) {
+// Shuffle array function (no changes)
+function shuffleArray(array: any[]) {
   const shuffledArray = [...array];
   for (let i = shuffledArray.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -347,6 +348,7 @@ const FilmBanner: React.FC = () => {
   const [currentFilm, setCurrentFilm] = useState<{
     image: string;
     title: string;
+    id: string; // Added id for IMDb
   } | null>(null);
   const [imageIndex, setImageIndex] = useState<number>(0);
   const [shuffledFilmData, setShuffledFilmData] = useState(filmDataArray);
@@ -357,15 +359,18 @@ const FilmBanner: React.FC = () => {
     setCurrentFilm({
       image: shuffledData[0].image,
       title: shuffledData[0].title,
-    }); // Set the first film immediately
+      id: shuffledData[0].id, // Set the id for IMDb
+    });
   }, []);
 
   const totalImages = shuffledFilmData.length;
 
   const cycleImage = useCallback(() => {
+    const nextFilm = shuffledFilmData[imageIndex];
     setCurrentFilm({
-      image: shuffledFilmData[imageIndex].image,
-      title: shuffledFilmData[imageIndex].title,
+      image: nextFilm.image,
+      title: nextFilm.title,
+      id: nextFilm.id, // Update the id for IMDb
     });
     setImageIndex((prevIndex) => (prevIndex + 1) % totalImages);
   }, [imageIndex, totalImages, shuffledFilmData]);
@@ -375,6 +380,13 @@ const FilmBanner: React.FC = () => {
     return () => clearInterval(interval);
   }, [cycleImage]);
 
+  // Function to handle the image click and navigate to new URL with IMDb id
+  const handleImageClick = (imdbID: string) => {
+    const currentURL = window.location.href;
+    const newURL = `${currentURL}/${imdbID}`;
+    window.location.href = newURL; // Redirect to new URL
+  };
+
   return (
     <div className="poster-banner signup-poster">
       {currentFilm && (
@@ -382,7 +394,8 @@ const FilmBanner: React.FC = () => {
           <img
             src={currentFilm.image}
             title={currentFilm.title}
-            alt={currentFilm.title} // Set alt to the film's title
+            alt={currentFilm.title}
+            onClick={() => handleImageClick(currentFilm.id)}
             className="poster-image"
             style={{
               marginTop: '2rem',
