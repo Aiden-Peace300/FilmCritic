@@ -258,7 +258,13 @@ export default function ShowDetailsOfSuggestedFilm() {
                   alt={`${detailsObj.filmTitle}`}
                 />
               </div>
-              <div className="col-half">
+              <div
+                className="col-half"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  marginBottom: '90px',
+                }}>
                 <div className="center-mobile space col-half-space">
                   <div>
                     <p className="red-text center-mobile inline">FILM: </p>
