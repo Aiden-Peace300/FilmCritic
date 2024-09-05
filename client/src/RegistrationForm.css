@@ -4,7 +4,7 @@
 }
 
 .black {
-  color: black;
+  color: black !important;
 }
 
 .white {
@@ -23,6 +23,6 @@
   }
 
   .white {
-    color: white !important;
+    color: white;
   }
 }
