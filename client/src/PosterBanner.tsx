@@ -277,7 +277,7 @@ const PosterBanner: React.FC = () => {
           <img
             src={currentImage}
             alt="Film poster"
-            onClick={() => handleImageClick(currentFilm.id)}
+            onClick={() => handleImageClick(currentImage.id)}
             className="poster-image"
             style={{
               width: '520px',
