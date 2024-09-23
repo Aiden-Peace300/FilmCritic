@@ -213,6 +213,7 @@ const filmDataArray = [
       'https://image.tmdb.org/t/p/original/hr0L2aueqlP2BYUblTTjmtn0hw4.jpg',
   },
 ];
+
 function shuffleArray(array) {
   const shuffledArray = [...array];
   for (let i = shuffledArray.length - 1; i > 0; i--) {
@@ -223,20 +224,20 @@ function shuffleArray(array) {
 }
 
 const PosterBanner: React.FC = () => {
-  const [currentImage, setCurrentImage] = useState<string | null>(null);
-  const [imageIndex, setImageIndex] = useState<number>(0);
+  const [currentImage, setCurrentImage] = useState(filmDataArray[0]);
+  const [imageIndex, setImageIndex] = useState(0);
   const [shuffledFilmData, setShuffledFilmData] = useState(filmDataArray);
 
   useEffect(() => {
     const shuffledData = shuffleArray(filmDataArray);
     setShuffledFilmData(shuffledData);
-    setCurrentImage(shuffledData[0].image); // Set the first image immediately
+    setCurrentImage(shuffledData[0]); // Set the first film object immediately
   }, []);
 
   const totalImages = shuffledFilmData.length;
 
   const cycleImage = useCallback(() => {
-    setCurrentImage(shuffledFilmData[imageIndex].image);
+    setCurrentImage(shuffledFilmData[imageIndex]);
     setImageIndex((prevIndex) => (prevIndex + 1) % totalImages);
   }, [imageIndex, totalImages, shuffledFilmData]);
 
@@ -245,7 +246,6 @@ const PosterBanner: React.FC = () => {
     return () => clearInterval(interval);
   }, [cycleImage]);
 
-  // Function to handle the image click and navigate to new URL with IMDb id
   const handleImageClick = (imdbID: string) => {
     const currentURL = window.location.href;
     const newURL = `${currentURL}/${imdbID}`;
@@ -254,13 +254,13 @@ const PosterBanner: React.FC = () => {
 
   const handleNextImage = () => {
     setImageIndex((prevIndex) => (prevIndex + 1) % totalImages);
-    setCurrentImage(shuffledFilmData[(imageIndex + 1) % totalImages].image);
+    setCurrentImage(shuffledFilmData[(imageIndex + 1) % totalImages]);
   };
 
   const handlePreviousImage = () => {
     setImageIndex((prevIndex) => (prevIndex - 1 + totalImages) % totalImages);
     setCurrentImage(
-      shuffledFilmData[(imageIndex - 1 + totalImages) % totalImages].image
+      shuffledFilmData[(imageIndex - 1 + totalImages) % totalImages]
     );
   };
 
@@ -275,7 +275,7 @@ const PosterBanner: React.FC = () => {
             style={{ cursor: 'pointer' }}
           />
           <img
-            src={currentImage}
+            src={currentImage.image}
             alt="Film poster"
             onClick={() => handleImageClick(currentImage.id)}
             className="poster-image"
