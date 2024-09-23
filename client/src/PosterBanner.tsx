@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { MdKeyboardArrowLeft } from 'react-icons/md';
+import { MdKeyboardArrowRight } from 'react-icons/md';
 import './PosterBanner.css';
 
 const filmDataArray = [
@@ -243,13 +245,39 @@ const PosterBanner: React.FC = () => {
     return () => clearInterval(interval);
   }, [cycleImage]);
 
+  // Function to handle the image click and navigate to new URL with IMDb id
+  const handleImageClick = (imdbID: string) => {
+    const currentURL = window.location.href;
+    const newURL = `${currentURL}/${imdbID}`;
+    window.location.href = newURL; // Redirect to new URL
+  };
+
+  const handleNextImage = () => {
+    setImageIndex((prevIndex) => (prevIndex + 1) % totalImages);
+    setCurrentImage(shuffledFilmData[(imageIndex + 1) % totalImages].image);
+  };
+
+  const handlePreviousImage = () => {
+    setImageIndex((prevIndex) => (prevIndex - 1 + totalImages) % totalImages);
+    setCurrentImage(
+      shuffledFilmData[(imageIndex - 1 + totalImages) % totalImages].image
+    );
+  };
+
   return (
     <div className="poster-banner signup-poster">
       {currentImage && (
         <div className="poster-container">
+          <MdKeyboardArrowLeft
+            size={45}
+            className="arrow-icon"
+            onClick={handlePreviousImage}
+            style={{ cursor: 'pointer' }}
+          />
           <img
             src={currentImage}
             alt="Film poster"
+            onClick={() => handleImageClick(currentFilm.id)}
             className="poster-image"
             style={{
               width: '520px',
@@ -258,6 +286,12 @@ const PosterBanner: React.FC = () => {
               marginBottom: '2rem',
               cursor: 'pointer',
             }}
+          />
+          <MdKeyboardArrowRight
+            size={45}
+            className="arrow-icon"
+            onClick={handleNextImage}
+            style={{ cursor: 'pointer' }}
           />
         </div>
       )}
