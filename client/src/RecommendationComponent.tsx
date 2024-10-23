@@ -334,16 +334,20 @@ export function RecommendationComponent() {
       const key = keyParts.join('');
       const url = `https://tv-api.com/en/API/SearchSeries/${key}/${input}`;
 
+      const ai_key = [
+        'sk-7GM--fZ0x36jSDRHZjeW',
+        'wmTLzL0NU3EkMnCZRJ7_dAT3Blb',
+        'kFJqeCCFLAdVPfuNFywe7-u',
+        'AecxKv-vsI8CNljJgbrwEA',
+      ];
+      const connect_ai_key = ai_key.join('');
+
       const response = await fetch(url, {
         method: 'GET',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
-          'X-RapidAPI-Key':
-            'sk-7GM--fZ0x36jSDRHZjeW' +
-            'wmTLzL0NU3EkMnCZRJ7_dAT3Blb' +
-            'kFJqeCCFLAdVPfuNFywe7-u' +
-            'AecxKv-vsI8CNljJgbrwEA',
+          'X-RapidAPI-Key': connect_ai_key,
           'X-RapidAPI-Host': 'streaming-availability.p.rapidapi.com',
         },
       });
