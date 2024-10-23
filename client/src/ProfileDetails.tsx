@@ -186,9 +186,9 @@ export default function ProfileComponent({
             alt="Profile Picture"
             id="profile-image"
           />
+          <span className="username">{username || 'Loading UserName...'}</span>
         </div>
         <div className="profile-column user-info-column">
-          <span className="username">{username || 'Loading UserName...'}</span>
           <p className="profile-bio">{profileBio || 'Loading Bio...'}</p>
           <div className="button-row">
             <input
