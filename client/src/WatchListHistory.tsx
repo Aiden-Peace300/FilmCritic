@@ -4,8 +4,9 @@ import { BsTrash3 } from 'react-icons/bs';
 import DeleteConfirmationPopup from './WatchlistDeletePopup';
 import './WatchListHistory.css';
 
-interface FilmPoster {
-  [idImdb: string]: string | null;
+interface FilmData {
+  poster: string | null;
+  title: string;
 }
 
 /**
@@ -14,7 +15,7 @@ interface FilmPoster {
 export default function WatchListHistoryComponent() {
   const navigate = useNavigate();
   const [watchlist, setWatchlist] = useState<string[]>([]);
-  const [filmPosters, setFilmPosters] = useState<FilmPoster>({});
+  const [filmData, setFilmData] = useState<{ [idImdb: string]: FilmData }>({});
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [selectedIdImdb, setSelectedIdImdb] = useState<string | null>(null);
 
@@ -48,14 +49,14 @@ export default function WatchListHistoryComponent() {
         const { idImdbList } = data;
         setWatchlist(idImdbList);
 
-        // Fetch film posters for each idImdb and store in state
-        const posterPromises = idImdbList.map(async (idImdb) => {
-          const poster = await fetchFilmPoster(idImdb);
-          return { [idImdb]: poster };
+        // Fetch film data (poster and title) for each idImdb and store in state
+        const filmDataPromises = idImdbList.map(async (idImdb) => {
+          const filmInfo = await fetchFilmData(idImdb);
+          return { [idImdb]: filmInfo };
         });
 
-        const posters = await Promise.all(posterPromises);
-        setFilmPosters(Object.assign({}, ...posters));
+        const filmDataArray = await Promise.all(filmDataPromises);
+        setFilmData(Object.assign({}, ...filmDataArray));
       } catch (error) {
         console.error('Error fetching watchlist:', error);
       }
@@ -65,11 +66,11 @@ export default function WatchListHistoryComponent() {
   }, []);
 
   /**
-   * Fetches the film poster for a given idImdb.
+   * Fetches the film poster and title for a given idImdb.
    * @param {string} id - The idImdb of the film.
-   * @returns {Promise<string | null>} - A promise that resolves to the film poster URL or null if not found.
+   * @returns {Promise<FilmData>} - A promise that resolves to the film poster URL and title.
    */
-  async function fetchFilmPoster(id: string): Promise<string | null> {
+  async function fetchFilmData(id: string): Promise<FilmData> {
     try {
       const keyParts = ['k_e', 'i6r', 'uv', '0h'];
       const key = keyParts.join('');
@@ -80,21 +81,23 @@ export default function WatchListHistoryComponent() {
 
       if (response.status === 404) {
         console.error('Resource not found (404)');
-        return null; // Return null if no poster is found
+        return { poster: null, title: 'Unknown Title' }; // Handle missing resource
       }
 
       if (!response.ok) {
         console.error('Failed to fetch data from IMDb API');
-        return null; // Return null if there's an error
+        return { poster: null, title: 'Unknown Title' }; // Handle error
       }
 
       const responseData = await response.json();
 
-      const filmPoster = responseData.image;
-      return filmPoster;
+      const filmPoster = responseData.image || null;
+      const filmTitle = responseData.title || 'Unknown Title';
+
+      return { poster: filmPoster, title: filmTitle };
     } catch (error) {
       console.error('Error:', error);
-      return null; // Return null in case of an error
+      return { poster: null, title: 'Unknown Title' }; // Handle fetch error
     }
   }
 
@@ -114,17 +117,24 @@ export default function WatchListHistoryComponent() {
               .reverse()
               .map((idImdb) => (
                 <li className="li-Profile" key={idImdb}>
-                  {filmPosters[idImdb] !== null ? (
+                  {filmData[idImdb]?.poster ? (
                     <div className="row">
                       <div className="column-profile">
-                        <img
-                          className="profile-image"
-                          onClick={() =>
-                            navigate(`/movieApp/recommendation/${idImdb}`)
-                          }
-                          src={filmPosters[idImdb] || ''}
-                          alt={`Film Poster for ${idImdb}`}
-                        />
+                        <div className="image-container">
+                          <img
+                            className="profile-image"
+                            onClick={() =>
+                              navigate(`/movieApp/recommendation/${idImdb}`)
+                            }
+                            src={filmData[idImdb].poster || ''}
+                            alt={`Film Poster for ${filmData[idImdb].title}`}
+                          />
+                          <div className="middle">
+                            <div className="text">{`CLICK FOR '${filmData[
+                              idImdb
+                            ].title.toUpperCase()}' FILM DETAILS`}</div>
+                          </div>
+                        </div>
                         <button
                           className="details-button"
                           onClick={() =>
