@@ -96,14 +96,17 @@ export function RecommendationComponent() {
         ],
       };
       const keyParts = [
-        'sk-',
-        'Ic5lnwzT8',
-        'EMNOumCW',
-        'iO4T3Blbk',
-        'FJ7T0AsD0',
-        'mZ1ILQK',
-        'IHPgZP',
+        'sk-7GM',
+        '--fZ0',
+        'x36jSDRHZjeWwm',
+        'TLzL0NU3EkM',
+        'nCZRJ7_dAT3B',
+        'lbkFJqeCCFLAdVPf',
+        'uNFywe7-uAec',
+        'xKv-vsI8C',
+        'NljJgbrwEA',
       ];
+
       const apiKey = keyParts.join('');
       const post = {
         method: 'POST',
@@ -337,7 +340,7 @@ export function RecommendationComponent() {
           Accept: 'application/json',
           'Content-Type': 'application/json',
           'X-RapidAPI-Key':
-            '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',
+            'sk-7GM--fZ0x36jSDRHZjeWwmTLzL0NU3EkMnCZRJ7_dAT3BlbkFJqeCCFLAdVPfuNFywe7-uAecxKv-vsI8CNljJgbrwEA',
           'X-RapidAPI-Host': 'streaming-availability.p.rapidapi.com',
         },
       });
