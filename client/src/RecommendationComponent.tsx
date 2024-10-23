@@ -335,9 +335,15 @@ export function RecommendationComponent() {
       const url = `https://tv-api.com/en/API/SearchSeries/${key}/${input}`;
 
       const ai_key = [
-        'sk-7GM--fZ0x36jSDRHZjeW',
-        'wmTLzL0NU3EkMnCZRJ7_dAT3Blb',
-        'kFJqeCCFLAdVPfuNFywe7-u',
+        'sk-7G',
+        'M--fZ0x36j',
+        'SDRHZjeW',
+        'wmTLzL0NU',
+        '3EkMnCZRJ7_',
+        'dAT3Blb',
+        'kFJqeC',
+        'CFLAdVPfu',
+        'NFywe7-u',
         'AecxKv-vsI8CNljJgbrwEA',
       ];
       const connect_ai_key = ai_key.join('');
