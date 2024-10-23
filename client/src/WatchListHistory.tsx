@@ -131,11 +131,11 @@ export default function WatchListHistoryComponent() {
                             navigate(`/movieApp/recommendation/${idImdb}`)
                           }>
                           Detail
+                          <BsTrash3
+                            className="trash-icon"
+                            onClick={() => showPopup(idImdb)}
+                          />
                         </button>
-                        <BsTrash3
-                          className="trash-icon"
-                          onClick={() => showPopup(idImdb)}
-                        />
                       </div>
                     </div>
                   ) : (

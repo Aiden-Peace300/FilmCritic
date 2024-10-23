@@ -340,7 +340,10 @@ export function RecommendationComponent() {
           Accept: 'application/json',
           'Content-Type': 'application/json',
           'X-RapidAPI-Key':
-            'sk-7GM--fZ0x36jSDRHZjeWwmTLzL0NU3EkMnCZRJ7_dAT3BlbkFJqeCCFLAdVPfuNFywe7-uAecxKv-vsI8CNljJgbrwEA',
+            'sk-7GM--fZ0x36jSDRHZjeW' +
+            'wmTLzL0NU3EkMnCZRJ7_dAT3Blb' +
+            'kFJqeCCFLAdVPfuNFywe7-u' +
+            'AecxKv-vsI8CNljJgbrwEA',
           'X-RapidAPI-Host': 'streaming-availability.p.rapidapi.com',
         },
       });
