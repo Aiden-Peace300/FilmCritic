@@ -23,6 +23,7 @@ ul {
   .profile-image {
     width: 320px;
     height: 420px;
+    border-radius: 20px;
     padding-bottom: 0;
     padding-left: 0.5rem;
     padding-right: 0.5rem;
