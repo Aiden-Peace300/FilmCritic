@@ -96,15 +96,15 @@ export function RecommendationComponent() {
         ],
       };
       const keyParts = [
-        'sk-7GM',
-        '--fZ0',
-        'x36jSDRHZjeWwm',
-        'TLzL0NU3EkM',
-        'nCZRJ7_dAT3B',
-        'lbkFJqeCCFLAdVPf',
-        'uNFywe7-uAec',
-        'xKv-vsI8C',
-        'NljJgbrwEA',
+        'sk-',
+        '_MlNndBAoGUzCLEgUII_',
+        'gk9d69l2EM',
+        'iudbr5',
+        '-jktxfT3Bl',
+        'bkFJsP4YQb',
+        'zrtsqv9CARTjT0X',
+        'KU5BJ9Y-0r',
+        'ahEf_bZSHwA',
       ];
 
       const apiKey = keyParts.join('');
@@ -137,22 +137,19 @@ export function RecommendationComponent() {
   async function getRecommendations(filmFromUser) {
     setIsLoading(true);
     const suggestion = await suggestionFromAI(
-      `GIVE ME A LIST OF 5 FILMS THAT WOULD CLOSELY RESEMBLE THIS FILM (ONLY THE NAMES OF THE FILMS, NO OTHER PROMPTS WITH NO NUMBERING): ${filmFromUser}?`
+      `GIVE ME A LIST OF 5 FILMS (in imdb tt format) THAT WOULD CLOSELY RESEMBLE THIS FILM (ONLY THE NAMES OF THE FILMS, NO OTHER PROMPTS WITH NO NUMBERING): ${filmFromUser}?`
     );
 
     // Break the suggestion into individual show names
     const showStrings = breakShowsFilmsStrings(suggestion);
 
-    console.log(showStrings);
+    console.log('showStrings', showStrings);
 
     const fetchAllPromises: Promise<any>[] = [];
 
     for (const showName of showStrings) {
       // Remove digits and hyphens from the show name using regular expressions
-      const cleanShowName = showName
-        .trim()
-        .replace(/\d+/g, '')
-        .replace(/-/g, '');
+      const cleanShowName = showName;
 
       if (cleanShowName.length !== 0) {
         console.log('Suggestion From AI:', cleanShowName);
@@ -190,18 +187,16 @@ export function RecommendationComponent() {
   }
 
   /**
-   * Splits a string of show names into individual strings.
+   * Splits a string of show names into individual IMDb tt numbers.
    * @param {string} showsList The list of show names as a string.
-   * @returns {string[]} An array of individual show names.
+   * @returns {string[]} An array of IMDb tt numbers.
    */
   function breakShowsFilmsStrings(showsList) {
-    // Split the shows list into individual strings using a delimiter
-    const showStrings = showsList.split('. ');
+    // Use a regular expression to match IMDb tt numbers (format: tt followed by digits)
+    const imdbNumbers = showsList.match(/tt\d{7,}/g);
 
-    // Filter out any empty strings
-    const filteredShowStrings = showStrings.filter((str) => str.trim() !== '');
-
-    return filteredShowStrings;
+    // If no matches found, return an empty array, otherwise return the matched tt numbers
+    return imdbNumbers || [];
   }
 
   /**
@@ -215,8 +210,10 @@ export function RecommendationComponent() {
 
     try {
       const response = await fetch(
-        `https://tv-api.com/en/API/SearchSeries/${key}/${nameOfFilm}`
+        `https://tv-api.com/en/API/Title/${key}/${nameOfFilm}`
       );
+
+      console.log('SUGGESTION: ', nameOfFilm);
 
       console.log('IMDB API IN findTitleInFilmIMDB');
 
@@ -232,9 +229,9 @@ export function RecommendationComponent() {
 
       const responseData = await response.json();
 
-      if (responseData.results && responseData.results.length > 0) {
+      if (responseData) {
         // Assuming you want to extract data from the first result
-        const titleofFilm = responseData.results[0].title;
+        const titleofFilm = responseData.title;
         console.log('Found show:', titleofFilm);
         return titleofFilm;
       } else {
@@ -256,7 +253,7 @@ export function RecommendationComponent() {
 
     try {
       const response = await fetch(
-        `https://tv-api.com/en/API/SearchSeries/${key}/${nameOfFilm}`
+        `https://tv-api.com/en/API/Title/${key}/${nameOfFilm}`
       );
 
       console.log('IMDB API IN findFilmInIMDB');
@@ -273,10 +270,14 @@ export function RecommendationComponent() {
 
       const responseData = await response.json();
 
-      if (responseData.results && responseData.results.length > 0) {
-        const firstResult = responseData.results[0];
-        console.log('Found show:', firstResult.title, 'imdbId', firstResult.id);
-        return getPosterOfRecommendation(firstResult.id);
+      if (responseData) {
+        console.log(
+          'Found show:',
+          responseData.title,
+          'imdbId',
+          responseData.id
+        );
+        return getPosterOfRecommendation(responseData.id);
       } else {
         console.log('No results found for:', nameOfFilm);
       }
@@ -312,7 +313,7 @@ export function RecommendationComponent() {
 
       const responseData = await response.json();
 
-      if (responseData.image && responseData.image.length > 0) {
+      if (responseData.image) {
         const imageUrl = responseData.image;
         console.log('Image URL:', imageUrl);
         return imageUrl;
@@ -335,17 +336,17 @@ export function RecommendationComponent() {
       const url = `https://tv-api.com/en/API/SearchSeries/${key}/${input}`;
 
       const ai_key = [
-        'sk-7G',
-        'M--fZ0x36j',
-        'SDRHZjeW',
-        'wmTLzL0NU',
-        '3EkMnCZRJ7_',
-        'dAT3Blb',
-        'kFJqeC',
-        'CFLAdVPfu',
-        'NFywe7-u',
-        'AecxKv-vsI8CNljJgbrwEA',
+        'sk-',
+        '_MlNndBAoGUzCLEgUII_',
+        'gk9d69l2EM',
+        'iudbr5',
+        '-jktxfT3Bl',
+        'bkFJsP4YQb',
+        'zrtsqv9CARTjT0X',
+        'KU5BJ9Y-0r',
+        'ahEf_bZSHwA',
       ];
+
       const connect_ai_key = ai_key.join('');
 
       const response = await fetch(url, {
@@ -390,7 +391,7 @@ export function RecommendationComponent() {
 
     try {
       const response = await fetch(
-        `https://tv-api.com/en/API/SearchSeries/${key}/${title}`
+        `https://tv-api.com/en/API/Title/${key}/${title}`
       );
 
       console.log('IMDB API IN handleFilmDetails');
@@ -407,17 +408,16 @@ export function RecommendationComponent() {
 
       const responseData = await response.json();
 
-      if (responseData.results && responseData.results.length > 0) {
-        const firstResult = responseData.results[0];
+      if (responseData.title) {
         console.log(
           'Found show:',
-          firstResult.title,
+          responseData.title,
           'Found id',
-          firstResult.id
+          responseData.id
         );
-        return firstResult.id;
+        return responseData.id;
       } else {
-        console.log('No results found for:', title);
+        console.log('No results found for:', responseData.title);
       }
     } catch (error) {
       console.error('Error:', error);
