@@ -132,7 +132,7 @@ export default function RatedHistoryComponent() {
 
   return (
     <div>
-      <h2 className="watchlist-prompt mobile-top-margin">Rated History:</h2>
+      <h2 className="watchlist-prompt mobile-top-margin">RATED HISTORY</h2>
       <div className="row1">
         {ratedFilms
           .slice()
