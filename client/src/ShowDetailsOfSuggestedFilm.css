@@ -40,10 +40,11 @@ p {
 .imageDetails {
   display: flex;
   justify-content: center;
-  width: 670px;
+  width: 640px;
   height: 50rem;
   margin: 2rem;
-  padding-bottom: 2rem;
+  margin-bottom: 2rem;
+  border-radius: 25px;
 }
 
 /* .rateImageDetails {
