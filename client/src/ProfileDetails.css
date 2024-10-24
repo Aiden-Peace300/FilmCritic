@@ -91,6 +91,8 @@ textarea::selection {
 .profile-bio {
   font-size: 1.3rem;
   width: 40rem;
+
+  /* color: white; */
   color: #e74f4f;
 }
 
