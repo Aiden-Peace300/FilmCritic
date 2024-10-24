@@ -434,7 +434,7 @@ export function RecommendationComponent() {
           marginLeft: '2rem',
           textAlign: 'center',
         }}>
-        TYPE IN A FILM THAT YOU WOULD LIKE TO GET FIVE SUGGESTIONS FOR{' '}
+        ENTER A FILM TO GET FIVE SUGGESTIONS{' '}
       </h2>
       <p className="disclamer-Msg">
         DISCLAIMER: PLEASE ALLOW A FEW SECONDS FOR THE SEARCH BAR; WE ARE
