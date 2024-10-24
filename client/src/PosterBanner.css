@@ -21,6 +21,10 @@
   width: 80%;
 }
 
+.poster-image {
+  border-radius: 15px;
+}
+
 .poster-container-banner {
   opacity: 1;
   position: relative;
