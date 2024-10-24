@@ -427,8 +427,14 @@ export function RecommendationComponent() {
   return (
     <div>
       {/* <h1 style={{ marginBottom: '0rem' }}>RECOMMENDATION</h1> */}
-      <h2 style={{ color: 'white', marginBottom: '.5rem', marginLeft: '2rem' }}>
-        TYPE IN A FILM THAT YOU WOULD LIKE TO GET FIVE SUGGESTIONS FOR:{' '}
+      <h2
+        style={{
+          color: 'white',
+          marginBottom: '.5rem',
+          marginLeft: '2rem',
+          textAlign: 'center',
+        }}>
+        TYPE IN A FILM THAT YOU WOULD LIKE TO GET FIVE SUGGESTIONS FOR{' '}
       </h2>
       <p className="disclamer-Msg">
         DISCLAIMER: PLEASE ALLOW A FEW SECONDS FOR THE SEARCH BAR; WE ARE
