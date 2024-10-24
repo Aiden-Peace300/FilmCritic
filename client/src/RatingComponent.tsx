@@ -163,8 +163,14 @@ export default function RatingComponent() {
   return (
     <>
       {/* <h1 style={{ marginBottom: '0rem' }}>RATING</h1> */}
-      <h2 style={{ color: 'white', marginBottom: '.5rem', marginLeft: '2rem' }}>
-        TYPE IN A SHOW THAT YOU WOULD LIKE TO RATE:{' '}
+      <h2
+        style={{
+          color: 'white',
+          marginBottom: '.5rem',
+          marginLeft: '2rem',
+          textAlign: 'center',
+        }}>
+        ENTER A FILM THAT YOU'D LIKE TO RATE{' '}
       </h2>
       <p className="disclamer-Msg">
         DISCLAIMER: PLEASE ALLOW A FEW SECONDS FOR THE SEARCH BAR; WE ARE
