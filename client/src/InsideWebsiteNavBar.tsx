@@ -31,7 +31,7 @@ export function InsideWebsiteNavBar() {
         <div className="navbar">
           <img src={logo} height="50" alt="Film critic logo" className="logo" />
           <div className="nav-links">
-            <div className="margin-right nav-links">
+            <div className="margin-right">
               <Link to="/movieApp" className="entries-link white-text">
                 FEED
               </Link>
