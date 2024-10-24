@@ -9,6 +9,35 @@
   box-sizing: border-box; /* Ensures padding is included in the container’s total width and height */
 }
 
+.middle {
+  transition: 0.5s ease;
+  opacity: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  width: 80%;
+}
+
+.image-container {
+  position: relative;
+}
+
+.image-container:hover .middle {
+  opacity: 1;
+}
+
+.text-poster {
+  color: white;
+  font-size: 2rem;
+}
+
+.poster-image:hover {
+  opacity: 0.4;
+  transition: 0.4s ease;
+}
+
 @media only screen and (width < 735px) {
   .signup-poster {
     display: none;

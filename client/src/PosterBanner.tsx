@@ -248,7 +248,7 @@ const PosterBanner: React.FC = () => {
 
   const handleImageClick = (imdbID: string) => {
     const currentURL = window.location.href;
-    const newURL = `${currentURL}/${imdbID}`;
+    const newURL = `${currentURL}movieApp/recommendation/${imdbID}`;
     window.location.href = newURL; // Redirect to new URL
   };
 
@@ -274,19 +274,26 @@ const PosterBanner: React.FC = () => {
             onClick={handlePreviousImage}
             style={{ cursor: 'pointer' }}
           />
-          <img
-            src={currentImage.image}
-            alt="Film poster"
-            onClick={() => handleImageClick(currentImage.id)}
-            className="poster-image"
-            style={{
-              width: '520px',
-              height: 'auto',
-              marginTop: '2rem',
-              marginBottom: '2rem',
-              cursor: 'pointer',
-            }}
-          />
+          <div className="image-container">
+            <img
+              src={currentImage.image}
+              alt="Film poster"
+              onClick={() => handleImageClick(currentImage.id)}
+              className="poster-image"
+              style={{
+                width: '520px',
+                height: 'auto',
+                marginTop: '2rem',
+                marginBottom: '2rem',
+                cursor: 'pointer',
+              }}
+            />
+            <div className="middle">
+              <div className="text-poster">
+                {currentImage.title.toUpperCase()}
+              </div>
+            </div>
+          </div>
           <MdKeyboardArrowRight
             size={45}
             className="arrow-icon"
