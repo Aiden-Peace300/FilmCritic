@@ -7,6 +7,7 @@ import './WatchListHistory.css';
 interface FilmData {
   poster: string | null;
   title: string;
+  rating: string;
 }
 
 /**
@@ -93,8 +94,9 @@ export default function WatchListHistoryComponent() {
 
       const filmPoster = responseData.image || null;
       const filmTitle = responseData.title || 'Unknown Title';
+      const filmRating = responseData.ratings.imDb || 'Unknown Rating';
 
-      return { poster: filmPoster, title: filmTitle };
+      return { poster: filmPoster, title: filmTitle, rating: filmRating };
     } catch (error) {
       console.error('Error:', error);
       return { poster: null, title: 'Unknown Title' }; // Handle fetch error
@@ -105,11 +107,8 @@ export default function WatchListHistoryComponent() {
     <>
       <div>
         <h2 className="watchlist-prompt mobile-top-margin">
-          Watchlist History:
+          WATCHLIST HISTORY BELOW
         </h2>
-        <p className="watchlist-prompt">
-          Click the Film Poster or Details for a reminder of details
-        </p>
         <ul className="ul">
           <div className="row center-img">
             {watchlist
@@ -135,17 +134,20 @@ export default function WatchListHistoryComponent() {
                             ].title.toUpperCase()}' FILM DETAILS`}</div>
                           </div>
                         </div>
-                        <button
-                          className="details-button"
-                          onClick={() =>
-                            navigate(`/movieApp/recommendation/${idImdb}`)
-                          }>
-                          Detail
+                        <div className="details-button">
+                          <div style={{ textAlign: 'left' }}>
+                            <div className="title">
+                              {filmData[idImdb].title}
+                            </div>
+                            <div className="rating">
+                              {`IMDB RATING: ${filmData[idImdb].rating}`}
+                            </div>
+                          </div>
                           <BsTrash3
                             className="trash-icon"
                             onClick={() => showPopup(idImdb)}
                           />
-                        </button>
+                        </div>
                       </div>
                     </div>
                   ) : (
