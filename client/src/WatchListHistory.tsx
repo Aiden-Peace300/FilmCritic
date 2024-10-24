@@ -69,7 +69,7 @@ export default function WatchListHistoryComponent() {
   /**
    * Fetches the film poster and title for a given idImdb.
    * @param {string} id - The idImdb of the film.
-   * @returns {Promise<FilmData>} - A promise that resolves to the film poster URL and title.
+   * @returns {Promise<FilmData>} - A promise that resolves to the film poster URL, title, and rating.
    */
   async function fetchFilmData(id: string): Promise<FilmData> {
     try {
@@ -82,24 +82,32 @@ export default function WatchListHistoryComponent() {
 
       if (response.status === 404) {
         console.error('Resource not found (404)');
-        return { poster: null, title: 'Unknown Title' }; // Handle missing resource
+        return {
+          poster: null,
+          title: 'Unknown Title',
+          rating: 'Unknown Rating',
+        }; // Include default rating
       }
 
       if (!response.ok) {
         console.error('Failed to fetch data from IMDb API');
-        return { poster: null, title: 'Unknown Title' }; // Handle error
+        return {
+          poster: null,
+          title: 'Unknown Title',
+          rating: 'Unknown Rating',
+        }; // Include default rating
       }
 
       const responseData = await response.json();
 
       const filmPoster = responseData.image || null;
       const filmTitle = responseData.title || 'Unknown Title';
-      const filmRating = responseData.ratings.imDb || 'Unknown Rating';
+      const filmRating = responseData.ratings.imDb || 'Unknown Rating'; // Use a default value for missing rating
 
       return { poster: filmPoster, title: filmTitle, rating: filmRating };
     } catch (error) {
       console.error('Error:', error);
-      return { poster: null, title: 'Unknown Title' }; // Handle fetch error
+      return { poster: null, title: 'Unknown Title', rating: 'Unknown Rating' }; // Ensure rating is always present
     }
   }
 
