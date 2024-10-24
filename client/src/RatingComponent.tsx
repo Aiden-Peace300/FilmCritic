@@ -170,7 +170,7 @@ export default function RatingComponent() {
           marginLeft: '2rem',
           textAlign: 'center',
         }}>
-        TYPE IN A SHOW THAT YOU WOULD LIKE TO RATE{' '}
+        ENTER A FILM THAT YOU'D LIKE TO RATE{' '}
       </h2>
       <p className="disclamer-Msg">
         DISCLAIMER: PLEASE ALLOW A FEW SECONDS FOR THE SEARCH BAR; WE ARE
