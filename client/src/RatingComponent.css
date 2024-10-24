@@ -10,9 +10,10 @@ input[type='radio'] {
 }
 
 .rateImageDetails {
-  width: 670px;
+  width: 640px;
   height: 50rem;
   margin: 2rem;
+  border-radius: 25px;
 }
 
 .col-half-space {
