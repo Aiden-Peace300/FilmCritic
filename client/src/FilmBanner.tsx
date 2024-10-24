@@ -393,7 +393,6 @@ const FilmBanner: React.FC = () => {
         <div className="poster-container-banner">
           <img
             src={currentFilm.image}
-            title={currentFilm.title}
             alt={currentFilm.title}
             onClick={() => handleImageClick(currentFilm.id)}
             className="poster-image"
