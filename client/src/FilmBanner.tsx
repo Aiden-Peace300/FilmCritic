@@ -390,7 +390,7 @@ const FilmBanner: React.FC = () => {
   return (
     <div className="poster-banner signup-poster">
       {currentFilm && (
-        <div className="poster-container">
+        <div className="poster-container-banner">
           <img
             src={currentFilm.image}
             title={currentFilm.title}
@@ -407,6 +407,9 @@ const FilmBanner: React.FC = () => {
               justifyContent: 'center',
             }}
           />
+          <div className="middle">
+            <div className="text-poster">{currentFilm.title.toUpperCase()}</div>
+          </div>
         </div>
       )}
     </div>
