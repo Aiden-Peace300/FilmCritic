@@ -1,38 +1,38 @@
 /* ProfilePicture.css */
 
 .profile-container {
-  /* display: flex;
-  flex-direction: column;
-  align-items: center; */
-  margin: 2rem;
-}
-
-#profile-image {
-  /* margin: 2rem; */
-  width: 30rem;
-  height: 30rem;
-  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  margin-top: 5rem;
+  margin-bottom: 5rem;
 }
 
 .profile-row {
   display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
+  flex-direction: row; /* Aligns the columns horizontally */
+  width: 100%;
+  max-width: 800px; /* Optional: To set a max-width for your row */
+}
+
+#profile-image {
+  margin-right: 4rem;
+  width: 10rem;
+  height: 10rem;
+  border-radius: 10%;
 }
 
 .profile-column {
-  flex: 1;
   display: flex;
   flex-direction: column;
 }
 
-.profile-image-column {
+/* .profile-image-column {
   flex: 0.5;
-}
+} */
 
 .username {
-  font-size: 4rem;
+  margin-top: 0.5rem;
+  font-size: 1.3rem;
   margin-bottom: 10px;
   color: white;
 }
@@ -43,15 +43,15 @@
   border: 1px solid white;
   border-radius: 0.5rem;
   background-color: black;
-  color: white;
+  color: #db3434;
 }
 
 .upload-button {
   display: inline-block;
   padding: 10px 20px;
-  background-color: white;
+  background-color: #db3434;
   width: 11rem;
-  color: #db3434;
+  color: white;
   cursor: pointer;
   border-radius: 10px;
   margin-top: 10px;
@@ -78,24 +78,29 @@ textarea::selection {
   font-size: 1rem;
   display: inline-block;
   padding: 10px 20px;
-  background-color: white;
+  background-color: #db3434;
   width: 11rem;
-  color: #db3434;
+  color: white;
   cursor: pointer;
+  border: none;
   border-radius: 10px;
   margin-top: 10px;
   margin-left: 1rem;
 }
 
 .profile-bio {
-  font-size: 2rem;
+  font-size: 1.3rem;
+  width: 40rem;
+
+  /* color: white; */
+  color: #e74f4f;
 }
 
 .user-info-column {
-  flex: 1;
+  /* flex: 1; */
   display: flex;
   flex-direction: column;
-  justify-content: center; /* Center items vertically */
+  justify-content: space-around; /* Center items vertically */
 }
 
 /* .upload-button,
