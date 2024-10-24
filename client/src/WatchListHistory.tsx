@@ -98,7 +98,7 @@ export default function WatchListHistoryComponent() {
 
       return { poster: filmPoster, title: filmTitle, rating: filmRating };
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error: ', error);
       return { poster: null, title: 'Unknown Title' }; // Handle fetch error
     }
   }
