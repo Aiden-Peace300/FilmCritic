@@ -91,7 +91,7 @@ textarea::selection {
 .profile-bio {
   font-size: 1.3rem;
   width: 40rem;
-  font-family: Exo, sans-serif;
+  color: #e74f4f;
 }
 
 .user-info-column {
