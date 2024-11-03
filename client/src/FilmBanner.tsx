@@ -401,7 +401,7 @@ const FilmBanner: React.FC = () => {
               marginBottom: '2rem',
               cursor: 'pointer',
               width: '85%',
-              height: 'auto',
+              height: '90%',
               alignItems: 'center',
               justifyContent: 'center',
             }}
