@@ -3,7 +3,7 @@
 .profile-container {
   display: flex;
   justify-content: center;
-  margin-top: 5rem;
+  margin-top: 3rem;
   margin-bottom: 5rem;
 }
 
@@ -110,9 +110,12 @@ textarea::selection {
 
 @media only screen and (width < 735px) {
   #profile-image {
-    width: 320px;
-    height: 340px;
+    width: 290px;
+    height: 300px;
     margin-bottom: 1rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .profile-row {
@@ -120,8 +123,17 @@ textarea::selection {
     align-items: center; /* Center items horizontally */
   }
 
+  .profile-column {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   .profile-bio {
     display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: auto;
   }
 
   .username,
