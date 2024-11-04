@@ -63,12 +63,20 @@ ul {
   }
 
   .profile-image {
-    width: 320px;
-    height: 420px;
-    border-radius: 20px;
-    padding-bottom: 0;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
+    display: block;
+    margin: 0 auto;
+    width: 280px;
+    height: 22rem;
+    cursor: pointer;
+    padding-right: 2rem;
+    padding-left: 2rem;
+    padding-top: 2rem;
+    border-top-left-radius: 50px;
+    border-top-right-radius: 50px;
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+    position: relative;
+    z-index: 2;
   }
 
   .watchlist-prompt {
@@ -80,7 +88,18 @@ ul {
   }
 
   .details-button {
-    margin-top: 1rem;
+    cursor: pointer;
+    color: #343434;
+    background-color: #d9d9d9;
+    margin-left: 2rem;
+    margin-right: 0.2px;
+    height: 5rem;
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 1rem;
+    width: 100%;
   }
 }
 
