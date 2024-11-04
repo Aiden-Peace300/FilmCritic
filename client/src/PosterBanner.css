@@ -25,6 +25,17 @@
   border-radius: 15px;
 }
 
+.film-poster-image {
+  border-radius: 15px;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  cursor: pointer;
+  width: 85%;
+  height: 90%;
+  align-items: center;
+  justify-content: center;
+}
+
 .poster-container-banner {
   opacity: 1;
   position: relative;
@@ -43,7 +54,8 @@
   font-size: 2rem;
 }
 
-.poster-image:hover {
+.poster-image:hover,
+.film-poster-image:hover {
   opacity: 0.4;
   transition: 0.4s ease;
 }
@@ -52,5 +64,20 @@
   .signup-poster {
     display: none;
     visibility: hidden;
+  }
+
+  .film-poster-image {
+    border-radius: 15px;
+    margin: 1rem 0;
+    cursor: pointer;
+    width: 95%;
+    height: 60%;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .poster-container-banner {
+    display: flex;
+    height: 100%;
   }
 }

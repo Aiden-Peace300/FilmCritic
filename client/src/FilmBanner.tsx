@@ -388,23 +388,14 @@ const FilmBanner: React.FC = () => {
   };
 
   return (
-    <div className="poster-banner signup-poster">
+    <div className="poster-banner film-signup-poster">
       {currentFilm && (
         <div className="poster-container-banner">
           <img
             src={currentFilm.image}
             alt={currentFilm.title}
             onClick={() => handleImageClick(currentFilm.id)}
-            className="poster-image"
-            style={{
-              marginTop: '2rem',
-              marginBottom: '2rem',
-              cursor: 'pointer',
-              width: '85%',
-              height: '90%',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
+            className="film-poster-image"
           />
           <div className="middle">
             <div className="text-poster">{currentFilm.title.toUpperCase()}</div>
