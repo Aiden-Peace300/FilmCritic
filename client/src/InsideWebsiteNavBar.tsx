@@ -21,6 +21,8 @@ export type PageTypeInsideApp =
 export function InsideWebsiteNavBar() {
   const [isListVisible, setListVisible] = useState(false);
 
+  console.log('setListVisible', setListVisible);
+
   const toggleListVisibility = () => {
     setListVisible(!isListVisible);
   };
@@ -60,7 +62,7 @@ export function InsideWebsiteNavBar() {
         </div>
       </header>
       {isListVisible && (
-        <div className="list-container">
+        <div className="list-container" onClick={toggleListVisibility}>
           <IconClicked />
         </div>
       )}
