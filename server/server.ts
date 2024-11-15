@@ -705,6 +705,7 @@ app.get('/api/Feed/ratedFilms', async (req, res, next) => {
   try {
     const getRatedFilmsSql = `
       SELECT * FROM "RatedFilms"
+      ORDER BY "createdAt" ASC
     `;
 
     const ratedFilmsResult = await db.query(getRatedFilmsSql);
@@ -714,6 +715,12 @@ app.get('/api/Feed/ratedFilms', async (req, res, next) => {
     }
 
     const ratedFilms = ratedFilmsResult.rows;
+
+    // Log each film's createdAt timestamp to verify order
+    console.log('Rated Films in Order by createdAt:');
+    ratedFilms.forEach((film, index) => {
+      console.log(`Film ${index + 1}:`, film.createdAt);
+    });
 
     res.status(200).json(ratedFilms);
   } catch (err) {
@@ -801,19 +808,42 @@ app.post('/api/rating', authMiddleware, async (req, res, next) => {
       checkWatchlistParams
     );
 
+    const currentTimestamp = new Date().toISOString();
+
     if (watchlistResult.rows.length > 0) {
-      // Movie is already in the ratedList, no need to add again
-      return res.status(200).json({ message: 'Movie already in watchlist' });
+      // Movie is already in the rated list, update the existing entry
+      const updateRatingSql = `
+        UPDATE "RatedFilms"
+        SET "rating" = $1, "userNote" = $2, "updatedAt" = $3
+        WHERE "userId" = $4 AND "idImdb" = $5
+        RETURNING *
+      `;
+      const updateRatingParams = [
+        rating,
+        userNote,
+        currentTimestamp,
+        userId,
+        idImdb,
+      ];
+      const updateResult = await db.query(updateRatingSql, updateRatingParams);
+      const [updatedRatedItem] = updateResult.rows;
+      return res.status(200).json(updatedRatedItem);
     }
 
     // Add the movie to the watchlist with the associated userId
     const addToRatedFilmsSql = `
-        INSERT INTO "RatedFilms" ("userId", "idImdb", "rating", "userNote", "likes")
-        VALUES ($1, $2, $3, $4, 0)
+        INSERT INTO "RatedFilms" ("userId", "idImdb", "rating", "userNote", "likes", "createdAt")
+        VALUES ($1, $2, $3, $4, 0, $5)
         ON CONFLICT ("userId", "idImdb") DO NOTHING
         RETURNING *
     `;
-    const addToRatedFilmsParams = [userId, idImdb, rating, userNote];
+    const addToRatedFilmsParams = [
+      userId,
+      idImdb,
+      rating,
+      userNote,
+      currentTimestamp,
+    ];
 
     console.log('addToRatedFilmsParams:  ', addToRatedFilmsParams);
     const result = await db.query(addToRatedFilmsSql, addToRatedFilmsParams);
