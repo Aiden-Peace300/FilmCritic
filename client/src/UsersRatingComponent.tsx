@@ -177,13 +177,13 @@ export default function UsersRatingComponent() {
 
         if (responseFilms.status === 201) {
           console.log('Movie added to films table');
-          navigate('/movieApp/profile');
+          navigate('/movieApp');
         } else if (responseFilms.status === 200) {
           console.log('Movie already in films table');
-          navigate('/movieApp/profile');
+          navigate('/movieApp');
         } else {
           console.error('Failed to add movie to films table');
-          navigate('/movieApp/profile');
+          navigate('/movieApp');
         }
 
         if (responseRatedFilms.status === 201) {
