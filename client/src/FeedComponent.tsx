@@ -123,13 +123,10 @@ export default function FeedComponent() {
    * @returns {Promise} A Promise that resolves to the likes count.
    */
   const fetchLikesCount = async (idImdb, userId) => {
-    console.log('Fetching likes count for film:', { idImdb, userId });
-
     try {
       const response = await fetch(`/api/likes/${idImdb}/${userId}`, {
         method: 'GET',
       });
-      console.log('Fetch response received:', response);
 
       if (!response.ok) {
         console.error('Failed to fetch likes count for', idImdb);
@@ -137,10 +134,8 @@ export default function FeedComponent() {
       }
 
       const likesData = await response.json();
-      console.log('Parsed likes data:', likesData);
 
       if (likesData.likes !== undefined) {
-        console.log('Likes count found:', likesData.likes);
         return { likes: likesData.likes }; // Extract the likes count from the API response
       } else {
         console.warn(
@@ -210,29 +205,20 @@ export default function FeedComponent() {
    * @param {number} userId The user's ID.
    */
   const handleUpdateLikes = (idImdb, newLikes, userId) => {
-    console.log('Function called with:', { idImdb, newLikes, userId });
-
     setRatedFilms((prevFilms) => {
       const updatedFilms = [...prevFilms];
-      console.log('Previous rated films:', updatedFilms);
 
       const filmIndex = updatedFilms.findIndex(
         (film) => film.idImdb === idImdb && film.userId === userId
       );
-      console.log('Film index found:', filmIndex);
 
       if (filmIndex !== -1) {
-        console.log('Updating film:', updatedFilms[filmIndex]);
-
         updatedFilms[filmIndex] = {
           ...updatedFilms[filmIndex],
           likes: newLikes,
           idImdb: idImdb,
           userId: userId,
         };
-
-        console.log('Updated film data:', updatedFilms[filmIndex]);
-        console.log('newLikes', newLikes);
 
         // Ensure we pass `newLikes` to `postNewLikes`
         postNewLikes(idImdb, userId, newLikes)
@@ -264,8 +250,6 @@ export default function FeedComponent() {
    */
   const postNewLikes = async (idImdb, userId, newLikes) => {
     try {
-      console.log('Sending new likes to server:', { idImdb, userId, newLikes });
-
       const response = await fetch(`/api/likes/${idImdb}/${userId}`, {
         method: 'POST',
         headers: {
@@ -281,7 +265,6 @@ export default function FeedComponent() {
       }
 
       const result = await response.json();
-      console.log('Server response:', result);
 
       return result; // { likes: newLikes } from the server
     } catch (error) {
