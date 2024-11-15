@@ -716,12 +716,6 @@ app.get('/api/Feed/ratedFilms', async (req, res, next) => {
 
     const ratedFilms = ratedFilmsResult.rows;
 
-    // Log each film's createdAt timestamp to verify order
-    console.log('Rated Films in Order by createdAt:');
-    ratedFilms.forEach((film, index) => {
-      console.log(`Film ${index + 1}:`, film.createdAt);
-    });
-
     res.status(200).json(ratedFilms);
   } catch (err) {
     next(err);
