@@ -123,10 +123,13 @@ export default function FeedComponent() {
    * @returns {Promise} A Promise that resolves to the likes count.
    */
   const fetchLikesCount = async (idImdb, userId) => {
+    console.log('Fetching likes count for film:', { idImdb, userId });
+
     try {
       const response = await fetch(`/api/likes/${idImdb}/${userId}`, {
         method: 'GET',
       });
+      console.log('Fetch response received:', response);
 
       if (!response.ok) {
         console.error('Failed to fetch likes count for', idImdb);
@@ -134,9 +137,16 @@ export default function FeedComponent() {
       }
 
       const likesData = await response.json();
+      console.log('Parsed likes data:', likesData);
+
       if (likesData.likes !== undefined) {
+        console.log('Likes count found:', likesData.likes);
         return { likes: likesData.likes }; // Extract the likes count from the API response
       } else {
+        console.warn(
+          'Likes data format unexpected, returning full response:',
+          likesData
+        );
         return { likes: likesData };
       }
     } catch (error) {
@@ -200,27 +210,84 @@ export default function FeedComponent() {
    * @param {number} userId The user's ID.
    */
   const handleUpdateLikes = (idImdb, newLikes, userId) => {
-    setRatedFilms((prevFilms) => {
-      // Create a copy of the previous state
-      const updatedFilms = [...prevFilms];
+    console.log('Function called with:', { idImdb, newLikes, userId });
 
-      // Find the index of the film in the array
+    setRatedFilms((prevFilms) => {
+      const updatedFilms = [...prevFilms];
+      console.log('Previous rated films:', updatedFilms);
+
       const filmIndex = updatedFilms.findIndex(
         (film) => film.idImdb === idImdb && film.userId === userId
       );
+      console.log('Film index found:', filmIndex);
 
       if (filmIndex !== -1) {
-        // Update the likes count for the specific film with the newLikes and the correct idImdb
+        console.log('Updating film:', updatedFilms[filmIndex]);
+
         updatedFilms[filmIndex] = {
           ...updatedFilms[filmIndex],
           likes: newLikes,
           idImdb: idImdb,
           userId: userId,
         };
+
+        console.log('Updated film data:', updatedFilms[filmIndex]);
+        console.log('newLikes', newLikes);
+
+        // Ensure we pass `newLikes` to `postNewLikes`
+        postNewLikes(idImdb, userId, newLikes)
+          .then((serverResponse) => {
+            console.log('Server response:', serverResponse);
+          })
+          .catch((error) => {
+            console.error('Error posting new likes:', error);
+          });
+      } else {
+        console.log(
+          'Film not found with idImdb:',
+          idImdb,
+          'and userId:',
+          userId
+        );
       }
 
       return updatedFilms;
     });
+  };
+
+  /**
+   * Sends the new likes count for a film to the server.
+   * @param {string} idImdb - The IMDb ID of the film.
+   * @param {number} userId - The user's ID.
+   * @param {number} newLikes - The updated likes count to be sent to the server.
+   * @returns {Promise<Object>} A Promise that resolves to the server's response.
+   */
+  const postNewLikes = async (idImdb, userId, newLikes) => {
+    try {
+      console.log('Sending new likes to server:', { idImdb, userId, newLikes });
+
+      const response = await fetch(`/api/likes/${idImdb}/${userId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ likes: newLikes }),
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to update likes for film with idImdb: ${idImdb}`
+        );
+      }
+
+      const result = await response.json();
+      console.log('Server response:', result);
+
+      return result; // { likes: newLikes } from the server
+    } catch (error) {
+      console.error('Error posting new likes:', error);
+      throw error;
+    }
   };
 
   return (
