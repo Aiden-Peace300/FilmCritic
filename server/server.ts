@@ -620,12 +620,11 @@ app.get('/api/likes/:idImdb/:userId', async (req, res, next) => {
 app.post('/api/likes/:idImdb/:userId', async (req, res, next) => {
   try {
     const { idImdb, userId } = req.params;
+    const { likes: newLikes } = req.body; // Get newLikes from the request body
 
     // Check if the movie exists in the RatedFilms table
-    const checkRatedFilmSql = `
-      SELECT "likes" FROM "RatedFilms"
-      WHERE "userId" = $1 AND "idImdb" = $2
-    `;
+    const checkRatedFilmSql = `SELECT "likes" FROM "RatedFilms"
+       WHERE "userId" = $1 AND "idImdb" = $2`;
     const checkRatedFilmParams = [userId, idImdb];
     const ratedFilmResult = await db.query(
       checkRatedFilmSql,
@@ -633,23 +632,15 @@ app.post('/api/likes/:idImdb/:userId', async (req, res, next) => {
     );
 
     if (ratedFilmResult.rows.length === 0) {
-      // Movie is not found in the RatedFilms, you can choose to create a new entry or return an error as per your application logic.
+      // Movie is not found in the RatedFilms, throw an error
       throw new ClientError(404, 'Movie not found in RatedFilms');
     }
 
-    // Get the current number of likes
-    const currentLikes = ratedFilmResult.rows[0].likes;
-
-    // Increment the like count
-    const newLikes = currentLikes + 1;
-
     // Update the likes count in the RatedFilms table
-    const updateLikesSql = `
-      UPDATE "RatedFilms"
-      SET "likes" = $1
-      WHERE "userId" = $2 AND "idImdb" = $3
-      RETURNING *
-    `;
+    const updateLikesSql = `UPDATE "RatedFilms"
+       SET "likes" = $1
+       WHERE "userId" = $2 AND "idImdb" = $3
+       RETURNING "likes"`;
     const updateLikesParams = [newLikes, userId, idImdb];
     const result = await db.query(updateLikesSql, updateLikesParams);
 
