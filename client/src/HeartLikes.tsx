@@ -8,14 +8,6 @@ type HeartRatingProps = {
   onUpdateLikes: (idImdb: string, newLikes: number, userId: number) => void;
 };
 
-/**
- * HeartRating component for liking and unliking posts.
- *
- * @param {string} idImdb - The ID of the post to like or unlike.
- * @param {number} initialLikes - The initial number of likes.
- * @param {number} userId - The user's ID.
- * @param {Function} onUpdateLikes - Function to update the likes count.
- */
 const HeartRating: React.FC<HeartRatingProps> = ({
   idImdb,
   initialLikes,
@@ -23,31 +15,30 @@ const HeartRating: React.FC<HeartRatingProps> = ({
   onUpdateLikes,
 }) => {
   const [isLiked, setIsLiked] = useState(false);
+  const [currentLikes, setCurrentLikes] = useState(initialLikes);
 
   // check if the post is liked when the component mounts
   useEffect(() => {
-    // Retrieve liked posts from sessionStorage and check if this post is liked
     const likedPosts = JSON.parse(
       sessionStorage.getItem('likedPosts') || '[]'
     ) as string[];
-    setIsLiked(idImdb ? likedPosts.includes(idImdb) : false);
-  }, [idImdb]);
 
-  /**
-   * Handles the click event on the heart icon to like or unlike a post.
-   */
+    setIsLiked(idImdb ? likedPosts.includes(idImdb) : false);
+
+    // Fetch current likes count from API (or local storage if needed)
+    // For now, we assume initialLikes is the current value
+    setCurrentLikes(initialLikes);
+  }, [idImdb, initialLikes]);
+
   const handleHeartClick = async () => {
     try {
       if (!isLiked) {
-        // If not liked, the user clicks to like
+        // User is liking the post
 
-        // Calculate the new like count immediately
-        const newLikes = initialLikes + 1;
-
-        // Update the UI with the new like count
+        const newLikes = currentLikes + 1;
+        setCurrentLikes(newLikes);
         onUpdateLikes(idImdb, newLikes, userId);
 
-        // Make the API request
         const response = await fetch(`/api/likes/${idImdb}/${userId}`, {
           method: 'POST',
           headers: {
@@ -59,12 +50,9 @@ const HeartRating: React.FC<HeartRatingProps> = ({
 
         if (!response.ok) {
           console.error('Failed to update likes');
-          onUpdateLikes(idImdb, initialLikes, userId);
+          setCurrentLikes(currentLikes); // Revert to previous state if failed
         } else {
-          // User has liked the post
           setIsLiked(true);
-
-          // Update likedPosts in sessionStorage
           const likedPosts = JSON.parse(
             sessionStorage.getItem('likedPosts') || '[]'
           ) as string[];
@@ -72,15 +60,12 @@ const HeartRating: React.FC<HeartRatingProps> = ({
           sessionStorage.setItem('likedPosts', JSON.stringify(likedPosts));
         }
       } else {
-        // If already liked, the user clicks to unlike
+        // User is unliking the post
 
-        // Calculate the new like count immediately
-        const newLikes = initialLikes + 1 - 1;
-
-        // Update the UI with the new like count
+        const newLikes = currentLikes - 1;
+        setCurrentLikes(newLikes);
         onUpdateLikes(idImdb, newLikes, userId);
 
-        // Make the API request
         const response = await fetch(`/api/likes/${idImdb}/${userId}`, {
           method: 'POST',
           headers: {
@@ -91,17 +76,10 @@ const HeartRating: React.FC<HeartRatingProps> = ({
         });
 
         if (!response.ok) {
-          // Handle API request error here
           console.error('Failed to update likes');
-          // You can display an error message to the user
-
-          // Revert the optimistic update
-          onUpdateLikes(idImdb, initialLikes, userId);
+          setCurrentLikes(currentLikes); // Revert to previous state if failed
         } else {
-          // User has unliked the post
           setIsLiked(false);
-
-          // Update likedPosts in sessionStorage
           const likedPosts = JSON.parse(
             sessionStorage.getItem('likedPosts') || '[]'
           ) as string[];
@@ -114,7 +92,7 @@ const HeartRating: React.FC<HeartRatingProps> = ({
       }
     } catch (error) {
       console.error('Error:', error);
-      onUpdateLikes(idImdb, initialLikes, userId);
+      setCurrentLikes(currentLikes); // Revert in case of error
     }
   };
 
