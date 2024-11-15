@@ -138,6 +138,8 @@ export default function UsersRatingComponent() {
 
         const releaseYearNumber = parseInt(detailsObj.releaseYear, 10);
 
+        const currentTimestamp = new Date().toISOString();
+
         const responseFilms = await fetch('/api/films', {
           method: 'POST',
           headers: {
@@ -154,8 +156,15 @@ export default function UsersRatingComponent() {
             generalRating: detailsObj.generalRating,
             poster: detailsObj.poster,
             trailer: detailsObj.trailer,
+            createdAt: currentTimestamp, // createdAt handled by the server
+            updatedAt: null,
           }),
         });
+
+        if (!note) {
+          console.error('Rating or note is missing');
+          return;
+        }
 
         const responseRatedFilms = await fetch('/api/rating', {
           method: 'POST',
