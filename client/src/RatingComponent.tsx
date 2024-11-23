@@ -76,15 +76,29 @@ export default function RatingComponent() {
   const fetchSuggestions = async (input: string) => {
     try {
       console.log('fetchSuggestions Input', input);
-      const url = `https://tv-api.com/en/API/SearchSeries/k_ei6ruv0h/${input}`;
+      const url = `https://tv-api.com/en/API/SearchTitle/k_ei6ruv0h/${input}`;
+
+      const ai_key1 = [
+        'sk-',
+        'proj-9lLS5Uj2Iz',
+        '-gwImFlp_mE3ZM',
+        'JNDPnOEUvk-05M2K5W',
+        'hxYXuqPi2fSOr',
+        'EA9uIRZsYMe76l3Z42e',
+        'T3BlbkFJ6vJb8c8zgnv',
+        'Mx_Dk5YTChzXj4',
+        'FDT14YOyLDa',
+        'YXTJJrU3ATuc3na',
+        'JR38Qbk27v2vMVx',
+        '-BNU5sIA',
+      ];
 
       const response = await fetch(url, {
         method: 'GET',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
-          'X-RapidAPI-Key':
-            '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',
+          'X-RapidAPI-Key': ai_key1,
           'X-RapidAPI-Host': 'streaming-availability.p.rapidapi.com',
         },
       });
@@ -169,23 +183,16 @@ export default function RatingComponent() {
           marginBottom: '.5rem',
           marginLeft: '2rem',
           textAlign: 'center',
-        }}>
-        ENTER A FILM THAT YOU'D LIKE TO RATE{' '}
-      </h2>
-      <p className="disclamer-Msg">
-        DISCLAIMER: PLEASE ALLOW A FEW SECONDS FOR THE SEARCH BAR; WE ARE
-        LOOKING THROUGH THOUSANDS OF FILMS TO FIND THE PERFECT ONE FOR YOU.
-        PLEASE BE PATIENCE WITH US
-      </p>
+        }}></h2>
       <form onSubmit={handleSearchSubmit}>
         <div className="row">
           <div className="column">
             <DebounceInput
-              minLength={3}
-              debounceTimeout={800}
+              minLength={1}
+              debounceTimeout={300}
               className="searchBar"
               type="text"
-              placeholder="Search..."
+              placeholder="SENTER A FILM THAT YOU'D LIKE TO RATE..."
               value={searchTerm}
               onChange={handleSearchChange}
             />
