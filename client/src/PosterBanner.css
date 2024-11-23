@@ -4,8 +4,6 @@
   justify-content: center; /* Centers horizontally */
   align-items: center; /* Centers vertically */
   flex-wrap: wrap; /* Wraps posters to new lines */
-  gap: 20px; /* Adds space between posters */
-  padding: 20px;
   height: 100vh; /* Ensures the container takes the full height of the viewport */
   box-sizing: border-box; /* Ensures padding is included in the container’s total width and height */
 }
@@ -27,7 +25,7 @@
 
 .film-poster-image {
   border-radius: 15px;
-  margin-top: 2rem;
+  margin-top: 1rem;
   margin-bottom: 2rem;
   cursor: pointer;
   width: 85%;
