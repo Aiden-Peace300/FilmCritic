@@ -66,6 +66,7 @@ h1 {
   width: 210px;
   height: 300px;
   cursor: pointer;
+  border-radius: 10px;
 }
 
 .hoverImg:hover {
