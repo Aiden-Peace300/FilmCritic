@@ -6,6 +6,7 @@ import { useRecommendations } from './useRecommendations';
 import LoadingScreen from './LoadingScreen';
 import FilmBanner from './FilmBanner';
 import Footer from './Footer';
+import config from './config';
 
 /**
  * React component for managing and displaying recommendations.
@@ -95,26 +96,12 @@ export function RecommendationComponent() {
           },
         ],
       };
-      const keyParts = [
-        'sk-',
-        'proj-9lLS5Uj2Iz',
-        '-gwImFlp_mE3ZM',
-        'JNDPnOEUvk-05M2K5W',
-        'hxYXuqPi2fSOr',
-        'EA9uIRZsYMe76l3Z42e',
-        'T3BlbkFJ6vJb8c8zgnv',
-        'Mx_Dk5YTChzXj4',
-        'FDT14YOyLDa',
-        'YXTJJrU3ATuc3na',
-        'JR38Qbk27v2vMVx',
-        '-BNU5sIA',
-      ];
+      const keyParts = config.apiKey;
 
-      const apiKey = keyParts.join('');
       const post = {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${apiKey}`,
+          Authorization: `Bearer ${keyParts}`,
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
@@ -338,7 +325,7 @@ export function RecommendationComponent() {
       const key = keyParts.join('');
       const url = `https://tv-api.com/en/API/SearchTitle/${key}/${input}`;
 
-      const apiKey = import.meta.env.REACT_APP_API_KEY || '';
+      const apiKey = config.apiKey;
 
       const response = await fetch(url, {
         method: 'GET',
