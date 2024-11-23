@@ -338,29 +338,14 @@ export function RecommendationComponent() {
       const key = keyParts.join('');
       const url = `https://tv-api.com/en/API/SearchTitle/${key}/${input}`;
 
-      const ai_key = [
-        'sk-',
-        'proj-9lLS5Uj2Iz',
-        '-gwImFlp_mE3ZM',
-        'JNDPnOEUvk-05M2K5W',
-        'hxYXuqPi2fSOr',
-        'EA9uIRZsYMe76l3Z42e',
-        'T3BlbkFJ6vJb8c8zgnv',
-        'Mx_Dk5YTChzXj4',
-        'FDT14YOyLDa',
-        'YXTJJrU3ATuc3na',
-        'JR38Qbk27v2vMVx',
-        '-BNU5sIA',
-      ];
-
-      const connect_ai_key = ai_key.join('');
+      const apiKey = import.meta.env.REACT_APP_API_KEY || '';
 
       const response = await fetch(url, {
         method: 'GET',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
-          'X-RapidAPI-Key': connect_ai_key,
+          'X-RapidAPI-Key': apiKey,
           'X-RapidAPI-Host': 'streaming-availability.p.rapidapi.com',
         },
       });
