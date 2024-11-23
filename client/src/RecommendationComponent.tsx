@@ -97,14 +97,17 @@ export function RecommendationComponent() {
       };
       const keyParts = [
         'sk-',
-        '_MlNndBAoGUzCLEgUII_',
-        'gk9d69l2EM',
-        'iudbr5',
-        '-jktxfT3Bl',
-        'bkFJsP4YQb',
-        'zrtsqv9CARTjT0X',
-        'KU5BJ9Y-0r',
-        'ahEf_bZSHwA',
+        'proj-9lLS5Uj2Iz',
+        '-gwImFlp_mE3ZM',
+        'JNDPnOEUvk-05M2K5W',
+        'hxYXuqPi2fSOr',
+        'EA9uIRZsYMe76l3Z42e',
+        'T3BlbkFJ6vJb8c8zgnv',
+        'Mx_Dk5YTChzXj4',
+        'FDT14YOyLDa',
+        'YXTJJrU3ATuc3na',
+        'JR38Qbk27v2vMVx',
+        '-BNU5sIA',
       ];
 
       const apiKey = keyParts.join('');
@@ -333,18 +336,21 @@ export function RecommendationComponent() {
     try {
       const keyParts = ['k_e', 'i6r', 'uv', '0h'];
       const key = keyParts.join('');
-      const url = `https://tv-api.com/en/API/SearchSeries/${key}/${input}`;
+      const url = `https://tv-api.com/en/API/SearchTitle/${key}/${input}`;
 
       const ai_key = [
         'sk-',
-        '_MlNndBAoGUzCLEgUII_',
-        'gk9d69l2EM',
-        'iudbr5',
-        '-jktxfT3Bl',
-        'bkFJsP4YQb',
-        'zrtsqv9CARTjT0X',
-        'KU5BJ9Y-0r',
-        'ahEf_bZSHwA',
+        'proj-9lLS5Uj2Iz',
+        '-gwImFlp_mE3ZM',
+        'JNDPnOEUvk-05M2K5W',
+        'hxYXuqPi2fSOr',
+        'EA9uIRZsYMe76l3Z42e',
+        'T3BlbkFJ6vJb8c8zgnv',
+        'Mx_Dk5YTChzXj4',
+        'FDT14YOyLDa',
+        'YXTJJrU3ATuc3na',
+        'JR38Qbk27v2vMVx',
+        '-BNU5sIA',
       ];
 
       const connect_ai_key = ai_key.join('');
@@ -433,23 +439,16 @@ export function RecommendationComponent() {
           marginBottom: '.5rem',
           marginLeft: '2rem',
           textAlign: 'center',
-        }}>
-        ENTER A FILM TO GET FIVE SUGGESTIONS{' '}
-      </h2>
-      <p className="disclamer-Msg">
-        DISCLAIMER: PLEASE ALLOW A FEW SECONDS FOR THE SEARCH BAR; WE ARE
-        LOOKING THROUGH THOUSANDS OF FILMS TO FIND THE PERFECT ONE FOR YOU.
-        PLEASE BE PATIENCE WITH US
-      </p>
+        }}></h2>
       <form onSubmit={handleSearchSubmit}>
         <div className="row">
           <div className="column">
             <DebounceInput
-              minLength={2}
-              debounceTimeout={800}
+              minLength={1}
+              debounceTimeout={300}
               className="searchBar"
               type="text"
-              placeholder="Search..."
+              placeholder="ENTER A FILM TO GET FIVE SUGGESTIONS BACK..."
               value={searchTerm}
               onChange={handleSearchChange}
             />
