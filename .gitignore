@@ -3,6 +3,7 @@ node_modules
 .vscode
 *.log
 .env
+client/.env
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
@@ -10,4 +11,3 @@ node_modules
 !.elasticbeanstalk/*.global.yml
 server/public/images/*
 !server/public/images/.gitkeep
-client/.env
