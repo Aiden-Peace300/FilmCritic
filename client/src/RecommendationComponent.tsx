@@ -325,7 +325,6 @@ export function RecommendationComponent() {
       const key = keyParts.join('');
       const url = `https://tv-api.com/en/API/SearchTitle/${key}/${input}`;
 
-
       const connect_ai_key = import.meta.env.VITE_API_KEY;
 
       const response = await fetch(url, {
@@ -417,8 +416,8 @@ export function RecommendationComponent() {
         <div className="row">
           <div className="column">
             <DebounceInput
-              minLength={3}
-              debounceTimeout={100}
+              minLength={1}
+              debounceTimeout={0}
               className="searchBar"
               type="text"
               placeholder="ENTER A FILM TO GET FIVE SUGGESTIONS BACK..."
