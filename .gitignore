@@ -11,4 +11,3 @@ node_modules
 server/public/images/*
 !server/public/images/.gitkeep
 client/.env
-.env
