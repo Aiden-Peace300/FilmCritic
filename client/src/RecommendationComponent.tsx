@@ -6,7 +6,6 @@ import { useRecommendations } from './useRecommendations';
 import LoadingScreen from './LoadingScreen';
 import FilmBanner from './FilmBanner';
 import Footer from './Footer';
-import config from './config';
 
 /**
  * React component for managing and displaying recommendations.
@@ -96,7 +95,8 @@ export function RecommendationComponent() {
           },
         ],
       };
-      const keyParts = config.apiKey;
+
+      const keyParts = import.meta.env.VITE_API_KEY;
 
       const post = {
         method: 'POST',
@@ -325,14 +325,15 @@ export function RecommendationComponent() {
       const key = keyParts.join('');
       const url = `https://tv-api.com/en/API/SearchTitle/${key}/${input}`;
 
-      const apiKey = config.apiKey;
+
+      const connect_ai_key = import.meta.env.VITE_API_KEY;
 
       const response = await fetch(url, {
         method: 'GET',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
-          'X-RapidAPI-Key': apiKey,
+          'X-RapidAPI-Key': connect_ai_key,
           'X-RapidAPI-Host': 'streaming-availability.p.rapidapi.com',
         },
       });
@@ -417,7 +418,7 @@ export function RecommendationComponent() {
           <div className="column">
             <DebounceInput
               minLength={3}
-              debounceTimeout={300}
+              debounceTimeout={100}
               className="searchBar"
               type="text"
               placeholder="ENTER A FILM TO GET FIVE SUGGESTIONS BACK..."
