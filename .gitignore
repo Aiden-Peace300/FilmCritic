@@ -10,3 +10,4 @@ node_modules
 !.elasticbeanstalk/*.global.yml
 server/public/images/*
 !server/public/images/.gitkeep
+.env
