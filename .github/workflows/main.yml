@@ -16,6 +16,7 @@ jobs:
       AWS_REGION: ${{ secrets.AWS_REGION }}
       AWS_APP_NAME: ${{ secrets.AWS_APP_NAME }}
       AWS_ENV_NAME: ${{ secrets.AWS_ENV_NAME }}
+      VITE_API_KEY: ${{ secrets.VITE_API_KEY }}
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
@@ -29,6 +30,10 @@ jobs:
           sed -i '/prepare/d' package.json
           zip -r deploy.zip .platform client/dist server database package.json package-lock.json \
             -x "*/.env*" "*/node_modules/*"
+
+      - name: Create .env for client
+        run: |
+          echo "VITE_API_KEY=${{ secrets.VITE_API_KEY }}" > client/.env
 
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v21
