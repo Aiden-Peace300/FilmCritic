@@ -96,17 +96,20 @@ export function RecommendationComponent() {
         ],
       };
 
-      const keyParts = import.meta.env.VITE_API_KEY;
+      const aiKey = await fetchAIKey();
 
       const post = {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${keyParts}`,
+          Authorization: `Bearer ${aiKey}`,
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(requestData),
       };
+
+      console.log('Request Headers:', post.headers);
+
       const response = await fetch(
         'https://api.openai.com/v1/chat/completions',
         post
@@ -315,35 +318,58 @@ export function RecommendationComponent() {
     }
   }
 
-  /**
-   * Fetches search suggestions from IMDb API.
-   * @param {string} input The user's input for search.
-   */
-  const fetchSuggestions = async (input) => {
+  async function fetchAIKey() {
     try {
-      const keyParts = ['k_e', 'i6r', 'uv', '0h'];
-      const key = keyParts.join('');
-      const url = `https://tv-api.com/en/API/SearchTitle/${key}/${input}`;
+      const response = await fetch('/api/get-ai-key', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem('token')}`, // Include the token for auth
+        },
+      });
 
-      const connect_ai_key = import.meta.env.VITE_API_KEY;
+      if (!response.ok) {
+        throw new Error('Failed to fetch the AI API key');
+      }
+
+      const data = await response.json();
+      console.log('data.apiKey', typeof data.apiKey);
+      return data.apiKey;
+    } catch (error) {
+      console.error('Error fetching AI API key:', error);
+    }
+  }
+
+  /**
+   * fetchSuggestions is an asynchronous function that fetches film suggestions from the IMDb API.
+   * It updates the state with the fetched suggestions.
+   * @param {string} input - The user's input for searching films.
+   */
+  const fetchSuggestions = async (input: string) => {
+    try {
+      console.log('fetchSuggestions Input', input);
+      const url = `https://tv-api.com/en/API/SearchTitle/k_ei6ruv0h/${input}`;
+
+      const ai_key2 = await fetchAIKey();
 
       const response = await fetch(url, {
         method: 'GET',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
-          'X-RapidAPI-Key': connect_ai_key,
+          'X-RapidAPI-Key': ai_key2,
           'X-RapidAPI-Host': 'streaming-availability.p.rapidapi.com',
         },
       });
 
-      console.log('IMDB API IN fetchSuggestions');
-
-      if (!response.ok) throw new Error(`Fetch Error ${response.status}`);
+      if (!response.ok) console.error(`Fetch Error ${response.status}`);
 
       const responseData = await response.json();
+      console.log('response:', response);
       const suggestionData = responseData.results || [];
       const limitedSuggestions = suggestionData.slice(0, 7);
+
+      console.log('suggestionData:', suggestionData);
+      console.log('limitedSuggestions:', limitedSuggestions);
 
       const suggestionsWithClickStatus = limitedSuggestions.map(
         (suggestion) => ({
@@ -351,6 +377,11 @@ export function RecommendationComponent() {
           clicked: false,
         })
       );
+
+      console.log('suggestionData After:', suggestionData);
+      console.log('limitedSuggestions After:', limitedSuggestions);
+
+      console.log('Mapped Suggestions:', suggestionsWithClickStatus);
 
       setSuggestions(suggestionsWithClickStatus);
       setShowSuggestions(true);
@@ -416,8 +447,8 @@ export function RecommendationComponent() {
         <div className="row">
           <div className="column">
             <DebounceInput
-              minLength={1}
-              debounceTimeout={0}
+              minLength={2}
+              debounceTimeout={200}
               className="searchBar"
               type="text"
               placeholder="ENTER A FILM TO GET FIVE SUGGESTIONS BACK..."

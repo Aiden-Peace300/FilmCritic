@@ -82,46 +82,72 @@ app.post('/api/auth/sign-up', async (req, res, next) => {
  */
 app.post('/api/auth/sign-in', async (req, res, next) => {
   try {
+    console.log('Reached /api/auth/sign-in handler');
     const { username, password } = req.body;
+    console.log('Request body:', req.body);
+
     if (!username || !password) {
       throw new ClientError(401, 'invalid login');
-    } else {
-      const sql = `
-        SELECT "userId", "hashedPassword"
-        FROM "Users"
-        WHERE username = $1`;
-
-      const result = await db.query(sql, [username]);
-
-      if (result.rows.length === 0) {
-        throw new ClientError(401, 'invalid login');
-      }
-      const user = result.rows[0];
-
-      const passwordMatch = await argon2.verify(user.hashedPassword, password);
-
-      if (!passwordMatch) {
-        throw new ClientError(401, 'invalid login');
-      }
-
-      const payload = {
-        userId: user.userId,
-        username,
-      };
-
-      if (!process.env.TOKEN_SECRET) {
-        throw new Error('TOKEN_SECRET environment variable is not defined');
-      }
-
-      const token = jwt.sign(payload, process.env.TOKEN_SECRET);
-
-      res.status(200).json({
-        token,
-        payload,
-      });
     }
+
+    const sql = `
+      SELECT "userId", "hashedPassword"
+      FROM "Users"
+      WHERE username = $1`;
+    console.log('Executing SQL query:', sql);
+
+    const result = await db.query(sql, [username]);
+
+    if (result.rows.length === 0) {
+      throw new ClientError(401, 'invalid login');
+    }
+
+    const user = result.rows[0];
+
+    const passwordMatch = await argon2.verify(user.hashedPassword, password);
+    console.log('Password match:', passwordMatch);
+
+    if (!passwordMatch) {
+      throw new ClientError(401, 'invalid login');
+    }
+
+    if (!process.env.TOKEN_SECRET) {
+      throw new Error('TOKEN_SECRET environment variable is not defined');
+    }
+
+    const payload = {
+      userId: user.userId,
+      username,
+    };
+
+    const token = jwt.sign(payload, process.env.TOKEN_SECRET);
+    console.log('Generated token:', token);
+
+    res.status(200).json({
+      token,
+      payload,
+    });
   } catch (err) {
+    console.error('Error in /api/auth/sign-in:', err);
     next(err);
+  }
+});
+
+app.get('/api/get-ai-key', authMiddleware, (req, res) => {
+  // Ensure this is only available to authorized users
+  try {
+    const aiKey = process.env.AI_API_KEY; // Securely retrieve the AI_API_KEY from environment variables
+
+    if (!aiKey) {
+      throw new Error(
+        'AI_API_KEY is not configured in the environment variables'
+      );
+    }
+
+    res.status(200).json({ apiKey: aiKey });
+  } catch (err) {
+    console.error('Error fetching AI_API_KEY:', err);
+    res.status(500).json({ error: 'Failed to retrieve AI API key' });
   }
 });
 

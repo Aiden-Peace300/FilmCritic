@@ -68,6 +68,26 @@ export default function RatingComponent() {
     getFilm(suggestion.id);
   };
 
+  async function fetchAIKey() {
+    try {
+      const response = await fetch('/api/get-ai-key', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem('token')}`, // Include the token for auth
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch the AI API key');
+      }
+
+      const data = await response.json();
+      return data.apiKey;
+    } catch (error) {
+      console.error('Error fetching AI API key:', error);
+    }
+  }
+
   /**
    * fetchSuggestions is an asynchronous function that fetches film suggestions from the IMDb API.
    * It updates the state with the fetched suggestions.
@@ -78,7 +98,7 @@ export default function RatingComponent() {
       console.log('fetchSuggestions Input', input);
       const url = `https://tv-api.com/en/API/SearchTitle/k_ei6ruv0h/${input}`;
 
-      const ai_key2 = import.meta.env.VITE_API_KEY;
+      const ai_key2 = await fetchAIKey();
 
       const response = await fetch(url, {
         method: 'GET',
