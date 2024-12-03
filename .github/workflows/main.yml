@@ -31,10 +31,6 @@ jobs:
           zip -r deploy.zip .platform client/dist server database package.json package-lock.json \
             -x "*/.env*" "*/node_modules/*"
 
-      - name: Create .env for client
-        run: |
-          echo "VITE_API_KEY=${{ secrets.VITE_API_KEY }}" > client/.env
-
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v21
         with:
